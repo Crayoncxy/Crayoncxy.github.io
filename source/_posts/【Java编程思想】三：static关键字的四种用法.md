@@ -35,7 +35,7 @@ public class TestStatic {
 
 这是普通的成员变量的例子，ts1和ts2对于变量name和age分别拥有自己的副本，互相不影响，所以赋值之后，他们能得到他们期望的值。
 
-![png1]([Java编程思想]static关键字的四种用法/png1.png)
+![png1]([Java编程思想]三：static关键字的四种用法/png1.png)
 
 接下来将成员变量age修改为类变量：
 
@@ -61,11 +61,11 @@ public class TestStatic {
 
 这时由于age变成了类变量，因此ts1和ts2共用了一个变量副本，先赋值的会被后赋值的覆盖掉。
 
-![png2]([Java编程思想]static关键字的四种用法/png2.png)
+![png2]([Java编程思想]三：static关键字的四种用法/png2.png)
 
 此外第二个示例代码中，静态成员变量使用了对象.变量的方式进行调用，这里编译器会给出警告，使用类名.方法之后警告就会解除。
 
-![png3]([Java编程思想]static关键字的四种用法/png3.png)
+![png3]([Java编程思想]三：static关键字的四种用法/png3.png)
 
 # 二、修饰成员方法
 
@@ -119,7 +119,7 @@ public class TestStatic{
 
 &ensp;&ensp;&ensp;&ensp;在类TestStatic中，我们初始化了两个普通成员变量和两个静态成员变量，并在main函数开始的时候初始化了TestStatic对象。结果如下：
 
-![png4]([Java编程思想]static关键字的四种用法/png4.png)
+![png4]([Java编程思想]三：static关键字的四种用法/png4.png)
 
 &ensp;&ensp;&ensp;&ensp;静态成员变量最先被初始化，并且按照执行的先后顺序进行初始化。其次初始化的是成员变量，最后初始化的是构造方法。所以在创建一个对象的时候，最先被初始化的是静态成员变量。
 
@@ -152,7 +152,7 @@ public class TestStatic{
 
  我们在创建对象之前先调用了静态方法，结果如下:
 
-![png5]([Java编程思想]static关键字的四种用法/png5.png)
+![png5]([Java编程思想]三：static关键字的四种用法/png5.png)
 
 &ensp;&ensp;&ensp;&ensp;我们可以看到，静态成员的初始化发生在创建对象之前，确切的说是在调用静态方法之前就已经被初始化了。并且，当我们创建对象的时候，原本被初始化过的静态成员变量跟静态方法没有再次被初始化。
 
@@ -190,7 +190,7 @@ public class TestStatic{
 
 修改之前的代码将静态成员变量放在由static修饰的域中，结果如下：
 
-![png6]([Java编程思想]static关键字的四种用法/png6.png)
+![png6]([Java编程思想]三：static关键字的四种用法/png6.png)
 
 与分开修饰结果相同。
 
@@ -221,7 +221,7 @@ public class TestStatic{
 
 运行结果：
 
-![png7]([Java编程思想]static关键字的四种用法/png7.png)
+![png7]([Java编程思想]三：static关键字的四种用法/png7.png)
 
 # 五、总结
 
