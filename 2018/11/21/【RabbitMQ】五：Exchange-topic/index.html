@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【RabbitMQ】五：Exchange-topic">
+<meta property="og:url" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png10.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png11.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png12.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.616Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【RabbitMQ】五：Exchange-topic">
+<meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/">
+
+
+
+
+
+  <title>【RabbitMQ】五：Exchange-topic | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【RabbitMQ】五：Exchange-topic</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-21T15:48:42+08:00">
+                2018-11-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/21/【RabbitMQ】五：Exchange-topic/" class="leancloud_visitors" data-flag-title="【RabbitMQ】五：Exchange-topic">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。</p>
+<p>&ensp;&ensp;&ensp;&ensp;示例：假设我们有两条队列，队列的绑定规则不确定，只有部分是确定的，也就是我们会接收包含这确定路由规则的信息。</p>
+<p>&ensp;&ensp;&ensp;&ensp;实现方式：使用Topic类型的交换机，定义路由规则带有匹配符号‘#’或者‘<em>’,如图，为了更好的说明‘</em>’和‘#’之间的关系，我们定义如下四个队列分别绑定四种绑定规则com.chen.#  #.com.chen  com.chen.<em>和</em>.com.chen 。预期功能，当传入消息绑定com.chen.me时，能被13消费者收到，当传入消息绑定me.com.chen时，能被24消费者收到，当传入消息绑定com.chen.its.me时，能被消费者1收到，当传入消息绑定its.me.com.chen时，能被2消费者收到。</p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png1.png" alt="png1"></p>
+<h1 id="二、源代码"><a href="#二、源代码" class="headerlink" title="二、源代码"></a>二、源代码</h1><p>&ensp;&ensp;&ensp;&ensp;与前面两篇相同，先写生产者，创建Topic类型的交换机，发送四条消息，带有上述四个routingKey</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqProducer</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机、用户名、密码和客户端端口号</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 factory.setUsername(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPassword(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPort(<span class="number">5672</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 String message1 = <span class="string">"我是com.chen.its.me"</span>;</span><br><span class="line">		 String message2 = <span class="string">"我是its.me.com.chen"</span>;</span><br><span class="line">		 String message3 = <span class="string">"我是com.chen.me"</span>;</span><br><span class="line">		 String message4 = <span class="string">"我是me.com.chen"</span>;</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.its.me"</span>,<span class="keyword">null</span>,message1.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"its.me.com.chen"</span>,<span class="keyword">null</span>,message2.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.me"</span>,<span class="keyword">null</span>,message3.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"me.com.chen"</span>,<span class="keyword">null</span>,message4.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;编写消费者1代码，由于我们要先启动消费者，所以消费者里也创建一个交换机，（生产者即可不用创建），新建一个随机队列，绑定com.chen.#路由规则。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer1</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"com.chen.#"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer1 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer1 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建消费者2，与消费者1类似，交换机只要创建一次即可，这里不保证哪个先启动，所以都声明了交换机。新建随机队列，绑定路由规则#.com.chen</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer2</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"#.com.chen"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer2 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer2 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建消费者3，绑定路由规则com.chen.*</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer3</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"com.chen.*"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer3 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer3 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建消费者4，绑定路由规则*.com.chen</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer4</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"*.com.chen"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer4 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer4 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;分别启动消费者1234，使其处于监听状态，可以在RabbitMQ控制台看见声明了一个名为’HelloMq’类型为topic的交换机和四个随机队列</p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png2.png" alt="png2"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png3.png" alt="png3"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png4.png" alt="png4"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png5.png" alt="png5"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png6.png" alt="png6"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png7.png" alt="png7"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png8.png" alt="png8"></p>
+<p>&ensp;&ensp;&ensp;&ensp;启动生产者，可以看见消费者12收到了两条消息，消费者34收到了一条消息，实际结果与开篇的预期结果吻合。</p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png9.png" alt="png9"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png10.png" alt="png10"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png11.png" alt="png11"></p>
+<p><img src="[RabbitMQ]五：Exchange-topic/png12.png" alt="png12"></p>
+<p>&ensp;&ensp;&ensp;&ensp;至此，topic类型的交换机功能就实现了。</p>
+<h1 id="三、代码下载"><a href="#三、代码下载" class="headerlink" title="三、代码下载"></a>三、代码下载</h1><p><a href="https://pan.baidu.com/s/1mj2nEly" target="_blank" rel="noopener">下载地址</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/21/【RabbitMQ】四：Exchange-direct/" rel="next" title="【RabbitMQ】四：Exchange-direct">
+                <i class="fa fa-chevron-left"></i> 【RabbitMQ】四：Exchange-direct
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/21/【RabbitMQ】六：Exchange-headers/" rel="prev" title="【RabbitMQ】六：Exchange-headers">
+                【RabbitMQ】六：Exchange-headers <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、源代码"><span class="nav-number">2.</span> <span class="nav-text">二、源代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、代码下载"><span class="nav-number">3.</span> <span class="nav-text">三、代码下载</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

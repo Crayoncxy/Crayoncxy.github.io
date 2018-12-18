@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Think in Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、为什么需要RTTI&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;RTTI（Run-Time-Type-Information），运行时类型信息。读《Java编程思想》这本书时是第一次知道这个词，于是先百度了一番，某乎上的讲解是这个概念最早是由本书的作者在《Think in C++》上提出的，实际上的意思与Java中的反射差不多。书中主要说的应用场景是在多态的过程中，基类的派生类使用基类提供的">
+<meta name="keywords" content="Java,Think in Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java编程思想】十五：类型信息">
+<meta property="og:url" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、为什么需要RTTI&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;RTTI（Run-Time-Type-Information），运行时类型信息。读《Java编程思想》这本书时是第一次知道这个词，于是先百度了一番，某乎上的讲解是这个概念最早是由本书的作者在《Think in C++》上提出的，实际上的意思与Java中的反射差不多。书中主要说的应用场景是在多态的过程中，基类的派生类使用基类提供的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png10.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png11.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.518Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Java编程思想】十五：类型信息">
+<meta name="twitter:description" content="一、为什么需要RTTI&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;RTTI（Run-Time-Type-Information），运行时类型信息。读《Java编程思想》这本书时是第一次知道这个词，于是先百度了一番，某乎上的讲解是这个概念最早是由本书的作者在《Think in C++》上提出的，实际上的意思与Java中的反射差不多。书中主要说的应用场景是在多态的过程中，基类的派生类使用基类提供的">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/[Java编程思想]十五：类型信息/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/">
+
+
+
+
+
+  <title>【Java编程思想】十五：类型信息 | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/【Java编程思想】十五：类型信息/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Java编程思想】十五：类型信息</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T09:39:48+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/20/【Java编程思想】十五：类型信息/" class="leancloud_visitors" data-flag-title="【Java编程思想】十五：类型信息">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、为什么需要RTTI"><a href="#一、为什么需要RTTI" class="headerlink" title="一、为什么需要RTTI"></a>一、为什么需要RTTI</h1><p>&ensp;&ensp;&ensp;&ensp;RTTI（Run-Time-Type-Information），运行时类型信息。读《Java编程思想》这本书时是第一次知道这个词，于是先百度了一番，某乎上的讲解是这个概念最早是由本书的作者在《Think in C++》上提出的，实际上的意思与Java中的反射差不多。书中主要说的应用场景是在多态的过程中，基类的派生类使用基类提供的方法时，动态绑定以及向上转型相关，在最后阶段运行过程中找到自己对应的派生类。也正是有了RTTI，编译器才能正确的找到对应的派生类。上述思想是Java中多态思想的体现，多态也是Java中设计的关键思想，尽量使代码尽可能少的了解其具体的类型，而只与通用的类（基类）打交道。这种设计使代码逻辑更加简单、易于理解。</p>
+<h1 id="二、Class对象"><a href="#二、Class对象" class="headerlink" title="二、Class对象"></a>二、Class对象</h1><p>&ensp;&ensp;&ensp;&ensp;要理解RTTI在Java中的工作原理，首先要知道类型信息在运行时是如何表示的。这项工作是由称为Class对象的一种特殊的对象表示的。面向对象思想告诉我们，万事万物都是对象，Java中除了基本的数据类型，其它的都是对象。那么如果我们有如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Student s = <span class="keyword">new</span> Student();</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;我们使用new Student（）创建了一个Student类的对象，那么Student类又是不是对象呢？没错，如前文所说，万事万物都是对象，这里Student就是Class的对象，也就是说任何声明定义的类，都是Class类的类对象。当编译器编译完一个类时，在同名的.class文件中就会保存这个类的Class对象。而为了生成这个对象，运行这个类的JVM会使用一个称作是“类加载器”的子系统。</p>
+<p>&ensp;&ensp;&ensp;&ensp;类加载器子系统实际上可以包含一条类加载器链，但只有一个原生的类加载器，它是JVM实现的一部分，用来加载所谓的可信类，以及JavaAPI。如果还需要其它特殊的操作，比如支持Web服务应用，或者是在网络上下载类，那么就可以在类加载器链上挂载额外的类加载器。</p>
+<p>&ensp;&ensp;&ensp;&ensp;所有的类在其第一次加载的时候，都被动态的加载到JVM中，当程序创建第一个类的静态成员引用时，就会被加载。这也说明类的构造器也是类的静态方法，即使在构造器之前并没有使用static关键字。因此使用new关键词创建的类的新的对象，也会被当做是类的静态成员引用。也正是如此，Java程序在运行之前并非完全加载，动态加载在诸如C++这类的静态加载语言是无法实现的。</p>
+<p>一旦某个类的Class对象被载入内存，它就用来创建这个类的所有对象，如下示例说明这点：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Candy</span></span>&#123;</span><br><span class="line">	<span class="keyword">static</span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Loading Candy"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Gum</span></span>&#123;</span><br><span class="line">	<span class="keyword">static</span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Loading Gum"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cookie</span></span>&#123;</span><br><span class="line">	<span class="keyword">static</span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Loading Cookie"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SweetShop</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Inside main"</span>);</span><br><span class="line">		<span class="keyword">new</span> Candy();</span><br><span class="line">		System.out.println(<span class="string">"After Creating Candy"</span>);</span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			Class.forName(<span class="string">"com.chenxyt.java.practice.Gum"</span>);</span><br><span class="line">		&#125;<span class="keyword">catch</span>(ClassNotFoundException e)&#123;</span><br><span class="line">			System.err.println(<span class="string">"Gum Not found"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"After Creating Gum"</span>);</span><br><span class="line">		<span class="keyword">new</span> Cookie();</span><br><span class="line">		System.out.println(<span class="string">"After Creating Cookie"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png1.png" alt="png1"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到Class对象仅在需要的时候被加载，static初始化是在类加载时候进行的。需要注意的是Class.forName（）这个方法，它是Class类的一个静态方法，所有的类都是Class类的对象，forName（）是取得Class对象引用的一种方法。它使用目标类名作为参数，返回Class对象的引用。如果找不到指定的类名则抛出ClassNotFound异常。无论何时你想获取到类的运行时使用的类型信息，就必须要获得恰当的Class对象的引用，Class.forName（）是实现此功能的捷径。因此你不需要为了获得Class对象的引用而持有该类型的对象。但是如果你已经拥有了一个指定类型的对象，那么就可以使用.getClass方法获取Class对象的引用。这个方法属于Object，它将返回表示该对象实际类型的Class对象引用。</p>
+<p>Class还有很多实用的方法，如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">HasBatteries</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">WaterProof</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Shoots</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Toy</span></span>&#123;</span><br><span class="line">	Toy()&#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	Toy(<span class="keyword">int</span> i)&#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FancyToy</span> <span class="keyword">extends</span> <span class="title">Toy</span> <span class="keyword">implements</span> <span class="title">HasBatteries</span>,<span class="title">WaterProof</span>,<span class="title">Shoots</span></span>&#123;</span><br><span class="line">	FancyToy() &#123;</span><br><span class="line">		<span class="keyword">super</span>(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ToyTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printInfo</span><span class="params">(Class cc)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Class Name:"</span> + cc.getName() + <span class="string">" Is Interface?"</span> + cc.isInterface());</span><br><span class="line">		System.out.println(<span class="string">"Simple Name:"</span> + cc.getSimpleName());</span><br><span class="line">		System.out.println(<span class="string">"Canonical Name:"</span> + cc.getCanonicalName());</span><br><span class="line">		System.out.println(<span class="string">"----------"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Class c = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			<span class="comment">//获取指定类的类对象引用</span></span><br><span class="line">			c = Class.forName(<span class="string">"com.chenxyt.java.practice.FancyToy"</span>);</span><br><span class="line">		&#125;<span class="keyword">catch</span>(ClassNotFoundException e)&#123;</span><br><span class="line">			System.err.println(<span class="string">"Class Not Found"</span>);</span><br><span class="line">			System.exit(<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		printInfo(c);</span><br><span class="line">		<span class="comment">//获取该类实现的接口</span></span><br><span class="line">		<span class="keyword">for</span>(Class face:c.getInterfaces())&#123;</span><br><span class="line">			printInfo(face);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//获取该类的基类</span></span><br><span class="line">		Class up = c.getSuperclass();</span><br><span class="line">		Object obj = <span class="keyword">null</span>;</span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			<span class="comment">//Class类的构造器 用来构造不确定类型的对象</span></span><br><span class="line">			obj = up.newInstance();</span><br><span class="line">		&#125;<span class="keyword">catch</span>(InstantiationException e1)&#123;</span><br><span class="line">			System.err.println(e1);</span><br><span class="line">		&#125;<span class="keyword">catch</span>(IllegalAccessException e2)&#123;</span><br><span class="line">			System.err.println(e2);</span><br><span class="line">		&#125;</span><br><span class="line">		printInfo(obj.getClass());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png2.png" alt="png2"></p>
+<p>&ensp;&ensp;&ensp;&ensp;FancyToy继承了Toy并实现了三个接口，使用Class.forName（）方法创建一个FancyToy类的类对象，并指向引用c。getName（）产生全类名，getSimpleName（）获取不带包路径的类名，getCanonicalName（）获取全类名。isInterface（）判断当前类的类型是不是接口，Class.getInterfaces（）返回当前类的全部接口。如果你已经有了一个Class对象，还可以使用getSuperClass（）获取这个类的基类。Class的newInstance（）方法是实现了一个“虚拟的构造器”，意思是我不知道你的确切类型，但是你必须要正确的进行构造。使用newInstance（）创建的类，必须要带有默认构造器。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Java中除了以上两种Class.forName()和obj.getClass()可以产生类的对象引用，还有一种类字面常量的形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FancyToy.class：</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这样做不仅简单，而且更加安全，因为在编译时即可检查，无需使用try-catch语句，所以更加高效。类字面常量不仅可以应用与普通的类，还可以应用在基本数据类型，以及接口和数组中。此外对于基本数据类型的包装器类，它还有个TYPE字段，TYPE是一个引用，指向对应的基本数据类型的Class对象。</p>
+<p>&ensp;&ensp;&ensp;&ensp;此处有一点非常重要需要注意，当使用.class来创建对象的引用时，不会自动的初始化该Class对象。为了使用类而做的准备工作实际上包含三个步骤：<br><strong>1.加载</strong>：这是由类加载器执行的，该步骤将查找字节码（通常在classpath路径查找，但不是必须的），并从这些字节码中创建一个Class对象；<br><strong>2.链接</strong>：在链接阶段验证类的字节码，为静态域分配存储空间，并且如果必要的话，会解析这个类创建的对其它类的所有引用；<br><strong>3.初始化</strong>：如果该类具有超类，则对其进行初始化，执行静态初始化器和静态初始化块。<br>初始化被延迟到了对静态方法（构造器也是隐式的静态方法）或者非常数静态域进行首次引用时才执行：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Initable</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> staticFinal = <span class="number">45</span>;</span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> staticFinal2 = ClassInitialization.rand.nextInt(<span class="number">1000</span>);</span><br><span class="line"> <span class="keyword">static</span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"Initializing Initable"</span>);</span><br><span class="line">  System.out.println(<span class="string">"Initable---------------"</span>);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Initable2</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">int</span> staticNonFinal = <span class="number">145</span>;</span><br><span class="line"> <span class="keyword">static</span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"Initializing Initable2"</span>);</span><br><span class="line">  System.out.println(<span class="string">"Initable2---------------"</span>);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Initable3</span></span>&#123;</span><br><span class="line"> <span class="keyword">static</span> <span class="keyword">int</span> staticNonFinal = <span class="number">54</span>;</span><br><span class="line"> <span class="keyword">static</span>&#123;</span><br><span class="line">  System.out.println(<span class="string">"Initializing Initable3"</span>);</span><br><span class="line">  System.out.println(<span class="string">"Initable3---------------"</span>);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassInitialization</span> </span>&#123;</span><br><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> Random rand = <span class="keyword">new</span> Random(<span class="number">45</span>);</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException </span>&#123;</span><br><span class="line">  Class initable = Initable.class;</span><br><span class="line">  System.out.println(<span class="string">"After Creating Initable Ref"</span>);</span><br><span class="line">  System.out.println(Initable.staticFinal);</span><br><span class="line">  System.out.println(<span class="string">"------------------"</span>);</span><br><span class="line">  System.out.println(Initable.staticFinal2);</span><br><span class="line">  System.out.println(Initable2.staticNonFinal);</span><br><span class="line">  Class initable3 = Class.forName(<span class="string">"com.chenxyt.java.practice.Initable3"</span>);</span><br><span class="line">  System.out.println(<span class="string">"After Creating Initable3 Ref"</span>);</span><br><span class="line">  System.out.println(Initable3.staticNonFinal);</span><br><span class="line"> &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png3.png" alt="png3"></p>
+<p>&ensp;&ensp;&ensp;&ensp;从结果中可以看出.class并不会引发初始化，相反使用Class.forName（）时则立刻完成了初始化的功能。同时，如果一个域被声明为static final的编译时常量，那么它可以不初始化类就被访问，就像Initable.staticFinal一样，但是仅仅被声明为static final并不会保证类不被初始化就能访问，就像Intable.staticFinal2那样，因为它不是编译时常量。<br>&ensp;&ensp;&ensp;&ensp;如果一个static域不是final的，那么在对它访问的时候，总是要求在读取之前先进行链接（为这个域分配存储空间）和初始化（初始化该存储空间），就像在对Initable2.staticNonFinal的访问中看到这样。<br>Class类允许使用泛型指定相应的类型，如下两种形式均可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericClassReference</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Class intClass = <span class="keyword">int</span>.class;</span><br><span class="line">		Class&lt;Integer&gt; genericIntClass = <span class="keyword">int</span>.class;</span><br><span class="line">		genericIntClass = Integer.class;</span><br><span class="line">		intClass = <span class="keyword">double</span>.class;</span><br><span class="line">		<span class="comment">//类型不匹配</span></span><br><span class="line">	<span class="comment">//	genericIntClass = double.class;</span></span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;普通的类引用不会产生警告信息，并可以被重新指定为其它类型的引用。而泛型类的引用只能被指定为指定的类型。通过使用泛型语法，可以使编译器做一些额外的类型检查。如果我们希望放松这种限制，那么似乎可以使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;Number&gt; genericClass = <span class="keyword">int</span>.class;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;因为Integer类继承自Number类，但实际上并不可以正常工作，因为Integer Class对象不是Number Class对象的子类。为了放松这种类型的限制，我们使用了通配符，它是Java泛型的一部分。通配符就是“？”表示任何事物。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;?&gt; intClass = <span class="keyword">int</span>.class:</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;尽管看起来这种形式与直接使用Class相同，但是它不会产生编译器警告信息。更确切的说使用通配符表示的是你并非是碰巧或者是由于疏忽而选择了一个非具体类的引用，而是你就是明确的选择了一个非具体的版本。使用通配符与extends关键字，可以有效的解决前边所说的继承的问题：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Class&lt;? extends Number&gt; genericClass = <span class="keyword">int</span>.class;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;表示创建一个Number 或是它子类的类对象。</p>
+<h1 id="三、类型转换器先做检查"><a href="#三、类型转换器先做检查" class="headerlink" title="三、类型转换器先做检查"></a>三、类型转换器先做检查</h1><p>&ensp;&ensp;&ensp;&ensp;目前的类型转换信息有两种，一种是传统的类型转换，由RTTI确保类型转换，如果执行了一个错误的类型转换，那么将抛出一个ClassCastException异常，另一种是代表对象类类型的Class对象，通过查询Class对象的信息获取运行时的所有状态。RTTI在Java中还有第三种类型转换的形式，就是使用关键字instanceof，它返回布尔值，判断某个对象是不是某个特定类的实例。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(x <span class="keyword">instanceof</span> Dog)&#123;</span><br><span class="line">    (Dog)x.bark();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这种先进行判断然后再使用的方式显得很必然，比如在进行向下转型的时候，如果不先进行判断，很容易发生ClassCastException异常。此外也提供了动态判断的形式isInstanceof（）方法。</p>
+<h2 id="四、注册工厂"><a href="#四、注册工厂" class="headerlink" title="四、注册工厂"></a>四、注册工厂</h2><p>&ensp;&ensp;&ensp;&ensp;使用注册工厂的目的是将对象的创建工作交给类去完成，即创建一个工厂方法，然后进行多态的调用，从而为你创建恰当类型的对象。在如下的简单的版本中，工厂方法就是Factory接口中的Create方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Factory</span>&lt;<span class="title">T</span>&gt;</span>&#123;<span class="function">T <span class="title">create</span><span class="params">()</span></span>;&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;所谓工厂方法，就是意味着我只提供一个创建实例的工厂方法，而无需每创建一个继承类就编写一个新的方法。关于工厂方法更多细节后边在设计模式模块专门再进行学习。</p>
+<h1 id="五、instanceof与Class的等价性"><a href="#五、instanceof与Class的等价性" class="headerlink" title="五、instanceof与Class的等价性"></a>五、instanceof与Class的等价性</h1><p>&ensp;&ensp;&ensp;&ensp;在查询类型信息的时候，instanceof与直接比较Class对象有一点很重要的区别，例子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseType</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Derived</span> <span class="keyword">extends</span> <span class="title">BaseType</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FamilyVsExactType</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">(Object x)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Testing x of type"</span> + x.getClass());</span><br><span class="line">		System.out.println(<span class="string">"x instance of BaseType"</span> + (x <span class="keyword">instanceof</span> BaseType));</span><br><span class="line">		System.out.println(<span class="string">"x instance of Derived"</span> + (x <span class="keyword">instanceof</span> Derived));</span><br><span class="line">		System.out.println(<span class="string">"BaseType.isInstance(x)"</span> + BaseType.class.isInstance(x));</span><br><span class="line">		System.out.println(<span class="string">"Derived isInstance(x)"</span> + Derived.class.isInstance(x));</span><br><span class="line">		System.out.println(<span class="string">"x.getClass == BaseType.class"</span> + (x.getClass() == BaseType.class));</span><br><span class="line">		System.out.println(<span class="string">"x.getClass == Derived.class"</span> + (x.getClass() == Derived.class));</span><br><span class="line">		System.out.println(<span class="string">"x.getClass.equals(BaseType.class)"</span> + (x.getClass().equals(BaseType.class)));</span><br><span class="line">		System.out.println(<span class="string">"x.getClass.equals(Derived.class)"</span> + (x.getClass().equals(Derived.class)));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		test(<span class="keyword">new</span> BaseType());</span><br><span class="line">		test(<span class="keyword">new</span> Derived());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png4.png" alt="png4"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看出，instanceof表示的是“你是这个类吗？或者你是这个类的子类吗？”而使用Class对象进行比较时，表示的则只有明确的类型信息，忽略了继承的关系。</p>
+<h2 id="六、反射：运行时类型信息"><a href="#六、反射：运行时类型信息" class="headerlink" title="六、反射：运行时类型信息"></a>六、反射：运行时类型信息</h2><p>&ensp;&ensp;&ensp;&ensp;我理解的反射概念是程序在编译的时候并不知道具体的类型信息，直到程序运行时通过反射才获取到了准确的类信息。这里提供了几个方法支持获取准确的类信息，以便创建动态的代码。使用Class类的getMethods（）方法可以获取这个类所包含的所有方法，使用getConstructors（）方法可以获取这个类的所有构造函数。前文也提到过，使用Class.forName（）可以用来动态的加载类。它的生成结果在编译的时候是不可知的，因此所有的方法特征信息和签名都是在运行时被提取出来的。</p>
+<h1 id="七、动态代理"><a href="#七、动态代理" class="headerlink" title="七、动态代理"></a>七、动态代理</h1><p>&ensp;&ensp;&ensp;&ensp;代理是常用的设计模式之一，它的作用是在基本的对象操作之外，增加一些其它额外的操作。比如我想使用一个对象，同事想了解这个对象的运行过程，那么这个运行过程的监控显然就不能放在基本的对象代码中。有点类似前面文章中提到的组合类的思想，新建一个代理类，代理类引用要使用的对象，然后增加一些新的功能。刚好前几天跟公司一个同事面了一个新人，同事问道代理模式之后自己做了一些阐述，可以把代理模式类比成是中介，中介的目的是卖东西的基础上赚钱，卖东西就是基本操作，赚钱就是中介也就是代理做的额外的操作。下面一个示例展示简单的代理模式：</p>
+<p>先定义一个接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Interface</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">doSomeThing</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">somethingElse</span><span class="params">(String arg)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后是这个接口的实现类，也就是前边所说的真正要操作的运行的对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RealObject</span> <span class="keyword">implements</span> <span class="title">Interface</span> </span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomeThing</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">"RealObject DoSomeThing"</span>);</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">somethingElse</span><span class="params">(String arg)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">"RealObject somethingElse"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;然后定义一个代理类，代理类实现了Interface接口，同时通过传参的形式传入了前边的实现类，在完成实现类功能的基础上，做了自己的操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleProxy</span> <span class="keyword">implements</span> <span class="title">Interface</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> Interface proxied;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">SimpleProxy</span><span class="params">(Interface proxied)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated constructor stub</span></span><br><span class="line">		<span class="keyword">this</span>.proxied = proxied;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSomeThing</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">"Proxy DoSomething"</span>);</span><br><span class="line">		proxied.doSomeThing();</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">somethingElse</span><span class="params">(String arg)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">"Proxy somethingElse"</span>);</span><br><span class="line">		proxied.somethingElse(arg);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;最后是Main方法，因为consumer方法传参是Interface接口，所以任何实现了它接口的实体类都可以当做参数。这里演示了使用基本的实体类和使用代理的区别，代理在完成普通实体类的功能基础上打印了自己的操作内容：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleProxyDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">consumer</span><span class="params">(Interface iface)</span></span>&#123;</span><br><span class="line">		iface.doSomeThing();</span><br><span class="line">		iface.somethingElse(<span class="string">"bobo"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		consumer(<span class="keyword">new</span> RealObject());</span><br><span class="line">		System.out.println(<span class="string">"=============="</span>);</span><br><span class="line">		consumer(<span class="keyword">new</span> SimpleProxy(<span class="keyword">new</span> RealObject()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="[Java编程思想]十五：类型信息/png5.png" alt="png5"></p>
+<p>&ensp;&ensp;&ensp;&ensp;在任何时刻你若想实现一些与“实际”对象分离的额外操作，或者你希望很容易能对这部分操作做出修改，那么使用代理模式无疑是最为方便的。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Java的动态代理比代理的思想更向前迈进了一步，因为它可以动态的创建代理，并且动态的处理对所代理方法的调用。动态代理所做的所有操作都会被重定向到单一的调用处理器上，它的工作是揭示调用的类型，并确定相应的对策。下面用动态代理重写上边的示例。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Java中要实现动态代理类，必须要继承InvocationHandle这个类，这个类内部嵌入的对象是要被实现的真正的对象，同样使用构造方法传入，这个类唯一的一个方法invoke，它有三个参数，第一个参数是生成的动态代理类。这里我个人理解，既然动态代理是动态的创建代理，那么这个参数固然是所创建的动态代理，第二个参数是传入的对象执行的方法，第三个参数是传入的参数。最后将请求通过Method.invoke（）方法，传入必要的参数，执行代理对象的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">private</span> Object proxied;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">DynamicProxyHandler</span><span class="params">(Object proxied)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated constructor stub</span></span><br><span class="line">		<span class="keyword">this</span>.proxied = proxied;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span></span><br><span class="line"><span class="function">			<span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"**** Proxy:"</span> + proxy.getClass() + <span class="string">",method:"</span> + method + <span class="string">",args "</span> + args );</span><br><span class="line">		<span class="keyword">if</span>(args!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			<span class="keyword">for</span>(Object arg:args)&#123;</span><br><span class="line">				System.out.println(<span class="string">"  "</span> + arg);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> method.invoke(proxied, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>客户端类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleDynamicProxyDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">consumer</span><span class="params">(Interface iface)</span></span>&#123;</span><br><span class="line">		iface.doSomeThing();</span><br><span class="line">		iface.somethingElse(<span class="string">"DIDI"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		RealObject real = <span class="keyword">new</span> RealObject();</span><br><span class="line">		consumer(real);</span><br><span class="line">		System.out.println(<span class="string">"========="</span>);</span><br><span class="line">		Interface proxy = (Interface)Proxy.newProxyInstance(Interface.class.getClassLoader(),<span class="keyword">new</span> Class[]&#123;Interface.class&#125;,<span class="keyword">new</span> DynamicProxyHandler(real));</span><br><span class="line">		consumer(proxy);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;客户端类使用Proxy.newProxyInstance（）方法创建了一个代理对象。第一个参数是一个加载器，这里用的是系统加载器，所以使用其它类的加载器结果也是一样的，第二个参数是代理对象要实现的接口，第三个参数是Handler对象，表示我这个代理对象在调用方法时，会映射关联到哪个Hnadler上去，这里是关联到了我们定义的DynamicProxyHandler上，然后转由它的invoke方法执行对象方法。</p>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png6.png" alt="png6"></p>
+<p>&ensp;&ensp;&ensp;&ensp;我们可以在代理方法invoke（）中对诸如方法名、参数进行过滤，只执行指定的方法。</p>
+<p>&ensp;&ensp;&ensp;&ensp;最近项目中用到了AOP做日志记录的功能，Spring的AOP核心思想就是动态代理，现在更加理解了一些，简单表述一下就是在切入点处执行一写其它操作，如我这里是记录日志，然后执行正常的业务方法。记录日志就是脱离在实际业务之外的一些操作。</p>
+<h1 id="八、空对象"><a href="#八、空对象" class="headerlink" title="八、空对象"></a>八、空对象</h1><p>&ensp;&ensp;&ensp;&ensp;这里感觉不是很常用，大概理解了一下，就是当一个对象为null的时候，任何对这个对象的操作都会引发异常。为了避免这种情况，当一个对象为null的时候，我们定义一个空对象赋值给它。何谓空对象呢？就是一个不存在实际意义但是不会引发异常的对象。文中具体代码就不写了。</p>
+<h1 id="九、接口与类型信息"><a href="#九、接口与类型信息" class="headerlink" title="九、接口与类型信息"></a>九、接口与类型信息</h1><p>&ensp;&ensp;&ensp;&ensp;接口或者是面向接口编程的重要目的是实现隔离，也就是解耦。但是通过类型信息，这种耦合还是会传播出去。也就是接口对解耦来说，并不是绝对的。如下示例：</p>
+<p>定义一个接口A，它有唯一一个方法f</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">A</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来是接口的实现B，除了A中的方法，还有自己的方法g</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">B</span> <span class="keyword">implements</span> <span class="title">A</span></span>&#123;</span><br><span class="line"> </span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(<span class="string">"method f"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span></span>&#123;</span><br><span class="line">	    System.out.println(<span class="string">"method g"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Main函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InterfaceViolation</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		A a = <span class="keyword">new</span> B();</span><br><span class="line">		a.f();</span><br><span class="line">		System.out.println(<span class="string">"a.getClass: "</span> + a.getClass().getName());</span><br><span class="line">		<span class="keyword">if</span>(a <span class="keyword">instanceof</span> B)&#123;</span><br><span class="line">			B b = (B)a;</span><br><span class="line">			b.g();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png7.png" alt="png7"></p>
+<p>&ensp;&ensp;&ensp;&ensp;这里通过使用RTTI，发现a是被当做B类型实现的，因此通过将其转型成B，可以调用了B中新加的方法。</p>
+<p>&ensp;&ensp;&ensp;&ensp;上面这种操作，完全合理并且可接受，但是提高了代码的耦合度，实际上并不允许这样做。解决办法是使用包访问权限来加以控制。</p>
+<p>新定义一个实现类实现接口A：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">implements</span> <span class="title">A</span></span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">	System.out.println(<span class="string">"C.f"</span>);	</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"C.g"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">u</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"C.u"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">v</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"C.v"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">w</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"C.w"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HidenC</span></span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> A <span class="title">makeA</span><span class="params">()</span></span>&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">new</span> C();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p>在另一个包中使用它：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.test;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.practice.A;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.practice.HidenC;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HiddenImplementation</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		A a = HidenC.makeA();</span><br><span class="line">		a.f();</span><br><span class="line">		System.out.println(<span class="string">"a.getClass: "</span> + a.getClass().getName());</span><br><span class="line">		<span class="comment">//编译错误 受包访问权限控制</span></span><br><span class="line"><span class="comment">/*		if(a instanceof C)&#123;</span></span><br><span class="line"><span class="comment">			C c = (C)a;</span></span><br><span class="line"><span class="comment">			c.g();</span></span><br><span class="line"><span class="comment">		&#125;*/</span></span><br><span class="line">		callHiddenMethod(a,<span class="string">"g"</span>);</span><br><span class="line">		callHiddenMethod(a,<span class="string">"v"</span>);</span><br><span class="line">		callHiddenMethod(a,<span class="string">"u"</span>);</span><br><span class="line">		callHiddenMethod(a,<span class="string">"w"</span>);</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">callHiddenMethod</span><span class="params">(Object a,String methodName)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		Method g = a.getClass().getDeclaredMethod(methodName);</span><br><span class="line">		g.setAccessible(<span class="keyword">true</span>);</span><br><span class="line">		g.invoke(a);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png8.png" alt="png8"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到由于包访问权限的限制，在另一个包中获取不到了C新定义的方法。但是如果知道方法名，依然可以通过反射调用所有的方法。当然如果通过只发布编译之后的代码或许可以阻止这种情况发生，但是实际结果并不是这样。如下：</p>
+<p><img src="[Java编程思想]十五：类型信息/png9.png" alt="png9"></p>
+<p>&ensp;&ensp;&ensp;&ensp;使用javap -private 可以看到包括private权限的方法在内的所有方法。因此任何人都可以获取到你这个类中方法名，然后通过反射调用他们。</p>
+<p>接下来将接口实现为私有内部类看一下效果：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.test;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.practice.A;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">InnerA</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">C</span> <span class="keyword">implements</span> <span class="title">A</span></span>&#123;</span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">			System.out.println(<span class="string">"C.f"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span></span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"C.g"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">void</span> <span class="title">u</span><span class="params">()</span></span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"C.u"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">v</span><span class="params">()</span></span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"C.v"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">w</span><span class="params">()</span></span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"C.w"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> A <span class="title">makeA</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> C();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InnerImplemention</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		A a = InnerA.makeA();</span><br><span class="line">		a.f();</span><br><span class="line">		System.out.println(<span class="string">"a.getClass "</span> + a.getClass().getName());</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"g"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"u"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"v"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"w"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png10.png" alt="png10"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可见使用内部类还是不能躲避反射的查找。</p>
+<p>接下来试一下匿名类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.test;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.practice.A;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AnoymousA</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> A <span class="title">makeA</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> A()&#123;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">f</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">				System.out.println(<span class="string">"C.f"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">g</span><span class="params">()</span></span>&#123;</span><br><span class="line">				System.out.println(<span class="string">"C.g"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">void</span> <span class="title">u</span><span class="params">()</span></span>&#123;</span><br><span class="line">				System.out.println(<span class="string">"C.u"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">v</span><span class="params">()</span></span>&#123;</span><br><span class="line">				System.out.println(<span class="string">"C.v"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">w</span><span class="params">()</span></span>&#123;</span><br><span class="line">				System.out.println(<span class="string">"C.w"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AnoymousImplemention</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		A a = AnoymousA.makeA();</span><br><span class="line">		a.f();</span><br><span class="line">		System.out.println(<span class="string">"a.getClass"</span> + a.getClass().getName());</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"g"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"u"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"v"</span>);</span><br><span class="line">		HiddenImplementation.callHiddenMethod(a,<span class="string">"w"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十五：类型信息/png11.png" alt="png11"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可见匿名类也被反射给找到了。即便是private域的方法也逃不过反射的到来。</p>
+<p>&ensp;&ensp;&ensp;&ensp;书中最后一段讲述，如果有人通过这种所谓的投机的方式获取内部私有的方法，那么他就应该接受这种方法改变之后带来的后果。</p>
+<h1 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h1><p>&ensp;&ensp;&ensp;&ensp;反射这一章节，看的前后拖的时间比较长了，基本理解了反射的概念，比如在运行时获取类型信息，通过class对象可以获得这个类的全部信息啊一些，因为文中涉及到一些设计模式，所以又补充了一下设计模式的知识。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Think-in-Java/" rel="tag"># Think in Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/【Java编程思想】十四：字符串/" rel="next" title="【Java编程思想】十四：字符串">
+                <i class="fa fa-chevron-left"></i> 【Java编程思想】十四：字符串
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/【Oracle】ORA-06413-连接未打开/" rel="prev" title="【Oracle】ORA-06413 连接未打开">
+                【Oracle】ORA-06413 连接未打开 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、为什么需要RTTI"><span class="nav-number">1.</span> <span class="nav-text">一、为什么需要RTTI</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、Class对象"><span class="nav-number">2.</span> <span class="nav-text">二、Class对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、类型转换器先做检查"><span class="nav-number">3.</span> <span class="nav-text">三、类型转换器先做检查</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#四、注册工厂"><span class="nav-number">3.1.</span> <span class="nav-text">四、注册工厂</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、instanceof与Class的等价性"><span class="nav-number">4.</span> <span class="nav-text">五、instanceof与Class的等价性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#六、反射：运行时类型信息"><span class="nav-number">4.1.</span> <span class="nav-text">六、反射：运行时类型信息</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、动态代理"><span class="nav-number">5.</span> <span class="nav-text">七、动态代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、空对象"><span class="nav-number">6.</span> <span class="nav-text">八、空对象</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、接口与类型信息"><span class="nav-number">7.</span> <span class="nav-text">九、接口与类型信息</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、总结"><span class="nav-number">8.</span> <span class="nav-text">十、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

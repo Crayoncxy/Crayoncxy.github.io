@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Zookeeper,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、问题描述：&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;因为项目中使用到了Zookeeper，所以我自己找了些关于zk的资料学习了一下。在异步创建节点的过程中，抛出了如下问题：  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;异步创建节点的时候总是闪退，然后服务端报错 Unable to read additional data from client sessionid 0x162b24">
+<meta name="keywords" content="Zookeeper">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Zookeeper】Unable to read additional data from client sessionid*,likely client has closed socket">
+<meta property="og:url" content="http://yoursite.com/2018/11/20/【Zookeeper】Unable to read additional data from client sessionid , likely client has closed socket/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、问题描述：&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;因为项目中使用到了Zookeeper，所以我自己找了些关于zk的资料学习了一下。在异步创建节点的过程中，抛出了如下问题：  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;异步创建节点的时候总是闪退，然后服务端报错 Unable to read additional data from client sessionid 0x162b24">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/[Zookeeper]Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/[Zookeeper]Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/png2.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.782Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Zookeeper】Unable to read additional data from client sessionid*,likely client has closed socket">
+<meta name="twitter:description" content="一、问题描述：&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;因为项目中使用到了Zookeeper，所以我自己找了些关于zk的资料学习了一下。在异步创建节点的过程中，抛出了如下问题：  &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;异步创建节点的时候总是闪退，然后服务端报错 Unable to read additional data from client sessionid 0x162b24">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/[Zookeeper]Unable%20to%20read%20additional%20data%20from%20client%20sessionid%20,%20likely%20client%20has%20closed%20socket/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/20/【Zookeeper】Unable to read additional data from client sessionid , likely client has closed socket/">
+
+
+
+
+
+  <title>【Zookeeper】Unable to read additional data from client sessionid*,likely client has closed socket | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/【Zookeeper】Unable to read additional data from client sessionid , likely client has closed socket/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Zookeeper】Unable to read additional data from client sessionid*,likely client has closed socket</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T14:25:26+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/问题解决/" itemprop="url" rel="index">
+                    <span itemprop="name">问题解决</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/20/【Zookeeper】Unable to read additional data from client sessionid , likely client has closed socket/" class="leancloud_visitors" data-flag-title="【Zookeeper】Unable to read additional data from client sessionid*,likely client has closed socket">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、问题描述："><a href="#一、问题描述：" class="headerlink" title="一、问题描述："></a>一、问题描述：</h1><p>&ensp;&ensp;&ensp;&ensp;因为项目中使用到了Zookeeper，所以我自己找了些关于zk的资料学习了一下。在异步创建节点的过程中，抛出了如下问题：</p>
+<p><img src="[Zookeeper]Unable to read additional data from client sessionid , likely client has closed socket/png1.png" alt="png1"></p>
+<p>&ensp;&ensp;&ensp;&ensp;异步创建节点的时候总是闪退，然后服务端报错 Unable to read additional data from client sessionid 0x162b246bfe50000, likely client has closed socket ，我们先看下代码 这里我把同步跟异步的代码一起贴了出来便于学习</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> zk.zkTest;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.AsyncCallback.DataCallback;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.AsyncCallback.StringCallback;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.CreateMode;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException.Code;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.WatchedEvent;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.Watcher;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooDefs;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.ZooKeeper;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException.NoNodeException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.KeeperException.NodeExistsException;</span><br><span class="line"><span class="keyword">import</span> org.apache.zookeeper.data.Stat;</span><br><span class="line"><span class="comment">//实现一个监视点Watcher接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Master</span> <span class="keyword">implements</span> <span class="title">Watcher</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String HOST_POT = <span class="string">"127.0.0.1:2181"</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//zk连接对象</span></span><br><span class="line">	<span class="keyword">public</span> ZooKeeper zk;</span><br><span class="line">	<span class="comment">//连接地址、端口</span></span><br><span class="line">	<span class="keyword">public</span> String hostpot;</span><br><span class="line">	<span class="comment">//构造函数 传入连接参数</span></span><br><span class="line">	Master(String hostpot)&#123;</span><br><span class="line">		<span class="keyword">this</span>.hostpot = hostpot;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//启动</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">zkStart</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">//this传入该类的对象</span></span><br><span class="line">			zk = <span class="keyword">new</span> ZooKeeper(hostpot,<span class="number">400000</span>,<span class="keyword">this</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//关闭</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">zkStop</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			zk.close();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//创建主节点存储的数据 </span></span><br><span class="line">	Random random = <span class="keyword">new</span> Random();</span><br><span class="line">	String serverId = Integer.toHexString(random.nextInt());</span><br><span class="line">	<span class="comment">//创建主节点（同步）</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">runForMasterSyn</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException</span>&#123;</span><br><span class="line">		<span class="comment">//循环的原因是 当客户端与服务端发生网络中断时 客户端会尝试重新连接服务端</span></span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="comment">// 同步调用方法 第一个参数节点名称 第二个是节点数据 第三个是安全策略 此处使用开放式的ACL访问控制列表 第四个是创建模式 此处创建了一个临时节点</span></span><br><span class="line">				zk.create(<span class="string">"/master"</span>,serverId.getBytes(),ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL);</span><br><span class="line">				isLeader = <span class="keyword">true</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (NodeExistsException e) &#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated catch block  </span></span><br><span class="line">				e.printStackTrace();</span><br><span class="line">				isLeader = <span class="keyword">false</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated catch block 网络连接异常 此处不确定主节点是否已经创建完成 网络断开可能发生在请求之前，也可能发生在请求创建之后 因此要考虑这种异常 所以此处不返回 执行下面的check判断</span></span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span>(checkMasterSyn())&#123;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">		</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> isLeader = <span class="keyword">false</span>;</span><br><span class="line">	<span class="comment">//检查主节点是否已经创建 发生上述两种异常时执行 （同步）</span></span><br><span class="line">	<span class="function"><span class="keyword">boolean</span> <span class="title">checkMasterSyn</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException</span>&#123;</span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">			Stat stat = <span class="keyword">new</span> Stat();</span><br><span class="line">			<span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="comment">//获取节点的数据 第二个字段为是否启动监听后续的变化</span></span><br><span class="line">				<span class="keyword">byte</span> data[] = zk.getData(<span class="string">"/master"</span>,<span class="keyword">false</span>,stat);</span><br><span class="line">				<span class="comment">//如果数据里的内容是当前的进程存储的内容 则表示当前进程为主节点 即创建成功</span></span><br><span class="line">				isLeader = <span class="keyword">new</span> String(data).equals(serverId);</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (NoNodeException e) &#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">				e.printStackTrace();</span><br><span class="line">				<span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">			&#125; <span class="keyword">catch</span> (KeeperException e) &#123;</span><br><span class="line">				<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">				e.printStackTrace();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;		</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//创建主节点（异步） 与同步相比多了两个参数 1.回调方法 2.指定的上下文信息 回调方法调用的是传入的对象的实例 （回调要知道是哪个调用的回调）同时因为回调返回之前不需要等待create结果 所以没有Interrupt异常 因为执行结果会在回调之后收到 所以也没有Keeper异常</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">runForMasterAsyn</span><span class="params">()</span></span>&#123;</span><br><span class="line">		zk.create(<span class="string">"/master"</span>,serverId.getBytes(),ZooDefs.Ids.OPEN_ACL_UNSAFE,CreateMode.EPHEMERAL,masterCreateCallBack,<span class="keyword">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//创建回调对象 异步调用只有一个线程处理回调请求 因此遵循FIFO的原则 所以应避免异步调用里处理大量逻辑或者阻塞代码</span></span><br><span class="line">	StringCallback masterCreateCallBack = <span class="keyword">new</span> StringCallback()&#123;</span><br><span class="line">		<span class="comment">//回调的函数  rc 返回调用的结果 返回OK或者异常编码 path 对应create的第一个参数 ctx 对应create的上下文 即最后一个字段  name znode节点名  对于非有序节点 path与name相同 有序节点 name会自动标号</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processResult</span><span class="params">(<span class="keyword">int</span> rc, String path, Object ctx,</span></span></span><br><span class="line"><span class="function"><span class="params">				String name)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">			<span class="keyword">switch</span> (Code.get(rc))&#123;</span><br><span class="line">			<span class="keyword">case</span> CONNECTIONLOSS:</span><br><span class="line">				checkMasterAsyn();</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">case</span> OK:</span><br><span class="line">				isLeader = <span class="keyword">true</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">default</span>:</span><br><span class="line">				isLeader = <span class="keyword">false</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println(<span class="string">"I'm "</span>+(isLeader?<span class="string">""</span>:<span class="string">"not"</span>)+<span class="string">" Leader"</span>);</span><br><span class="line">			</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="comment">//检查主节点状态 （异步调用创建主节点时做的检查）</span></span><br><span class="line">	<span class="function"><span class="keyword">void</span> <span class="title">checkMasterAsyn</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="comment">//第一个参数节点名称 第二个参数是否设置监听 第三个为获取数据的异步回调 第四个为上下文信息</span></span><br><span class="line">		zk.getData(<span class="string">"/master"</span>,<span class="keyword">false</span>,masterCheckCallBack,<span class="keyword">null</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//异步获取节点数据信息</span></span><br><span class="line">	DataCallback masterCheckCallBack = <span class="keyword">new</span> DataCallback()&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processResult</span><span class="params">(<span class="keyword">int</span> rc, String path, Object ctx,</span></span></span><br><span class="line"><span class="function"><span class="params">				<span class="keyword">byte</span>[] data, Stat stat)</span> </span>&#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">			<span class="keyword">switch</span>(Code.get(rc))&#123;</span><br><span class="line">			<span class="keyword">case</span> CONNECTIONLOSS:</span><br><span class="line">				<span class="comment">//此处递归循环调用 尝试连接</span></span><br><span class="line">				checkMasterAsyn();</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">case</span> NONODE:</span><br><span class="line">				<span class="comment">//没有节点重新创建</span></span><br><span class="line">				runForMasterAsyn();</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="comment">//实现的接口方法 </span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(WatchedEvent arg0)</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		System.out.println(arg0);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		Master m = <span class="keyword">new</span> Master(HOST_POT);</span><br><span class="line">		m.zkStart();</span><br><span class="line">		m.runForMasterAsyn();</span><br><span class="line">		<span class="keyword">if</span>(isLeader)&#123;</span><br><span class="line">			<span class="comment">//此处用来处理主节点业务逻辑</span></span><br><span class="line">			System.out.println(<span class="string">"I'M THE LEADER"</span>);</span><br><span class="line">			Thread.sleep(<span class="number">2000000000</span>);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"SORRY,SOMEONE ELSE IS THE LEADER"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		m.zkStop();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们看下运行之后的控制台信息：</p>
+<p><img src="[Zookeeper]Unable to read additional data from client sessionid , likely client has closed socket/png2.png" alt="png2"></p>
+<h1 id="二、解决方案："><a href="#二、解决方案：" class="headerlink" title="二、解决方案："></a>二、解决方案：</h1><p>&ensp;&ensp;&ensp;&ensp;从上边控制台的信息可以看出 if/else的判断发生在了异步回调之前，并且打印了最后一行日志Session closed<br>所以这里抛错的原因是：<strong>没有等待异步通知的响应信息，就提前关闭了连接。</strong>解决方法就是在if/else之前延时等待，或者设置变量等待异步通知返回结果之后再进行if/else判断。</p>
+<p>&ensp;&ensp;&ensp;&ensp;网上还有很多关于这个错误的解决方案，场景不同，但大多数的原因都是因为网络中断，有的可能是超时时间不够，我这里的原因是在异步通知返回结果之前就人为的结束了连接。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Zookeeper/" rel="tag"># Zookeeper</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/20/【Oracle】ORA-06413-连接未打开/" rel="next" title="【Oracle】ORA-06413 连接未打开">
+                <i class="fa fa-chevron-left"></i> 【Oracle】ORA-06413 连接未打开
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/【Apache-Ant】Unsupported-major-minor-version-52-0/" rel="prev" title="【Apache Ant】Unsupported major.minor version 52.0">
+                【Apache Ant】Unsupported major.minor version 52.0 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、问题描述："><span class="nav-number">1.</span> <span class="nav-text">一、问题描述：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、解决方案："><span class="nav-number">2.</span> <span class="nav-text">二、解决方案：</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

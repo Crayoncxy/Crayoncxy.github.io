@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Think in Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在前面的学习过程中，我们使用的都是固定数量的且生命周期已知的对象。而在一些情况中，我们可能需要不确定数量不确切类型的对象，这种创建一个单一的对象显然是不行的了。Java提供了多种支持，比如数组，数组可以保存一组基本数据类型。但是数组的大小是固定的，在更特殊的编程条件下，固定长度显然是不友好的，所以Java类库提供了一套相当完整的容器类来解决这个问题。">
+<meta name="keywords" content="Java,Think in Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java编程思想】十二：持有对象">
+<meta property="og:url" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在前面的学习过程中，我们使用的都是固定数量的且生命周期已知的对象。而在一些情况中，我们可能需要不确定数量不确切类型的对象，这种创建一个单一的对象显然是不行的了。Java提供了多种支持，比如数组，数组可以保存一组基本数据类型。但是数组的大小是固定的，在更特殊的编程条件下，固定长度显然是不友好的，所以Java类库提供了一套相当完整的容器类来解决这个问题。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png10.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png11.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png12.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png13.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png14.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png15.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png16.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png17.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png18.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.499Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Java编程思想】十二：持有对象">
+<meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在前面的学习过程中，我们使用的都是固定数量的且生命周期已知的对象。而在一些情况中，我们可能需要不确定数量不确切类型的对象，这种创建一个单一的对象显然是不行的了。Java提供了多种支持，比如数组，数组可以保存一组基本数据类型。但是数组的大小是固定的，在更特殊的编程条件下，固定长度显然是不友好的，所以Java类库提供了一套相当完整的容器类来解决这个问题。">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/[Java编程思想]十二：持有对象/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/">
+
+
+
+
+
+  <title>【Java编程思想】十二：持有对象 | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/15/【Java编程思想】十二：持有对象/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Java编程思想】十二：持有对象</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-15T15:45:02+08:00">
+                2018-11-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/15/【Java编程思想】十二：持有对象/" class="leancloud_visitors" data-flag-title="【Java编程思想】十二：持有对象">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>&ensp;&ensp;&ensp;&ensp;在前面的学习过程中，我们使用的都是固定数量的且生命周期已知的对象。而在一些情况中，我们可能需要不确定数量不确切类型的对象，这种创建一个单一的对象显然是不行的了。Java提供了多种支持，比如数组，数组可以保存一组基本数据类型。但是数组的大小是固定的，在更特殊的编程条件下，固定长度显然是不友好的，所以Java类库提供了一套相当完整的容器类来解决这个问题。我们也称作是集合类。本章优先学习常用的集合以及用法，后续将会更加深入的讨论其它的集合。</p>
+<h1 id="一、泛型和类型安全的容器"><a href="#一、泛型和类型安全的容器" class="headerlink" title="一、泛型和类型安全的容器"></a>一、泛型和类型安全的容器</h1><p>&ensp;&ensp;&ensp;&ensp;在JavaSE5泛型的概念出来之前，容器的一个主要问题就是编译器允许你在容器中插入任意类型的对象，这在一些情况下显然是不合理也是不可靠的。考虑这样一个情况，有一个存储Apple对象的容器，我们使用最基本最可靠的ArrayList，ArrayList你可以看成是一个可以自动扩充的数组。ArrayList需要使用索引就像数组下标一样，但是不需要使用方括号，它使用add（）插入对象，使用get（）获取对象，使用size（）获取长度。</p>
+<p>&ensp;&ensp;&ensp;&ensp;在本例中Orange对象也会存在Apple容器中，正常情况下编译器会报出警告信息，此处使用@SuppressWarnings注解忽略没有类型检查的警告信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Apple</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">long</span> counter;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> id = counter++;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getid</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> id;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Orange</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppleAndOrangesWithoutGeneric</span> </span>&#123;</span><br><span class="line">	<span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ArrayList al = <span class="keyword">new</span> ArrayList();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</span><br><span class="line">			al.add(<span class="keyword">new</span> Apple());</span><br><span class="line">			al.add(<span class="keyword">new</span> Orange());</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;al.size();i++)&#123;</span><br><span class="line">			Apple apple = (Apple) al.get(i);</span><br><span class="line">			System.out.println(apple.getid());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;在这里我们实际上存入ArrayList是Object对象，因为所有的类都继承自Object类，所以这里实际上不光可以添加Orange对象还可以添加任意类型的对象。我们在get（）获取数据的时候，我们以为获取的是一个Apple对象，实际上获取的是一个Obejct的引用，然后强制转换成我们需要的对象。在这里我们强制的将从ArrayList中取出的Object引用强制转换成Apple类型，那么当遇到这个对象类型实际上是Orange类型时，就会发生类型转换错误。所以说这种创建形式非常不安全。报错如下：</p>
+<p><img src="[Java编程思想]十二：持有对象/png1.png" alt="png1"></p>
+<p>&ensp;&ensp;&ensp;&ensp;JavaSE5之后引入了泛型的概念，这个概念应用在这种不确定类型的对象集合中最好不过。例如我们如果想创建一个Apple类型的容器，那么就可以使用ArrayList<apple> 其中&lt;&gt;括起来的是类型参数（可以有多个），它指定了这个容器可以保存的数据类型，在进入容器之前就限制了对象的类型，所以在取出数据的时候就不会发生类型转换错误了。相对来说是更加安全的。</apple></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Apple</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">long</span> counter;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">long</span> id = counter++;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getid</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> id;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Orange</span></span>&#123;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AppleAndOrangesWithoutGeneric</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ArrayList&lt;Apple&gt; al = <span class="keyword">new</span> ArrayList&lt;Apple&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">3</span>;i++)&#123;</span><br><span class="line">			al.add(<span class="keyword">new</span> Apple());</span><br><span class="line">		<span class="comment">//	al.add(new Orange());</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(Apple apple :al)&#123;</span><br><span class="line">			System.out.println(apple.getid());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;现在你可以阻止将Orange对象加入到Apple容器中了，并且我们可以使用for-each循环获取容器中的内容。实际上当我们固定了一种泛型数据参数，正如前面几章说到的，继承的时候基类收发的消息，子类也可以收发，所以泛型同样支持向上转型，我们可以传递其导出类参数。</p>
+<h1 id="二、基本概念"><a href="#二、基本概念" class="headerlink" title="二、基本概念"></a>二、基本概念</h1><p>&ensp;&ensp;&ensp;&ensp;Java容器的用途是“保存对象”，并将其划分为两个不同的概念。</p>
+<p><strong>&ensp;&ensp;&ensp;&ensp;Collection：</strong>一个独立的元素序列，这些元素都服从一条或多条规则。List必须按照插入的顺序保存对象，而Set不能有重复的元素。Queue按照排队的规则来确定对象的产生顺序。</p>
+<p><strong>&ensp;&ensp;&ensp;&ensp;Map：</strong>一组成对的“键值对”对象，允许你使用键来查找值。ArrayList允许你使用数组查找值，所以某种意义上讲它是将对象与数字进行了绑定。</p>
+<p>&ensp;&ensp;&ensp;&ensp;尽管并非总是这样，但是理想情况下我们都是与这些接口打交道。比如，我们可以像下边这样创建一个List:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;Apple&gt; apples = <span class="keyword">new</span> ArrayList&lt;Apple&gt;();</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里ArrayList已经被向上转型为List，使用接口的目的是如何修改它的实现，这里实现由ArrayList完成。这种方式并非永远有效，会带来一个其它的问题，ArrayList类可能新添加了其它的方法，因此当它向上转型为List时，可能会是不完善的。因此如果我们要使用这类方法，那就需要使用更加确切的类型。</p>
+<h1 id="三、添加一组元素"><a href="#三、添加一组元素" class="headerlink" title="三、添加一组元素"></a>三、添加一组元素</h1><p>&ensp;&ensp;&ensp;&ensp;java.util包中Arrays和Collections都有很多实用的方法，可以在一个Collection中添加一组元素。<br>Arrays.asList()方法接受一个数组或者一组用逗号分隔的数据元素列表，并将其转化成一个List对象，但是实际底层是Array数组，因此该方法转换之后的对象不支持变更长度。<br>&ensp;&ensp;&ensp;&ensp;Collection.addAll()方法接受一个Collection对象，以及一个数组或者是一组用逗号分隔的元素列表，将后者添加到前者对象中。<br>&ensp;&ensp;&ensp;&ensp;下边的例子展示了上边两种方法，以及传统的Collection.addAll()方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AddingGroups</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Collection&lt;Integer&gt; collection = <span class="keyword">new</span> ArrayList&lt;Integer&gt;(Arrays.asList(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>));</span><br><span class="line">		Integer[] moreInts = &#123;<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>,<span class="number">10</span>&#125;;</span><br><span class="line">		collection.addAll(Arrays.asList(moreInts));</span><br><span class="line">		Collections.addAll(collection,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">14</span>);</span><br><span class="line">		Collections.addAll(collection,moreInts);</span><br><span class="line">		List&lt;Integer&gt; list = Arrays.asList(<span class="number">15</span>,<span class="number">16</span>,<span class="number">17</span>,<span class="number">18</span>);</span><br><span class="line">		list.set(<span class="number">1</span>,<span class="number">29</span>);</span><br><span class="line">		<span class="comment">//run error 数组不支持变更长度</span></span><br><span class="line">		list.add(<span class="number">21</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;Collection的构造器可以传递另一个Collection用来初始化，但是这种方式不如定义个空的Collection然后使用addAll的形式添加数据灵活</p>
+<h1 id="四、容器的打印"><a href="#四、容器的打印" class="headerlink" title="四、容器的打印"></a>四、容器的打印</h1><p>&ensp;&ensp;&ensp;&ensp;基本类型的容器都带有toString（）的方法，以便打印。如下示例介绍了几种基本类型的容器的打印。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeMap;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeSet;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrintingContainers</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> Collection <span class="title">fill</span><span class="params">(Collection&lt;String&gt; collection)</span></span>&#123;</span><br><span class="line">		collection.add(<span class="string">"one"</span>);</span><br><span class="line">		collection.add(<span class="string">"two"</span>);</span><br><span class="line">		collection.add(<span class="string">"three"</span>);</span><br><span class="line">		collection.add(<span class="string">"four"</span>);</span><br><span class="line">		collection.add(<span class="string">"five"</span>);</span><br><span class="line">		collection.add(<span class="string">"five"</span>);</span><br><span class="line">		<span class="keyword">return</span> collection;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">static</span> Map <span class="title">fill</span><span class="params">(Map&lt;String,String&gt; map)</span></span>&#123;</span><br><span class="line">		map.put(<span class="string">"one"</span>,<span class="string">"ONE"</span>);</span><br><span class="line">		map.put(<span class="string">"two"</span>,<span class="string">"TWO"</span>);</span><br><span class="line">		map.put(<span class="string">"three"</span>,<span class="string">"THREE"</span>);</span><br><span class="line">		map.put(<span class="string">"four"</span>,<span class="string">"FOUR"</span>);</span><br><span class="line">		map.put(<span class="string">"five"</span>,<span class="string">"FIVE"</span>);</span><br><span class="line">		map.put(<span class="string">"five"</span>,<span class="string">"FIVE"</span>);</span><br><span class="line">		<span class="keyword">return</span> map;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"ArrayList==="</span> + fill(<span class="keyword">new</span> ArrayList&lt;String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"LinkedList==="</span> + fill(<span class="keyword">new</span> LinkedList&lt;String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"HashSet==="</span> + fill(<span class="keyword">new</span> HashSet&lt;String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"TreeSet==="</span> + fill(<span class="keyword">new</span> TreeSet&lt;String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"LinkedHashSet==="</span> + fill(<span class="keyword">new</span> LinkedHashSet&lt;String&gt;()));</span><br><span class="line">		</span><br><span class="line">		System.out.println(<span class="string">"HashMap==="</span> + fill(<span class="keyword">new</span> HashMap&lt;String,String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"TreeMap==="</span> + fill(<span class="keyword">new</span> TreeMap&lt;String,String&gt;()));</span><br><span class="line">		System.out.println(<span class="string">"LinkedHashMap==="</span> + fill(<span class="keyword">new</span> LinkedHashMap&lt;String,String&gt;()));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png2.png" alt="png2"></p>
+<p>&ensp;&ensp;&ensp;&ensp;这里展示了Java容器中的两种主要的类型：Collection和Map，Collection又包括List和Set他们每个位置只能保存一个数据。而Map保存数据的形式则是使用键值对“key-value”的形式。List：以特定的顺序保存数据，Set：集合中的元素都不能重复。Collection还包括另外一种Queue，它要求元素只能从集合的一端进入，从另一端取出。<br>&ensp;&ensp;&ensp;&ensp;从本例的输出结果可以看出，默认的容器带有的toString方法，可以很好的将容器中的数据展示出来。Collection使用[]括起来，Map使用{}括起来，键值对使用=连接。<br>&ensp;&ensp;&ensp;&ensp;接着分析打印输出，ArrayList和LinkedList都是List类型，它们能够按照元素的填入顺序进行打印。区别在于执行某些操作时候的性能不同，而且LinkedList的功能要多于ArrayList，这在后文介绍。<br>&ensp;&ensp;&ensp;&ensp;HashSet、TreeSet、LinkedHashSet都是Set类型，每个相同的元素只保存一个，HashSet使用了相当复杂的存储结构，后文会介绍，因此HashSet的存储顺序没有实际意义。TreeSet按元素比较结果的升序排序，LinkedHashSet与List相同，按照元素的插入顺序进行了排序。<br>&ensp;&ensp;&ensp;&ensp;Map也可以称作是关联数组，可以使用key查找对应的value，同时可以不用关心它们的大小。Map会自动的扩容。同时也不需要关心打印的顺序。</p>
+<h1 id="五、List"><a href="#五、List" class="headerlink" title="五、List"></a>五、List</h1><p>&ensp;&ensp;&ensp;&ensp;List将元素按照插入的顺序排列起来，它在Collection的接口中增加了新的功能，使得可以在List的中间插入和删除元素。List有两种类型如上一节介绍:<br>&ensp;&ensp;&ensp;&ensp;1.ArrayList 优势在于随机访问的速度很快，但是在List中间插入和删除元素比较慢。<br>&ensp;&ensp;&ensp;&ensp;2.LinkedList 与上基本相反，它的特性集较ArrayList更大。<br>&ensp;&ensp;&ensp;&ensp;下面的一个例子展示List的一些特性，首先有个枚举类型，它有几个常量，然后是一个向List中增加数据的方法，这个方法我们使用的是ArrayList，注意前边说到，ArrayList增删操作性能消耗很大，如果我们的程序设计中出现了大量的ArrayList插入操作，那么可能会导致性能的降低</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">enum</span> Pet&#123;</span><br><span class="line">	Pet,Rat,Manx,Mutt,Pug,Cymric,Humaster</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Pets</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Pet&gt; <span class="title">arrayList</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">		List&lt;Pet&gt; pets = <span class="keyword">new</span> ArrayList&lt;Pet&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">			Random rand = <span class="keyword">new</span> Random();</span><br><span class="line">			<span class="keyword">int</span> j = rand.nextInt(n);</span><br><span class="line">			<span class="keyword">switch</span>(j)&#123;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">0</span>:</span><br><span class="line">				pets.add(Pet.Pet);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">				pets.add(Pet.Rat);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">				pets.add(Pet.Manx);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">				pets.add(Pet.Mutt);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">				pets.add(Pet.Pug);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">				pets.add(Pet.Cymric);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">				pets.add(Pet.Humaster);</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">				<span class="keyword">default</span>:</span><br><span class="line">					<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> pets;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;然后是一个List的操作类，相关操作的注释已经标注：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ListFeature</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Random rand = <span class="keyword">new</span> Random(<span class="number">47</span>);</span><br><span class="line">		List&lt;Pet&gt; pets = Pets.arrayList(<span class="number">7</span>);</span><br><span class="line">		<span class="comment">//基本的List展示</span></span><br><span class="line">		System.out.println(<span class="string">"1:"</span> + pets);</span><br><span class="line">		pets.add(Pet.Humaster);</span><br><span class="line">		<span class="comment">//List可以自动扩容 向其中添加的元素会被追加到最后</span></span><br><span class="line">		System.out.println(<span class="string">"2:"</span> + pets);</span><br><span class="line">		<span class="comment">//a.contains(b)方法判断 集合a中是否包含b 返回的是boolean类型 </span></span><br><span class="line">		System.out.println(<span class="string">"3:"</span> + pets.contains(Pet.Humaster));</span><br><span class="line">		<span class="comment">//remove 移除指定的元素</span></span><br><span class="line">		pets.remove(Pet.Humaster);</span><br><span class="line">		Pet p = pets.get(<span class="number">2</span>);</span><br><span class="line">		<span class="comment">//get（2）获取指定位置上的元素 下标从0开始  indexOf(p) 返回指定元素的下标</span></span><br><span class="line">		System.out.println(<span class="string">"4:"</span> + p + <span class="string">" "</span> + pets.indexOf(p));</span><br><span class="line">		Pet cymric = Pet.Cymric;</span><br><span class="line">		<span class="comment">//indexOf(p) 返回指定元素的下标 如果没有则返回-1 存在多个则返回第一个</span></span><br><span class="line">		System.out.println(<span class="string">"5:"</span> + pets.indexOf(cymric));</span><br><span class="line">		<span class="comment">//remove（p） 移除指定元素 返回boolean类型 不存在为false 存在多个则移除第一个</span></span><br><span class="line">		System.out.println(<span class="string">"6:"</span> + pets.remove(cymric));</span><br><span class="line">		System.out.println(<span class="string">"7:"</span> + pets.remove(p));</span><br><span class="line">		System.out.println(<span class="string">"8:"</span> + pets);</span><br><span class="line">		<span class="comment">//在下标为3的位置插入元素，后边的元素顺序后移</span></span><br><span class="line">		pets.add(<span class="number">3</span>,Pet.Mutt);</span><br><span class="line">		System.out.println(<span class="string">"9:"</span> + pets);</span><br><span class="line">		<span class="comment">//截断 下标为1到4的元素 包括1但是不包括4</span></span><br><span class="line">		List&lt;Pet&gt; sub = pets.subList(<span class="number">1</span>,<span class="number">4</span>);</span><br><span class="line">		System.out.println(<span class="string">"subList:"</span> + sub);</span><br><span class="line">		<span class="comment">//a.containsAll(b) a集合是否包含b集合中的全部元素 返回boolean类型</span></span><br><span class="line">		System.out.println(<span class="string">"10:"</span> + pets.containsAll(sub));</span><br><span class="line">		<span class="comment">//排序</span></span><br><span class="line">		Collections.sort(sub);</span><br><span class="line">		System.out.println(<span class="string">"sorted subList:"</span> + sub);</span><br><span class="line">		System.out.println(<span class="string">"11:"</span> + pets.containsAll(sub));</span><br><span class="line">		<span class="comment">//随机排序</span></span><br><span class="line">		Collections.shuffle(sub,rand);</span><br><span class="line">		System.out.println(<span class="string">"suffle subList:"</span> + sub);</span><br><span class="line">		System.out.println(<span class="string">"12:"</span> + pets.containsAll(sub));</span><br><span class="line">		List&lt;Pet&gt; copy = <span class="keyword">new</span> ArrayList&lt;Pet&gt;(pets);</span><br><span class="line">		sub = Arrays.asList(pets.get(<span class="number">1</span>),pets.get(<span class="number">4</span>));</span><br><span class="line">		System.out.println(<span class="string">"sub:"</span> + sub);</span><br><span class="line">		<span class="comment">//a.retainAll(b) a中保留所有与b的交集部分</span></span><br><span class="line">		copy.retainAll(sub);</span><br><span class="line">		System.out.println(<span class="string">"13:"</span> + copy);</span><br><span class="line">		copy = <span class="keyword">new</span> ArrayList&lt;Pet&gt;(pets);</span><br><span class="line">		copy.remove(<span class="number">2</span>);</span><br><span class="line">		System.out.println(<span class="string">"14:"</span> + copy);</span><br><span class="line">		<span class="comment">//移除所有的元素</span></span><br><span class="line">		copy.removeAll(sub);</span><br><span class="line">		System.out.println(<span class="string">"15:"</span> + copy);</span><br><span class="line">		<span class="comment">//将下标为1的元素更换为指定元素</span></span><br><span class="line">		copy.set(<span class="number">1</span>,Pet.Pug);</span><br><span class="line">		System.out.println(<span class="string">"16:"</span> + copy);</span><br><span class="line">		copy.addAll(<span class="number">2</span>,sub);</span><br><span class="line">		System.out.println(<span class="string">"17:"</span> + copy);</span><br><span class="line">		<span class="comment">//判断是否为空 返回boolean类型</span></span><br><span class="line">		System.out.println(<span class="string">"18:"</span> + pets.isEmpty());</span><br><span class="line">		<span class="comment">//清空数据</span></span><br><span class="line">		pets.clear();</span><br><span class="line">		System.out.println(<span class="string">"19:"</span> + pets);</span><br><span class="line">		System.out.println(<span class="string">"20:"</span> + pets.isEmpty());</span><br><span class="line">		pets.addAll(Pets.arrayList(<span class="number">4</span>));</span><br><span class="line">		System.out.println(<span class="string">"21:"</span> + pets);</span><br><span class="line">		<span class="comment">//将List转换成数组</span></span><br><span class="line">		Object[] o = pets.toArray();</span><br><span class="line">		System.out.println(<span class="string">"22:"</span> + o[<span class="number">3</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png3.png" alt="png3"></p>
+<p>&ensp;&ensp;&ensp;&ensp;因为数据的插入是随机的，所以后边对应的操作也是随机结果。相关操作已经写在注释中，这里不再阐述。</p>
+<h1 id="六、迭代器"><a href="#六、迭代器" class="headerlink" title="六、迭代器"></a>六、迭代器</h1><p>&ensp;&ensp;&ensp;&ensp;迭代器（也是一种设计模式），是一种应用在容器之上的设计。它是一个对象，它的作用是遍历并选择序列中的对象，而不需要确定该序列的底层机构。也就是说，我们使用迭代器的目的是解决了不同容器之间的互通性问题。因此迭代器通常被称作是“轻量级对象”，创建它的代价较小。因此通常有些奇怪的限制。例如：Java中的迭代器只能单向移动，并且它通常：<br>&ensp;&ensp;&ensp;&ensp;1、使用方法iterator（）要求容器返回一个Iterator，Iterator将准备好返回容器的第一个元素。<br>&ensp;&ensp;&ensp;&ensp;2、使用next（）方法获得容器中的下一个元素。<br>&ensp;&ensp;&ensp;&ensp;3、使用hasNext（）方法检查容器中是否还有下一个元素。<br>&ensp;&ensp;&ensp;&ensp;4、使用remove（）方法将迭代器中新近返回的元素删除。<br>&ensp;&ensp;&ensp;&ensp;我们继续使用上节的Pets类进行Iterator的测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleIterator</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		List&lt;Pet&gt; pets = Pets.arrayList(<span class="number">7</span>);</span><br><span class="line">		Iterator&lt;Pet&gt; it = pets.iterator();</span><br><span class="line">		System.out.println(<span class="string">"1:"</span> + pets);</span><br><span class="line">		System.out.println(<span class="string">"2:"</span> + it);</span><br><span class="line">		<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">			Pet p = it.next();</span><br><span class="line">			System.out.println(<span class="string">"---&gt;"</span> + p);</span><br><span class="line">		&#125;</span><br><span class="line">		it = pets.iterator();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">7</span>;i++)&#123;</span><br><span class="line">			it.next();</span><br><span class="line">			it.remove();</span><br><span class="line">			System.out.println(pets);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png4.png" alt="png4"></p>
+<p>&ensp;&ensp;&ensp;&ensp;需要注意的是，第二行我们打印Iterator时并没有像打印其它对象时把数据打印出来，而是只打印了这个迭代器底层容器的类型ArrayList。还有就是迭代器对象第一次.next之后获取的是第一个元素，remove方法移除的是next方法获取到的元素，所以remove之前必须要调用next方法。在同一方法中使用Iterator时，要注意前面使用过之后，Iterator的位置会发生变化。<br>&ensp;&ensp;&ensp;&ensp;现在我们换用其它类型的容器来测试迭代器的作用，这里有个display（）方法，它不考虑任何容器的类型来进行打印：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeSet;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleIterator</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">(Iterator&lt;Pet&gt; it)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"==="</span> +it.getClass().getName()+ <span class="string">"==="</span>);</span><br><span class="line">		<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">			Pet p = it.next();</span><br><span class="line">			System.out.println(p);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ArrayList&lt;Pet&gt; pets = (ArrayList&lt;Pet&gt;) Pets.arrayList(<span class="number">7</span>);</span><br><span class="line">		LinkedList&lt;Pet&gt; lkp = <span class="keyword">new</span> LinkedList&lt;Pet&gt;(pets);</span><br><span class="line">		HashSet&lt;Pet&gt; hs = <span class="keyword">new</span> HashSet&lt;Pet&gt;(pets);</span><br><span class="line">		TreeSet&lt;Pet&gt; ts = <span class="keyword">new</span> TreeSet&lt;Pet&gt;(pets);</span><br><span class="line">		LinkedHashSet&lt;Pet&gt; lhs = <span class="keyword">new</span> LinkedHashSet&lt;Pet&gt;(pets);</span><br><span class="line">		display(pets.iterator());</span><br><span class="line">		display(lkp.iterator());</span><br><span class="line">		display(hs.iterator());</span><br><span class="line">		display(ts.iterator());</span><br><span class="line">		display(lhs.iterator());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png5.png" alt="png5"></p>
+<p>&ensp;&ensp;&ensp;&ensp;还有一种比Iterator更加强大的迭代器ListIterator，这个迭代器功能更全，可以向前或者向后移动，也可以使用set（）方法替换它最后访问的元素（使用方式如Iterator的remove方法，要先指定访问元素），同时它还可以使用listIterator（n）方法直接指定到第n个元素的ListIterator。下面的示例展示了ListIterator的功能：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.ListIterator;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SimpleListIterator</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		List&lt;Pet&gt; pets = Pets.arrayList(<span class="number">7</span>);</span><br><span class="line">		ListIterator&lt;Pet&gt; lit = pets.listIterator();</span><br><span class="line">		System.out.println(pets);</span><br><span class="line">		System.out.println(lit);</span><br><span class="line">		System.out.println(<span class="string">"=====Next====="</span>);</span><br><span class="line">		<span class="keyword">while</span>(lit.hasNext())&#123;</span><br><span class="line">			<span class="keyword">int</span> index = lit.nextIndex();</span><br><span class="line">			Pet p = lit.next();</span><br><span class="line">			System.out.println(<span class="string">"Index:"</span> + index + <span class="string">","</span> + <span class="string">"Pet:"</span> + p );</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"=====Previous====="</span>);</span><br><span class="line">		lit = pets.listIterator(<span class="number">7</span>);</span><br><span class="line">		<span class="keyword">while</span>(lit.hasPrevious())&#123;</span><br><span class="line">			<span class="keyword">int</span> index = lit.previousIndex();</span><br><span class="line">			Pet p = lit.previous();</span><br><span class="line">			System.out.println(<span class="string">"Index:"</span> + index + <span class="string">","</span> + <span class="string">"Pet:"</span> + p );</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">"=====Update Set====="</span>);</span><br><span class="line">		lit = pets.listIterator();</span><br><span class="line">		<span class="keyword">while</span>(lit.hasNext())&#123;</span><br><span class="line">			Pet p = lit.next();</span><br><span class="line">			lit.set(Pet.Humaster);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(pets);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png6.png" alt="png6"></p>
+<p>&ensp;&ensp;&ensp;&ensp;如上是ListIterator的一些特性，相比Iterator，功能更加全面了一些。需要注意的是，nextIndex和previous不会发生移位操作。</p>
+<h1 id="七、LinkedList"><a href="#七、LinkedList" class="headerlink" title="七、LinkedList"></a>七、LinkedList</h1><p>&ensp;&ensp;&ensp;&ensp;LinkedList与ArrayList相同都是实现了List接口，但是它在增删的时候效率较高，在随机访问的时候效率略低。LinkedList还增加了其作为栈、队列、双端队列的操作方法。这些方法有的只是名字有差异，或者是返回值有差异。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedListFeatures</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		LinkedList&lt;Pet&gt; pets = <span class="keyword">new</span> LinkedList&lt;Pet&gt;(Pets.arrayList(<span class="number">7</span>));</span><br><span class="line">		System.out.println(pets);</span><br><span class="line">		<span class="comment">//以下两个方法都返回容器的第一个元素 在容器为空的时候抛异常</span></span><br><span class="line">		System.out.println(<span class="string">"pets.getFirst()---》"</span> + pets.getFirst());</span><br><span class="line">		System.out.println(<span class="string">"pets.elements()---》"</span> + pets.element());</span><br><span class="line">		<span class="comment">//与上两个方法相同 区别在于为空时返回null</span></span><br><span class="line">		System.out.println(<span class="string">"pets.peek()---》"</span> + pets.peek());</span><br><span class="line">		<span class="comment">//以下两个方法移除列表的第一个元素 在容器为空的时候抛出异常</span></span><br><span class="line">		System.out.println(<span class="string">"pets.remove()---&gt;"</span> + pets.remove());</span><br><span class="line">		System.out.println(<span class="string">"pets.removeFirst()---&gt;"</span> + pets.removeFirst());</span><br><span class="line">		<span class="comment">//与上两个方法相同 区别在于容器为空时返回null</span></span><br><span class="line">		System.out.println(<span class="string">"pets.pool()---&gt;"</span> + pets.poll());</span><br><span class="line">		System.out.println(pets);</span><br><span class="line">		<span class="comment">//在容器第一个位置加入新的元素 其它元素依次后移</span></span><br><span class="line">		pets.addFirst(Pet.Manx);</span><br><span class="line">		System.out.println(<span class="string">"After addFirst()"</span> + pets);</span><br><span class="line">		<span class="comment">//以下两个方法在容器尾部插入新元素</span></span><br><span class="line">		pets.add(Pet.Humaster);</span><br><span class="line">		System.out.println(<span class="string">"After add()"</span> + pets);</span><br><span class="line">		pets.addLast(Pet.Pug);</span><br><span class="line">		System.out.println(<span class="string">"After addLast()"</span> + pets);</span><br><span class="line">		<span class="comment">//offer 是针对queue 在尾部插入数据 add是针对list 在尾部插入数据</span></span><br><span class="line">		pets.offer(Pet.Rat);</span><br><span class="line">		System.out.println(<span class="string">"After offer()"</span> + pets);</span><br><span class="line">		<span class="comment">//移除最后一个并返回该元素</span></span><br><span class="line">		System.out.println(<span class="string">"pets.removeLast()"</span> + pets.removeLast());</span><br><span class="line">		System.out.println(<span class="string">"After removeLast()"</span> + pets);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png7.png" alt="png7"></p>
+<h1 id="八、Stack"><a href="#八、Stack" class="headerlink" title="八、Stack"></a>八、Stack</h1><p>&ensp;&ensp;&ensp;&ensp;“栈”通常是指“后进先出的容器”，比如装羽毛球的桶，最后放进去的羽毛球可以第一个被拿出来，因为另一端也就是栈底是封闭的。LinkedList具有能够直接实现栈的所有功能的方法，因此可以直接将LinkedList作为栈使用。这里我们使用一个真正的Stack，内部使用LinkedList来实现它。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stack</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> LinkedList&lt;T&gt; storage = <span class="keyword">new</span> LinkedList&lt;T&gt;();</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(T v)</span></span>&#123;</span><br><span class="line">		storage.addFirst(v);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> T <span class="title">peek</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> storage.getFirst();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> T <span class="title">pop</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> storage.removeFirst();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">empty</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> storage.isEmpty();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span></span>&#123;</span><br><span class="line">		 <span class="keyword">return</span> storage.toString();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里使用<t>泛型来告诉编译器这个Stack是持有参数化类型T的容器，这个Stack是使用LinkedList实现的，而LinkedList也被告知是使用了T类型的对象。peek（）方法返回栈顶元素，但是并不是移除。而pop（）方法这里是弹出栈顶元素，也就是移除了栈顶元素。如果我们只是需要栈的行为，而不需要其它无关的行为方法，那么这里使用继承就显然不合适了。后边会讨论在Java1.0中，java.util.Stack这个类的设计。</t></p>
+<p>&ensp;&ensp;&ensp;&ensp;下面演示了我们如何使用上边这个新的Stack类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StackTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Stack&lt;String&gt; stack = <span class="keyword">new</span> Stack&lt;String&gt;();</span><br><span class="line">		<span class="keyword">for</span>(String s : <span class="string">"My Dog has fleas"</span>.split(<span class="string">" "</span>))&#123;</span><br><span class="line">			stack.push(s);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">while</span>(!stack.empty())&#123;</span><br><span class="line">			System.out.print(stack.pop() + <span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里使用了push方法将字符串“My Dog has fleas”用空格分开的单词压入栈中，然后使用pop方法弹出栈顶元素。因为pop方法调用之后会移除栈顶元素，所以会依次弹出栈中的所有元素。在这里我们使用了自己定义的Stack，如果我们导入了java.util.Stack类的话，那么我们这样使用可能会产生命名冲突的现象，解决方法是我们在实例化的时候使用完整的类名，或者修改我们自己定义的Stack类名。</p>
+<h1 id="九、Set"><a href="#九、Set" class="headerlink" title="九、Set"></a>九、Set</h1><p>&ensp;&ensp;&ensp;&ensp;Set不保存重复的元素（至于如何判断元素是否重复，则较为复杂，稍后便会看到），Set最常见的使用是判断对象的归属性，即判断某个对象是否在Set中。正因为如此，Set的查询效率就显得尤为重要了，所以通常会使用HashSet来实现所需要的功能，它对查询专门做了优化。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Set具有与Collection完全一样的接口，我们可以说Set就是Collection，这是表现了不同的功能，这是Java中继承与多态思想的展现。Set中更加复杂的问题后边17章会介绍。</p>
+<p>&ensp;&ensp;&ensp;&ensp;下面示例使用了HashSet存放Integer对象：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SetofInteger</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Random random = <span class="keyword">new</span> Random(<span class="number">47</span>);</span><br><span class="line">		Set&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;Integer&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>;i++)&#123;</span><br><span class="line">			set.add(random.nextInt(<span class="number">30</span>));</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(set);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png8.png" alt="png8"></p>
+<p>&ensp;&ensp;&ensp;&ensp;set中插入了0-29的随机数，插入了10000次，但是从打印结果可以看出，只保证了每个数据只出现了一次。而且似乎插入的顺序并没有规律可寻。这是因为出于查找速度的考虑，HashSet使用了散列，将在17章中介绍。HashSet使用散列存储，TreeSet使用红黑树存储，LinkedHahSet因为查询速度的原因也使用了散列，但是它看起来像是使用了链表来进行存储，因为它保证了元素的插入顺序。</p>
+<p>&ensp;&ensp;&ensp;&ensp;注意：插入顺序与元素的顺序的区别，插入顺序是我们在容器中添加元素时的顺序，而元素的顺序说的是按照某种规则比如从小到大或者从大到小的顺序，也就是元素的结果。当然，上边的示例如果我们相对元素的结果进行排序，那么可以使用TreeSet来替换，因为LinkedHashSet只是保证了元素的插入顺序。</p>
+<p>&ensp;&ensp;&ensp;&ensp;Set 常用的方法是使用contains（）判断是否存在某元素，当然还有一些其它的顾名思义的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SetOperations</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Set&lt;String&gt; set1 = <span class="keyword">new</span> HashSet&lt;String&gt;();</span><br><span class="line">		Collections.addAll(set1,<span class="string">"A B C D E F G H I J K L"</span>.split(<span class="string">" "</span>));</span><br><span class="line">		set1.add(<span class="string">"M"</span>);</span><br><span class="line">		System.out.println(<span class="string">"H:"</span> +  set1.contains(<span class="string">"H"</span>));</span><br><span class="line">		System.out.println(<span class="string">"N:"</span> +  set1.contains(<span class="string">"N"</span>));</span><br><span class="line">		Set&lt;String&gt; set2 = <span class="keyword">new</span> HashSet&lt;String&gt;();</span><br><span class="line">		Collections.addAll(set2,<span class="string">"H I J K L"</span>.split(<span class="string">" "</span>));</span><br><span class="line">		System.out.println(<span class="string">"set2 in set1:"</span> + set1.containsAll(set2));</span><br><span class="line">		set1.remove(<span class="string">"H"</span>);</span><br><span class="line">		System.out.println(<span class="string">"set1: "</span> + set1);</span><br><span class="line">		System.out.println(<span class="string">"set2 in set1:"</span> + set1.containsAll(set2));</span><br><span class="line">		set1.removeAll(set2);</span><br><span class="line">		System.out.println(<span class="string">"set2 removed from set1:"</span> + set1);</span><br><span class="line">		Collections.addAll(set1,<span class="string">"X Y Z"</span>.split(<span class="string">" "</span>));</span><br><span class="line">		System.out.println(<span class="string">"XYZ added to set1:"</span> + set1);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png9.png" alt="png9"></p>
+<h1 id="十、Map"><a href="#十、Map" class="headerlink" title="十、Map"></a>十、Map</h1><p>&ensp;&ensp;&ensp;&ensp;Map可以将一个对象映射到另一个对象上组建一种一对一的键值关系。比如可以设计这样一个程序来验证Java中Random的随机性，理想情况下，Random对每个随机数产生的概率是相同的。我们测试这一理论，于是定义一个Map，键来表示随机出现的数字，值来表示该数字出现的次数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RandomTest</span> </span>&#123;	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Random random = <span class="keyword">new</span> Random(<span class="number">47</span>);</span><br><span class="line">		Map&lt;Integer,Integer&gt; map = <span class="keyword">new</span> HashMap&lt;Integer,Integer&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>;i&lt;<span class="number">1000000</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> x = random.nextInt(<span class="number">20</span>);</span><br><span class="line">			Integer freq = map.get(x);</span><br><span class="line">			map.put(x,freq == <span class="keyword">null</span>?<span class="number">1</span>:freq+<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(map);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png10.png" alt="png10"></p>
+<p><img src="[Java编程思想]十二：持有对象/png11.png" alt="png11"></p>
+<p>&ensp;&ensp;&ensp;&ensp;20个数字随机1000000次，每个数字出现的概率为1/50000，由运行结果可以看出，基本符合这一理想情况下的推论。上述main（）方法中所用的map.get（）方法，获取指定键对应的值，如果该键不存在则返回null。Map同样具有判断键值是否存在的方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PetMap</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Map&lt;String,Pet&gt; petMap = <span class="keyword">new</span> HashMap&lt;String,Pet&gt;();</span><br><span class="line">		petMap.put(<span class="string">"MyCat"</span>,Pet.Cymric);</span><br><span class="line">		petMap.put(<span class="string">"MyDog"</span>,Pet.Humaster);</span><br><span class="line">		petMap.put(<span class="string">"MyPig"</span>,Pet.Mutt);</span><br><span class="line">		System.out.println(petMap);</span><br><span class="line">		Pet p = petMap.get(<span class="string">"MyDog"</span>);</span><br><span class="line">		System.out.println(p);</span><br><span class="line">		System.out.println(petMap.containsKey(<span class="string">"MyDog"</span>));</span><br><span class="line">		System.out.println(petMap.containsValue(Pet.Cymric));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png12.png" alt="png12"></p>
+<p>&ensp;&ensp;&ensp;&ensp;Map与数组或者其它的Collection一样，可以扩展到多维角度，即key是String类型，value可以重新定义为一个容器。比如上边的示例改造为一个动物有多个名字。那么你需要的就是一个Map&lt;String,List<pet>&gt;:</pet></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">package com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line">import java.util.Arrays;</span><br><span class="line">import java.util.HashMap;</span><br><span class="line">import java.util.List;</span><br><span class="line">import java.util.Map;</span><br><span class="line">public class MapOfList &#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		 Map&lt;String,List&lt;Pet&gt;&gt; petList = new HashMap&lt;String,List&lt;Pet&gt;&gt;();</span><br><span class="line">		 petList.put(&quot;MyDog&quot;,Arrays.asList(Pet.Cymric,Pet.Humaster,Pet.Mutt));</span><br><span class="line">		 System.out.println(petList);</span><br><span class="line">		 System.out.println(&quot;key:&quot; + petList.keySet());</span><br><span class="line">		 System.out.println(&quot;value:&quot; + petList.values());</span><br><span class="line">		 for(String s:petList.keySet())&#123;</span><br><span class="line">			 System.out.print(s + &quot;:&quot;);</span><br><span class="line">			 for(Pet p:petList.get(s))&#123;</span><br><span class="line">				 System.out.print(p + &quot; &quot;);</span><br><span class="line">			 &#125;</span><br><span class="line">		 &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png13.png" alt="png13"></p>
+<p>&ensp;&ensp;&ensp;&ensp;上述代码中还展示了.keySet（）方法和.values（）方法，分别返回Map中所有的键和所有的值。</p>
+<h1 id="十一、Queue"><a href="#十一、Queue" class="headerlink" title="十一、Queue"></a>十一、Queue</h1><p>&ensp;&ensp;&ensp;&ensp;队列是一个典型的先进先出的容器，就像是一个两端打开的管子，从一端放进去的物品，从另一端取出，并且最先取出的是最先放进去的物品。因此队列的取出顺序往往是与插入顺序相同的。正因为队列这种顺序特性，它常常被作为一种可靠的将对象从程序的某个区域发送到另一个区域的途径。LinkedList实现了Queue的接口，因此LinkedList可以当做是Queue的一种实现，这是面向对象编程中继承与多态思想的体现。将LinkedList向上转型为Queue，下面的示例将展示Queue接口中与Queue相关的方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedList;</span><br><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QueueDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printQ</span><span class="params">(Queue queue)</span></span>&#123;</span><br><span class="line">		<span class="comment">//不移除的情况下返回队列头部元素  element（）方法相同  peek为空返回null  element为空抛出异常</span></span><br><span class="line">		<span class="keyword">while</span>(queue.peek()!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			<span class="comment">//remove（）移除头元素 为空抛出异常 poll 为空返回null</span></span><br><span class="line">			System.out.println(queue.remove() + <span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Queue&lt;Integer&gt; queue = <span class="keyword">new</span> LinkedList&lt;Integer&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">			<span class="comment">//元素插入队尾</span></span><br><span class="line">			queue.offer(i);</span><br><span class="line">		&#125;</span><br><span class="line">		printQ(queue);</span><br><span class="line">		Queue&lt;Character&gt; qc = <span class="keyword">new</span> LinkedList&lt;Character&gt;();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">char</span> c:<span class="string">"QUEUEDEMO"</span>.toCharArray())&#123;</span><br><span class="line">			qc.offer(c);</span><br><span class="line">		&#125;</span><br><span class="line">		printQ(qc);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png14.png" alt="png14"></p>
+<p>&ensp;&ensp;&ensp;&ensp;offer方法是队列的相关方法之一，它在队列允许的情况下，将元素插入到队列的尾部，或者返回false，peek和element方法都是在不删除的情况下返回队列的第一个元素，peek在队列为空时返回null，element在队列为空抛NoSuchElementException，poll和remove删除当前队列的第一个元素，如果为空poll返回null，remove抛NoSuchElementException异常。</p>
+<p>&ensp;&ensp;&ensp;&ensp;先进先出描述了最典型的队列规则，在某些情况下，队列还需要弹出当前最需要的元素，这种队列称作是优先级队列。优先级队列每个元素都具有一个执行的优先级，也就是这个元素何时弹出与何时插入没有必然的联系。PriorityQueue添加到Java SE5中，是为了这种优先级形式自动实现。当我们在PriorityQueue上调用了offer（）方法来插入一个对象时，这个对象在队列中就会被重新排序。默认的排序是对象在队列中的自然顺序。但是你可以通过提供自己的Comparator来修改这个顺序。PriorityQueue可以确保你在调用peek、poll、remove等方法时获取的是当前队列中优先级最高的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.PriorityQueue;</span><br><span class="line"><span class="keyword">import</span> java.util.Queue;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QueueDemo</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printQ</span><span class="params">(Queue queue)</span></span>&#123;</span><br><span class="line">		<span class="comment">//不移除的情况下返回队列头部元素  element（）方法相同  peek为空返回null  element为空抛出异常</span></span><br><span class="line">		<span class="keyword">while</span>(queue.peek()!=<span class="keyword">null</span>)&#123;</span><br><span class="line">			<span class="comment">//remove（）移除头元素 为空抛出异常 poll 为空返回null</span></span><br><span class="line">			System.out.println(queue.remove() + <span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		List&lt;Integer&gt; ints = Arrays.asList(<span class="number">25</span>,<span class="number">22</span>,<span class="number">20</span>,<span class="number">18</span>,<span class="number">14</span>,<span class="number">9</span>,<span class="number">3</span>,<span class="number">1</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">14</span>,<span class="number">18</span>,<span class="number">22</span>,<span class="number">23</span>,<span class="number">25</span>);</span><br><span class="line">		PriorityQueue&lt;Integer&gt; queue = <span class="keyword">new</span> PriorityQueue&lt;Integer&gt;(ints.size(),Collections.reverseOrder());</span><br><span class="line">		queue.addAll(ints);</span><br><span class="line">		printQ(queue);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png15.png" alt="png15"></p>
+<p>&ensp;&ensp;&ensp;&ensp;我们使用了JavaSE5中定义的reverseOrder反序定义了PriorityQueue的优先级。</p>
+<h1 id="十二、Collection和Iterator"><a href="#十二、Collection和Iterator" class="headerlink" title="十二、Collection和Iterator"></a>十二、Collection和Iterator</h1><p> &ensp;&ensp;&ensp;&ensp;Collection是描述所有序列容器共性的根接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> java.util.Collection;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InterfaceVsIterator</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">(Iterator&lt;Pet&gt; it)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"IT-P:"</span>);</span><br><span class="line">		<span class="keyword">while</span>(it.hasNext())&#123;</span><br><span class="line">			Pet p = it.next();</span><br><span class="line">			System.out.print(p + <span class="string">","</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">(Collection&lt;Pet&gt; collection)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"CL-P:"</span>);</span><br><span class="line">		<span class="keyword">for</span>(Pet p:collection)&#123;</span><br><span class="line">			System.out.print(p + <span class="string">","</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		List&lt;Pet&gt; petList = Pets.arrayList(<span class="number">7</span>);</span><br><span class="line">		Set&lt;Pet&gt; petSet = <span class="keyword">new</span> HashSet&lt;Pet&gt;(petList);</span><br><span class="line">		Map&lt;String,Pet&gt; petMap = <span class="keyword">new</span> LinkedHashMap&lt;String,Pet&gt;();</span><br><span class="line">		String[] names = (<span class="string">"A,B,C,D,E"</span>).split(<span class="string">","</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">0</span>;i&lt;names.length;i++)&#123;</span><br><span class="line">			petMap.put(names[i],petList.get(i));</span><br><span class="line">		&#125;</span><br><span class="line">		display(petList);</span><br><span class="line">		display(petSet);</span><br><span class="line">		display(petList.iterator());</span><br><span class="line">		display(petSet.iterator());</span><br><span class="line">		System.out.println(petMap);</span><br><span class="line">		System.out.println(petMap.keySet());</span><br><span class="line">		display(petMap.values());</span><br><span class="line">		display(petMap.values().iterator());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png16.png" alt="png16"></p>
+<p>&ensp;&ensp;&ensp;&ensp;从运行结果可以看出，使用Collection和Iterator看起来没有什么区别，通常情况下，使用Collection要更方便一些。</p>
+<h1 id="十三、Foreach与迭代器"><a href="#十三、Foreach与迭代器" class="headerlink" title="十三、Foreach与迭代器"></a>十三、Foreach与迭代器</h1><p>&ensp;&ensp;&ensp;&ensp;foreach语法可以应用在数组中，也可以应用在任何Collection对象，之所以能够这样，是因为JavaSE5引入了新的被称为Iterable的接口，该接口包含了一个能够产生Iterator的iterator（）方法，并且Iterable接口被foreach用来在序列中移动。因此如果你创建了任何实现Iterabel的类，都可以将它应用在foreach中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IterableClass</span> <span class="keyword">implements</span> <span class="title">Iterable</span>&lt;<span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> String[] words = (<span class="string">"And that is how we know the earth"</span>).split(<span class="string">" "</span>);</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Iterator&lt;String&gt; <span class="title">iterator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">new</span> Iterator&lt;String&gt;()&#123;</span><br><span class="line">			<span class="keyword">private</span> <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasNext</span><span class="params">()</span></span>&#123;</span><br><span class="line">				<span class="keyword">return</span> index&lt;words.length;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">public</span> String <span class="title">next</span><span class="params">()</span></span>&#123;</span><br><span class="line">				<span class="keyword">return</span> words[index++];</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">remove</span><span class="params">()</span></span>&#123;</span><br><span class="line">				<span class="comment">//---</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(String s :<span class="keyword">new</span> IterableClass())&#123;</span><br><span class="line">			System.out.print(s + <span class="string">" "</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]十二：持有对象/png17.png" alt="png17"></p>
+<p>&ensp;&ensp;&ensp;&ensp;iterator（）方法返回的实现了Iterator<string> 的匿名内部类的实例，该匿名内部类可以遍历数组中的所有单词。在main（）中，你可以看到IteratorClass确实可以用于foreach语句中。</string></p>
+<h1 id="十四、总结"><a href="#十四、总结" class="headerlink" title="十四、总结"></a>十四、总结</h1><p>&ensp;&ensp;&ensp;&ensp;容器也就是集合，是Java基础中很重要的一个模块，本篇文章了解了基础的容器使用方式。Java提供了多种容器持有对象的方式：<br>&ensp;&ensp;&ensp;&ensp;1.数组将数字也就是下标与内容关联，查询时不需要进行类型转换，缺点是大小一旦确定，则不能被改变。<br>&ensp;&ensp;&ensp;&ensp;2.Collection保存单一的元素，Map保存相关联的键值对。<br>&ensp;&ensp;&ensp;&ensp;3.像数组一样，List也建立数字索引与对象的关联，因此数组和List都是排序好的容器。<br>&ensp;&ensp;&ensp;&ensp;4.如果要进行大量的随机访问，就要使用ArrayList，如果要进行大量的插入删除操作，就要使用LinkedList。<br>&ensp;&ensp;&ensp;&ensp;5.各种队列与栈的操作，由LinkedList提供支持。<br>&ensp;&ensp;&ensp;&ensp;6.Map是一种将对象与对象进行关联的容器，HashMap设计用来快速访问，TreeMap保持键始终处于排序状态，所以没有HashMap快。LinkedHashMap保持元素插入的顺序，但是也通过散列提供快速访问的能力。<br>&ensp;&ensp;&ensp;&ensp;7.Set不接受重复的数据，HashSet提供最快的查询速度，而TreeSet保持元素处于排序状态。LinkedHashSet以插入顺序保持元素。</p>
+<p>&ensp;&ensp;&ensp;&ensp;简单的容器分类：</p>
+<p><img src="[Java编程思想]十二：持有对象/png18.png" alt="png18"></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Think-in-Java/" rel="tag"># Think in Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/15/【Java编程思想】十一：内部类/" rel="next" title="【Java编程思想】十一：内部类">
+                <i class="fa fa-chevron-left"></i> 【Java编程思想】十一：内部类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/16/【Java编程思想】十三：通过异常处理错误/" rel="prev" title="【Java编程思想】十三：通过异常处理错误">
+                【Java编程思想】十三：通过异常处理错误 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、泛型和类型安全的容器"><span class="nav-number">1.</span> <span class="nav-text">一、泛型和类型安全的容器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、基本概念"><span class="nav-number">2.</span> <span class="nav-text">二、基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、添加一组元素"><span class="nav-number">3.</span> <span class="nav-text">三、添加一组元素</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、容器的打印"><span class="nav-number">4.</span> <span class="nav-text">四、容器的打印</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、List"><span class="nav-number">5.</span> <span class="nav-text">五、List</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、迭代器"><span class="nav-number">6.</span> <span class="nav-text">六、迭代器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、LinkedList"><span class="nav-number">7.</span> <span class="nav-text">七、LinkedList</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、Stack"><span class="nav-number">8.</span> <span class="nav-text">八、Stack</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、Set"><span class="nav-number">9.</span> <span class="nav-text">九、Set</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、Map"><span class="nav-number">10.</span> <span class="nav-text">十、Map</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十一、Queue"><span class="nav-number">11.</span> <span class="nav-text">十一、Queue</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十二、Collection和Iterator"><span class="nav-number">12.</span> <span class="nav-text">十二、Collection和Iterator</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十三、Foreach与迭代器"><span class="nav-number">13.</span> <span class="nav-text">十三、Foreach与迭代器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十四、总结"><span class="nav-number">14.</span> <span class="nav-text">十四、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

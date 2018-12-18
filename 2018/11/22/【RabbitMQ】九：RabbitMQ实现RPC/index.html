@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="RabbitMQ,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前面几篇文章讲述的内容都是单向的消息传递，生产者将消息发送给消费者之后就不再管后续的业务处理了。实际业务中，有的时候我们还需要等待消费者返回结果给我们，或者是说我们需要消费者上的一个功能、一个方法或是一个接口返回给我们相应的值，而往往大型的系统软件，生产者跟消费者之间都是相互独立的两个系统，部署在两个不同的电脑上，不能通过直接对象.方法的形式">
+<meta name="keywords" content="RabbitMQ">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【RabbitMQ】九：RabbitMQ实现RPC">
+<meta property="og:url" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前面几篇文章讲述的内容都是单向的消息传递，生产者将消息发送给消费者之后就不再管后续的业务处理了。实际业务中，有的时候我们还需要等待消费者返回结果给我们，或者是说我们需要消费者上的一个功能、一个方法或是一个接口返回给我们相应的值，而往往大型的系统软件，生产者跟消费者之间都是相互独立的两个系统，部署在两个不同的电脑上，不能通过直接对象.方法的形式">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/[RabbitMQ]九：RabbitMQ实现RPC/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/[RabbitMQ]九：RabbitMQ实现RPC/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/[RabbitMQ]九：RabbitMQ实现RPC/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/[RabbitMQ]九：RabbitMQ实现RPC/png4.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.598Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【RabbitMQ】九：RabbitMQ实现RPC">
+<meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前面几篇文章讲述的内容都是单向的消息传递，生产者将消息发送给消费者之后就不再管后续的业务处理了。实际业务中，有的时候我们还需要等待消费者返回结果给我们，或者是说我们需要消费者上的一个功能、一个方法或是一个接口返回给我们相应的值，而往往大型的系统软件，生产者跟消费者之间都是相互独立的两个系统，部署在两个不同的电脑上，不能通过直接对象.方法的形式">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/[RabbitMQ]九：RabbitMQ实现RPC/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/">
+
+
+
+
+
+  <title>【RabbitMQ】九：RabbitMQ实现RPC | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【RabbitMQ】九：RabbitMQ实现RPC</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-22T10:34:24+08:00">
+                2018-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/22/【RabbitMQ】九：RabbitMQ实现RPC/" class="leancloud_visitors" data-flag-title="【RabbitMQ】九：RabbitMQ实现RPC">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;前面几篇文章讲述的内容都是单向的消息传递，生产者将消息发送给消费者之后就不再管后续的业务处理了。实际业务中，有的时候我们还需要等待消费者返回结果给我们，或者是说我们需要消费者上的一个功能、一个方法或是一个接口返回给我们相应的值，而往往大型的系统软件，生产者跟消费者之间都是相互独立的两个系统，部署在两个不同的电脑上，不能通过直接对象.方法的形式获取想要的结果，这时候我们就需要用到RPC（Remote Procedure Call）远程过程调用方式。</p>
+<p>&ensp;&ensp;&ensp;&ensp;RabbitMQ实现RPC的方式很简单，生产者发送一条带有标签（消息ID（correlation_id）+回调队列名称）的消息到发送队列，消费者（也称RPC服务端）从发送队列获取消息并处理业务，解析标签的信息将业务结果发送到指定的回调队列，生产者从回调队列中根据标签的信息获取发送消息的返回结果。</p>
+<p><img src="[RabbitMQ]九：RabbitMQ实现RPC/png1.png" alt="png1"></p>
+<p>&ensp;&ensp;&ensp;&ensp;如图，客户端C发送消息，指定消息的ID=rpc_id，回调响应的队列名称为rpc_resp，消息从C发送到rpc_request队列，服务端S获取消息业务处理之后，将correlation_id附加到响应的结果发送到指定的回调队列rpc_resp中，客户端从回调队列获取消息，匹配与发送消息的correlation_id相同的值为消息应答结果。</p>
+<p>&ensp;&ensp;&ensp;&ensp;RabbitMQ官网的示例是客户端通过RPC方式调用服务端获取斐波那契数列的值，我们举个简单的例子，客户端通过RPC调用获取服务端求平方的方法返回值。即客户端发送消息4，服务端返回4的平方16</p>
+<h1 id="二、几个简单的概念"><a href="#二、几个简单的概念" class="headerlink" title="二、几个简单的概念"></a>二、几个简单的概念</h1><h2 id="2-1回调队列"><a href="#2-1回调队列" class="headerlink" title="2.1回调队列"></a>2.1回调队列</h2><p>&ensp;&ensp;&ensp;&ensp;前文说到，客户端发送消息到服务端之后，要接收返回结果，存放返回结果的队列叫做回调队列，客户端发送消息之后阻塞监听该队列返回的消息。我们可以使用随机队列命名，也可以指定队列的名称，同时，我们可以一个消息建立一个随机队列，但是通常考虑资源使用的情况，我们一般一个消费者建立一个指定的回调队列。</p>
+<h2 id="2-2消息属性"><a href="#2-2消息属性" class="headerlink" title="2.2消息属性"></a>2.2消息属性</h2><p>&ensp;&ensp;&ensp;&ensp;AMQP协议预定了一组14个消息属性（Message Properties），常用的有如下四种消息属性</p>
+<pre><code>1、deliveryMode：标记消息传递模式，为2时表示持久化消息，其它值不做持久化，在前面文章讲到消息持久化使用的PERSITNAT_TEXT_PLAIN时提到过
+2、contentType：内容类型，用于描述内容编码，如json
+3、replyTo：应答，指定的通用的回调队列名称
+4、correlationId：关联ID，指定消息的标签，方便关联RPC的请求与响应
+</code></pre><p>&ensp;&ensp;&ensp;&ensp;上述四个属性我们使用了replyTo和correlationId属性，同时因为RPC调用是具有幂等性的，所以我们可以忽视不属于我们应该获得到的correlationId。</p>
+<h1 id="三、示例代码"><a href="#三、示例代码" class="headerlink" title="三、示例代码"></a>三、示例代码</h1><p>&ensp;&ensp;&ensp;&ensp;我们梳理一下文章开始提到的简单示例，我们的RPC处理流程如下</p>
+<pre><code>1、客户端启动，创建请求队列rpc_request和回调队列rpc_resp
+2、客户端为我们的消息请求设置两个消息属性correlationId关联ID和replyTo回调队列（rpc_resp）
+3、将请求发送到rpc_request队列
+4、RPC服务端监听rpc_request队列中的请求，获取消息处理业务，并把带有接收消息的correlationId的返回结果消息返回到指定回调队列（rpc_resp）
+5、客户端监听rpc_resp回调队列，如果有消息，匹配correlationId，如果和请求消息的相同，那么这个消息就是返回的响应结果了。
+</code></pre><p>客户端代码MqRpcClient，相关说明已经写在注释中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Collections;</span><br><span class="line"><span class="keyword">import</span> java.util.Hashtable;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> java.util.SortedSet;</span><br><span class="line"><span class="keyword">import</span> java.util.TreeSet;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;  </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties.Builder; </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.Confirm.SelectOk;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConfirmListener;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConsumerCancelledException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.MessageProperties;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.QueueingConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ShutdownSignalException;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqRpcClient</span></span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String REQUEST_QUEUE_NAME=<span class="string">"rpc_request"</span>;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String RESPONSE_QUEUE_NAME=<span class="string">"rpc_resp"</span>;</span><br><span class="line">	 <span class="keyword">private</span> Channel channel;</span><br><span class="line">	 <span class="keyword">private</span> QueueingConsumer qConsumer;</span><br><span class="line">	 </span><br><span class="line">	 <span class="comment">//构造函数 初始化连接</span></span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="title">MqRpcClient</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机、用户名、密码和客户端端口号</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 factory.setUsername(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPassword(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPort(<span class="number">5672</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建一个请求队列</span></span><br><span class="line">		 channel.queueDeclare(REQUEST_QUEUE_NAME, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">		 <span class="comment">//创建一个回调队列</span></span><br><span class="line">		 channel.queueDeclare(RESPONSE_QUEUE_NAME,<span class="keyword">true</span>,<span class="keyword">false</span>,<span class="keyword">false</span>,<span class="keyword">null</span>);</span><br><span class="line">		 <span class="comment">//为通道创建一个监听（用于监听回调队列，获取返回消息）</span></span><br><span class="line">		 qConsumer = <span class="keyword">new</span> QueueingConsumer(channel);</span><br><span class="line">		 <span class="comment">//关联监听与监听队列 并手动应答</span></span><br><span class="line">		 channel.basicConsume(RESPONSE_QUEUE_NAME,<span class="keyword">false</span>,qConsumer);</span><br><span class="line">	&#125;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> String <span class="title">getSquare</span><span class="params">(String message)</span> <span class="keyword">throws</span>  Exception</span>&#123;</span><br><span class="line">		 String response = <span class="string">""</span>;</span><br><span class="line">		 <span class="comment">//定义消息属性中的correlationId</span></span><br><span class="line">		 String correlationId = java.util.UUID.randomUUID().toString();</span><br><span class="line">		 <span class="comment">//设置消息属性的replTo和correlationId</span></span><br><span class="line">		 BasicProperties properties = <span class="keyword">new</span> BasicProperties.Builder().correlationId(correlationId).replyTo(RESPONSE_QUEUE_NAME).build();</span><br><span class="line">		 <span class="comment">//发送消息到请求队列rpc_request队列 ，前边说到过 如果没有exchange即没有routingKey 消息发送到与routingKey参数相同的队列中</span></span><br><span class="line">		 channel.basicPublish(<span class="string">""</span>,REQUEST_QUEUE_NAME, properties,message.getBytes());</span><br><span class="line">		 <span class="comment">//阻塞监听</span></span><br><span class="line">		 <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">			 QueueingConsumer.Delivery delivery = qConsumer.nextDelivery();</span><br><span class="line">			 <span class="keyword">if</span>(delivery.getProperties().getCorrelationId().equals(correlationId))&#123;</span><br><span class="line">				 response = <span class="keyword">new</span> String(delivery.getBody(),<span class="string">"UTF-8"</span>);</span><br><span class="line">		    	 <span class="comment">//手动回应消息应答</span></span><br><span class="line">		    	 channel.basicAck(delivery.getEnvelope().getDeliveryTag(),<span class="keyword">false</span>);</span><br><span class="line">				 <span class="keyword">break</span>;</span><br><span class="line">			 &#125;</span><br><span class="line">		 &#125;</span><br><span class="line">		 <span class="keyword">return</span> response;</span><br><span class="line">	 &#125;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">		MqRpcClient rpcClient = <span class="keyword">new</span> MqRpcClient();</span><br><span class="line">		String result = rpcClient.getSquare(<span class="string">"4"</span>);</span><br><span class="line">		System.out.println(<span class="string">"resonse is :"</span> + result);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>服务端代码MqRpcServer</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.text.NumberFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Hashtable;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConsumerCancelledException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.QueueingConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ShutdownSignalException;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqRpcServer</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> String REQUEST_QUEUE_NAME=<span class="string">"rpc_request"</span>;</span><br><span class="line">	 </span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 <span class="keyword">final</span> Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//声明队列</span></span><br><span class="line">		 channel.queueDeclare(REQUEST_QUEUE_NAME, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">		 <span class="comment">//设置prefetch值 一次处理1条数据</span></span><br><span class="line">		 channel.basicQos(<span class="number">1</span>);</span><br><span class="line">		 <span class="comment">//为请求队列设置监听 监听客户端请求 并手动应答</span></span><br><span class="line">		 QueueingConsumer qConsumer = <span class="keyword">new</span> QueueingConsumer(channel);</span><br><span class="line">	     channel.basicConsume(REQUEST_QUEUE_NAME,<span class="keyword">false</span>, qConsumer);</span><br><span class="line">	     System.out.println(<span class="string">"Server waiting Requeust."</span>);</span><br><span class="line">	     <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">	    	 QueueingConsumer.Delivery delivery = qConsumer.nextDelivery();</span><br><span class="line">	    	 <span class="comment">//将请求中的correlationId设置到回调的消息中</span></span><br><span class="line">	    	 BasicProperties properties = delivery.getProperties();</span><br><span class="line">	    	 BasicProperties replyProperties = <span class="keyword">new</span> BasicProperties.Builder().correlationId(properties.getCorrelationId()).build();</span><br><span class="line">	    	 <span class="comment">//获取客户端指定的回调队列名</span></span><br><span class="line">	    	 String replyQueue = properties.getReplyTo();</span><br><span class="line">	    	 <span class="comment">//返回获取消息的平方</span></span><br><span class="line">	    	 String message = <span class="keyword">new</span> String(delivery.getBody(),<span class="string">"UTF-8"</span>);</span><br><span class="line">	    	 System.out.println(<span class="string">"waiting message is:"</span> + message);</span><br><span class="line">	    	 Double mSquare =  Math.pow(Integer.parseInt(message),<span class="number">2</span>);</span><br><span class="line">	    	 String repMsg = String.valueOf(mSquare);</span><br><span class="line">	    	 channel.basicPublish(<span class="string">""</span>,replyQueue,replyProperties,repMsg.getBytes());</span><br><span class="line">	    	 <span class="comment">//手动回应消息应答</span></span><br><span class="line">	    	 channel.basicAck(delivery.getEnvelope().getDeliveryTag(),<span class="keyword">false</span>);</span><br><span class="line">	     &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 启动客户端、启动服务端，可以看到控制台打出的结果，符合我们的预期结果，管理台也新建了两条队列。</p>
+<p><img src="[RabbitMQ]九：RabbitMQ实现RPC/png2.png" alt="png2"></p>
+<p><img src="[RabbitMQ]九：RabbitMQ实现RPC/png3.png" alt="png3"></p>
+<p><img src="[RabbitMQ]九：RabbitMQ实现RPC/png4.png" alt="png4"></p>
+<h1 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h1><p>&ensp;&ensp;&ensp;&ensp;综上，RabbitMQ的RPC调用方式就是形成了两条队列，两个客户端（服务端相互监听），需要注意的是，如前篇所述，如果开启手动回复，要记得在代码中手动回复ACK。</p>
+<h1 id="五、代码下载"><a href="#五、代码下载" class="headerlink" title="五、代码下载"></a>五、代码下载</h1><p><a href="https://pan.baidu.com/s/1pNspa0F" target="_blank" rel="noopener">下载地址</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RabbitMQ/" rel="tag"># RabbitMQ</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/22/【RabbitMQ】八：RabbitMQ的消息确认/" rel="next" title="【RabbitMQ】八：RabbitMQ的消息确认">
+                <i class="fa fa-chevron-left"></i> 【RabbitMQ】八：RabbitMQ的消息确认
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/" rel="prev" title="【RabbitMQ】十：RabbitMQ与Spring 的整合">
+                【RabbitMQ】十：RabbitMQ与Spring 的整合 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、概述"><span class="nav-number">1.</span> <span class="nav-text">一、概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、几个简单的概念"><span class="nav-number">2.</span> <span class="nav-text">二、几个简单的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1回调队列"><span class="nav-number">2.1.</span> <span class="nav-text">2.1回调队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2消息属性"><span class="nav-number">2.2.</span> <span class="nav-text">2.2消息属性</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、示例代码"><span class="nav-number">3.</span> <span class="nav-text">三、示例代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、总结"><span class="nav-number">4.</span> <span class="nav-text">四、总结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、代码下载"><span class="nav-number">5.</span> <span class="nav-text">五、代码下载</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

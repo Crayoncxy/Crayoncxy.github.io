@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="DataTable,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、场景&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;公司新开发的一个web项目，项目中一个功能是从失败交易流水表中按日期查询失败的交易，以列表的形式展示出来。前端列表使用了DataTable，DataTable自带前端分页和后端分页。所谓前端分页就是一次性从数据库中查出所有数据返回给前端，前端自动进行分页。这种处理方式在数据量较小的情况下还可以，当数据量较大（具体数据量没有测试）会导致前端加载">
+<meta name="keywords" content="DataTable">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【DataTable】关于实现DataTable后端分页过程中的一些问题总结">
+<meta property="og:url" content="http://yoursite.com/2018/11/20/【DataTable】关于实现DataTable后端分页过程中的一些问题总结/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、场景&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;公司新开发的一个web项目，项目中一个功能是从失败交易流水表中按日期查询失败的交易，以列表的形式展示出来。前端列表使用了DataTable，DataTable自带前端分页和后端分页。所谓前端分页就是一次性从数据库中查出所有数据返回给前端，前端自动进行分页。这种处理方式在数据量较小的情况下还可以，当数据量较大（具体数据量没有测试）会导致前端加载">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.441Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【DataTable】关于实现DataTable后端分页过程中的一些问题总结">
+<meta name="twitter:description" content="一、场景&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;公司新开发的一个web项目，项目中一个功能是从失败交易流水表中按日期查询失败的交易，以列表的形式展示出来。前端列表使用了DataTable，DataTable自带前端分页和后端分页。所谓前端分页就是一次性从数据库中查出所有数据返回给前端，前端自动进行分页。这种处理方式在数据量较小的情况下还可以，当数据量较大（具体数据量没有测试）会导致前端加载">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/20/【DataTable】关于实现DataTable后端分页过程中的一些问题总结/">
+
+
+
+
+
+  <title>【DataTable】关于实现DataTable后端分页过程中的一些问题总结 | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/20/【DataTable】关于实现DataTable后端分页过程中的一些问题总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【DataTable】关于实现DataTable后端分页过程中的一些问题总结</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-20T14:48:49+08:00">
+                2018-11-20
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/问题解决/" itemprop="url" rel="index">
+                    <span itemprop="name">问题解决</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/20/【DataTable】关于实现DataTable后端分页过程中的一些问题总结/" class="leancloud_visitors" data-flag-title="【DataTable】关于实现DataTable后端分页过程中的一些问题总结">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、场景"><a href="#一、场景" class="headerlink" title="一、场景"></a>一、场景</h1><p>&ensp;&ensp;&ensp;&ensp;公司新开发的一个web项目，项目中一个功能是从失败交易流水表中按日期查询失败的交易，以列表的形式展示出来。前端列表使用了DataTable，DataTable自带前端分页和后端分页。所谓前端分页就是一次性从数据库中查出所有数据返回给前端，前端自动进行分页。这种处理方式在数据量较小的情况下还可以，当数据量较大（具体数据量没有测试）会导致前端加载数据缓慢卡顿，同时因为后端一次性从数据库查出大量数据放在内存中，会导致内存资源消耗过大而卡顿甚至宕机。为了解决这个瓶颈问题，采用后端分页的形式。后端分页即前端传递当前页码以及当前页显示的数据量给后端，后端只查询当前页要进行展示的数据。从而避开了由于数据量过大而导致的卡顿问题。</p>
+<h1 id="二、基础代码"><a href="#二、基础代码" class="headerlink" title="二、基础代码"></a>二、基础代码</h1><p>&ensp;&ensp;&ensp;&ensp;DataTable默认的分页机制为前端分页，此处不过多陈述，通过查找资料了解到，后端分页需要将原来的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bServerSide:<span class="keyword">false</span></span><br></pre></td></tr></table></figure>
+<p>修改为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bServerSide:<span class="keyword">true</span></span><br></pre></td></tr></table></figure>
+<p>后端分页对返回的JSON数据格式有要求，具体格式如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">"sEcho"</span>:<span class="string">"1"</span>,<span class="string">"iTotalRecords"</span>:<span class="string">"0"</span>,<span class="string">"iTotalDisplayRecords"</span>:<span class="string">"0"</span>,<span class="string">"aaData"</span>:[]&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;其中sEcho是前端传递的，只需获取然后原数返回即可，iTotalRecords字面理解意思是当前数据表中总的记录数，iTotalDisplayRecords是当前页面要展示的记录数，aaData为返回列表的数据。</p>
+<p>&ensp;&ensp;&ensp;&ensp;这里先展示一版基础代码，也就是我从网上查找资料写的代码，通过基础代码，后边一步一步的发现问题解决问题。</p>
+<p>HTML部分：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"mr-20 ml-20"</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">table</span> <span class="attr">id</span>=<span class="string">"trafficMonitorFailed"</span> <span class="attr">class</span>=<span class="string">"table table-border table-bordered table-hover table-bg table-sort"</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">thead</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;<span class="name">tr</span> <span class="attr">class</span>=<span class="string">"text-c"</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易日期<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易时间<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易流水号<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易唯一标识<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>渠道<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易响应时间<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易分类<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易编码<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易描述<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>错误码<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>错误描述<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;/<span class="name">thead</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>JS部分：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dataTableDraw</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"> $(<span class="string">"#trafficMonitorFailed"</span>).dataTable(&#123;</span><br><span class="line">  bServerSide:<span class="literal">true</span>, <span class="comment">//开启后端分页</span></span><br><span class="line">  bDestroy: <span class="literal">true</span>,         <span class="comment">//下边两个属性应该是重载数据相关的 不加在加载数据会弹窗报错 点击确定后显示数据</span></span><br><span class="line">  bRetrieve: <span class="literal">true</span>,</span><br><span class="line">  bProcessing: <span class="literal">true</span>, <span class="comment">//显示加载数据时的提示</span></span><br><span class="line">  bInfo:<span class="literal">true</span>,  <span class="comment">//显示信息 如 当前x页 共x条数据等</span></span><br><span class="line">  bSort:<span class="literal">true</span>,  <span class="comment">//允许排序</span></span><br><span class="line">  bFilter:<span class="literal">true</span>,  <span class="comment">//检索、筛选框</span></span><br><span class="line">  sAjaxSource: rootUrl + <span class="string">"getTrafficMonitorFailedList"</span>, <span class="comment">//请求url</span></span><br><span class="line">  bLengthChange:<span class="literal">true</span>, <span class="comment">//支持变更页面显示数据行数</span></span><br><span class="line">  sPaginationType: <span class="string">"bootstrap"</span>, <span class="comment">//翻页风格</span></span><br><span class="line">  bPaginate:<span class="literal">true</span>,  <span class="comment">//显示翻页按钮</span></span><br><span class="line">  fnServerData: retrieveData, <span class="comment">//执行函数</span></span><br><span class="line">  aoColumns:[<span class="comment">//列表元素  支持多种属性 </span></span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"tranDate"</span>,<span class="string">"fnRender"</span>:<span class="function"><span class="keyword">function</span>(<span class="params">data,val</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> JSONDate = <span class="keyword">new</span> <span class="built_in">Date</span>(val.time); </span><br><span class="line">        <span class="keyword">return</span> JSONDate.format(<span class="string">'yyyy-MM-dd'</span>);</span><br><span class="line">       &#125;,<span class="string">"width"</span>:<span class="string">"200px"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"tranTime"</span>,<span class="string">"fnRender"</span>:<span class="function"><span class="keyword">function</span>(<span class="params">data,val</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">var</span> JSONTime = <span class="keyword">new</span> <span class="built_in">Date</span>(val.time);</span><br><span class="line">        <span class="keyword">return</span> JSONTime.format(<span class="string">'yyyy-MM-dd HH:mm:ss'</span>);</span><br><span class="line">       &#125;&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"seqNo"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"platformId"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"channel"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"costTime"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"reqType"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"reqInterface"</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"reqDesc"</span>,<span class="string">"bSortable"</span>:<span class="literal">false</span>&#125;,  <span class="comment">//不允许当前页排序</span></span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"retCode"</span>,<span class="string">"bSortable"</span>:<span class="literal">false</span>&#125;,</span><br><span class="line">                   &#123; <span class="string">"mData"</span>: <span class="string">"retMsg"</span>,<span class="string">"bSortable"</span>:<span class="literal">false</span>&#125;</span><br><span class="line">               ],</span><br><span class="line">      oLanguage: &#123;  </span><br><span class="line">       <span class="string">"sProcessing"</span> : <span class="string">"正在加载中......"</span>,  </span><br><span class="line">       <span class="string">"sLengthMenu"</span> : <span class="string">"_MENU_"</span>,  </span><br><span class="line">       <span class="string">"sZeroRecords"</span> : <span class="string">"无记录"</span>,  </span><br><span class="line">       <span class="string">"sEmptyTable"</span> : <span class="string">"表中无数据存在！"</span>,  </span><br><span class="line">       <span class="string">"sInfo"</span> : <span class="string">"当前显示 _START_ 到 _END_ 条，共 _MAX_  条记录"</span>,  </span><br><span class="line">       <span class="string">"sInfoEmpty"</span> : <span class="string">"没有数据"</span>,  </span><br><span class="line">       <span class="string">"sInfoFiltered"</span> : <span class="string">"数据表中共为 _TOTAL_ 条记录"</span>,  </span><br><span class="line">       <span class="string">"sSearch"</span> : <span class="string">" "</span>,  </span><br><span class="line">       <span class="string">"oPaginate"</span> : &#123;  </span><br><span class="line">        <span class="string">"sFirst"</span> : <span class="string">" 首页 "</span>,  </span><br><span class="line">        <span class="string">"sPrevious"</span> : <span class="string">" 上一页 "</span>,  </span><br><span class="line">        <span class="string">"sNext"</span> : <span class="string">" 下一页 "</span>,  </span><br><span class="line">        <span class="string">"sLast"</span> : <span class="string">" 末页 "</span>  </span><br><span class="line">        &#125;  </span><br><span class="line"> &#125;  </span><br><span class="line"> &#125;);</span><br><span class="line"> $(<span class="string">".dataTables_wrapper .dataTables_filter input"</span>).attr(<span class="string">"placeholder"</span>,<span class="string">"检索内容"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//对应上边的回调函数 参数个数不变 名字可改 第一个为请求url  第二个为上送数据 第三个为回调函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">retrieveData</span>(<span class="params">sSource,aoData,fnCallback</span>) </span>&#123;</span><br><span class="line"> <span class="keyword">var</span> startDate = &#123;</span><br><span class="line">   <span class="string">"name"</span>:<span class="string">"startDate"</span>,</span><br><span class="line">   <span class="string">"value"</span>:$(<span class="string">"#from"</span>).val()</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="keyword">var</span> endDate = &#123;</span><br><span class="line">   <span class="string">"name"</span>:<span class="string">"endDate"</span>,</span><br><span class="line">   <span class="string">"value"</span>:$(<span class="string">"#to"</span>).val()</span><br><span class="line"> &#125;</span><br><span class="line"> <span class="comment">//我这里按照请求数据的格式增加了自己的查询条件 请求数据格式固定为 name-value的格式 可以使用</span></span><br><span class="line"> <span class="comment">//alert打印查看 包含了基本的页码、页面数据元素、等信息以及新增的查询条件</span></span><br><span class="line"> aoData.push(startDate);</span><br><span class="line"> aoData.push(endDate);</span><br><span class="line"> $.ajax(&#123;</span><br><span class="line">     url : sSource,<span class="comment">//这个就是请求地址对应sAjaxSource</span></span><br><span class="line">     data : &#123;<span class="string">"aoData"</span>:<span class="built_in">JSON</span>.stringify(aoData)&#125;,<span class="comment">//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数</span></span><br><span class="line">     type : <span class="string">'post'</span>,</span><br><span class="line">     dataType : <span class="string">'json'</span>,</span><br><span class="line">     <span class="keyword">async</span> : <span class="literal">false</span>,</span><br><span class="line">     success : <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">         fnCallback(result);<span class="comment">//把返回的数据传给这个方法就可以了,datatable会自动绑定数据的</span></span><br><span class="line">     &#125;,</span><br><span class="line">     error : <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>后端Controller层：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/page/getTrafficMonitorFailedList"</span>,method=RequestMethod.POST)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getTrafficMonitorFailedList</span><span class="params">(String aoData)</span></span>&#123;</span><br><span class="line">	List&lt;TrafficMonitorFailed&gt; trafficMonitorFailed = <span class="keyword">new</span> ArrayList&lt;TrafficMonitorFailed&gt;();</span><br><span class="line">       JSONArray jsonarray=(JSONArray) JSONArray.fromObject(aoData);<span class="comment">//json格式化用的是fastjson</span></span><br><span class="line">       <span class="keyword">if</span>(jsonarray == <span class="keyword">null</span>||jsonarray.size() ==<span class="number">0</span>)&#123;</span><br><span class="line">          <span class="keyword">return</span> WebFactory.createErrorResponse(<span class="string">"错误的查询条件"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       String startDate = formatDate.format(<span class="keyword">new</span> Date());</span><br><span class="line">       String endDate = formatDate.format(<span class="keyword">new</span> Date());</span><br><span class="line">       String sEcho = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">int</span> iDisplayStart = <span class="number">0</span>; <span class="comment">// 起始索引</span></span><br><span class="line">       <span class="keyword">int</span> iDisplayLength = <span class="number">10</span>; <span class="comment">// 每页显示的行数</span></span><br><span class="line">       <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; jsonarray.size(); i++) &#123;</span><br><span class="line">           JSONObject obj = (JSONObject) jsonarray.get(i);</span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"sEcho"</span>))</span><br><span class="line">               sEcho = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"iDisplayStart"</span>))</span><br><span class="line">               iDisplayStart =Integer.parseInt(obj.get(<span class="string">"value"</span>).toString());</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"iDisplayLength"</span>))</span><br><span class="line">               iDisplayLength = Integer.parseInt(obj.get(<span class="string">"value"</span>).toString());</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"startDate"</span>))</span><br><span class="line">           	startDate = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"endDate"</span>))</span><br><span class="line">           	endDate = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">           </span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">           trafficMonitorFailed = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedListSearch(startDate, endDate, iDisplayStart, iDisplayLength);</span><br><span class="line">           count = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedListCountSearch(startDate, endDate).getTotal();</span><br><span class="line">       </span><br><span class="line">       JSONObject getObj = <span class="keyword">new</span> JSONObject();</span><br><span class="line">       getObj.put(<span class="string">"sEcho"</span>, sEcho);<span class="comment">// DataTable前台必须要的</span></span><br><span class="line">       getObj.put(<span class="string">"iTotalRecords"</span>,count);</span><br><span class="line">       getObj.put(<span class="string">"iTotalDisplayRecords"</span>,trafficMonitorFailed.size());</span><br><span class="line">       getObj.put(<span class="string">"aaData"</span>, trafficMonitorFailed);<span class="comment">//把查到数据装入aaData,要以JSON格式返回</span></span><br><span class="line">       <span class="keyword">return</span> getObj.toString();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>第一版的基础代码如上，其中有一些如数据Model的代码，不同业务场景Model不同，此处不做列举。</p>
+<h1 id="三、问题描述-解决"><a href="#三、问题描述-解决" class="headerlink" title="三、问题描述/解决"></a>三、问题描述/解决</h1><h2 id="Q1-Cannot-read-property-‘length’-of-undefined"><a href="#Q1-Cannot-read-property-‘length’-of-undefined" class="headerlink" title="Q1.Cannot read property ‘length’ of undefined"></a>Q1.Cannot read property ‘length’ of undefined</h2><p>&ensp;&ensp;&ensp;&ensp;上述代码运行之后，页面加载之后一直显示加载中，F12到调试模式可以看到控制台报错“Cannot read property ‘length of undefined’”，而且这个是jquery报的错，可以说是非常恼火了。经过分析，可能是返回的数据格式不对，因此在js的回调函数中进行了修改，将JSON字符串转换成JSON数据的格式，修改后如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$.ajax(&#123;</span><br><span class="line">    url : sSource,<span class="comment">//这个就是请求地址对应sAjaxSource</span></span><br><span class="line">    data : &#123;<span class="string">"aoData"</span>:<span class="built_in">JSON</span>.stringify(aoData)&#125;,<span class="comment">//这个是把datatable的一些基本数据传给后台,比如起始位置,每页显示的行数</span></span><br><span class="line">    type : <span class="string">'post'</span>,</span><br><span class="line">    dataType : <span class="string">'json'</span>,</span><br><span class="line">    <span class="keyword">async</span> : <span class="literal">false</span>,</span><br><span class="line">    success : <span class="function"><span class="keyword">function</span>(<span class="params">result</span>) </span>&#123;</span><br><span class="line">   	 <span class="keyword">var</span> ret = <span class="built_in">eval</span>(<span class="string">"("</span> + result + <span class="string">")"</span>);</span><br><span class="line">        fnCallback(ret);<span class="comment">//把返回的数据传给这个方法就可以了,datatable会自动绑定数据的</span></span><br><span class="line">    &#125;,</span><br><span class="line">    error : <span class="function"><span class="keyword">function</span>(<span class="params">msg</span>) </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>修改之后运行，此问题解决</p>
+<h2 id="Q2-DataTables-warning-table-id-‘trafficMonitorFailed’-Requested-unknown-parameter-‘0’-from-the-data-source-for-row-0"><a href="#Q2-DataTables-warning-table-id-‘trafficMonitorFailed’-Requested-unknown-parameter-‘0’-from-the-data-source-for-row-0" class="headerlink" title="Q2.DataTables warning (table id = ‘trafficMonitorFailed’):Requested unknown parameter ‘0’ from the data source for row 0"></a>Q2.DataTables warning (table id = ‘trafficMonitorFailed’):Requested unknown parameter ‘0’ from the data source for row 0</h2><p>&ensp;&ensp;&ensp;&ensp;上述代码运行之后，页面弹窗报错“DataTables warning (table id =’trafficMonitorFailed’):Requested unknown parameter ‘0’ from the data source for row 0”这个问题诈一看也是一脸蒙蔽，后来发现应该是dataTable版本的问题，需要将数据表中的mData修改为mDataProp,修改之后如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"tranDate"</span>,<span class="string">"fnRender"</span>:function(data,val)&#123;</span><br><span class="line"> <span class="keyword">var</span> JSONDate = <span class="keyword">new</span> Date(val.time);	</span><br><span class="line"> <span class="keyword">return</span> JSONDate.format(<span class="string">'yyyy-MM-dd'</span>);</span><br><span class="line">&#125;,<span class="string">"width"</span>:<span class="string">"200px"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"tranTime"</span>,<span class="string">"fnRender"</span>:function(data,val)&#123;</span><br><span class="line"> <span class="keyword">var</span> JSONTime = <span class="keyword">new</span> Date(val.time);</span><br><span class="line"> <span class="keyword">return</span> JSONTime.format(<span class="string">'yyyy-MM-dd HH:mm:ss'</span>);</span><br><span class="line">&#125;&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"seqNo"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"platformId"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"channel"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"costTime"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"reqType"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"reqInterface"</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"reqDesc"</span>,<span class="string">"bSortable"</span>:<span class="keyword">false</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"retCode"</span>,<span class="string">"bSortable"</span>:<span class="keyword">false</span>&#125;,</span><br><span class="line">            &#123; <span class="string">"mDataProp"</span>: <span class="string">"retMsg"</span>,<span class="string">"bSortable"</span>:<span class="keyword">false</span>&#125;</span><br></pre></td></tr></table></figure>
+<p>修改之后运行，问题解决。</p>
+<h2 id="Q3-数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。"><a href="#Q3-数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。" class="headerlink" title="Q3.数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。"></a>Q3.数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。</h2><p>&ensp;&ensp;&ensp;&ensp;这个问题的意思是，我数据库中有很多数据，F12调试也能看到返回了一页10条数据，并且iTotalRecords为32，按道理应该显示一页数据之后，可以进行翻页，总共显示4页，但是实际的页面却只显示了一页数据，列表下方的翻页处也仅仅有“1”的页签，没有其它的页签，上一页下一页都不能点击。这个问题困扰了我许久，后来私信网上一位大神给出了解决方案。原因是iTotalRecords和iTotalDisplayRecords数据放反了。这个我到现在也没有理解，按照字面意思itotalRecords确实是应该放总查询数据量，iTotalDisplayRecords为当前页要展示的数据量。而实际的使用过程中，这两个数据应该是反了过来。不知道其它人有没有遇到这种情况。<br>修改代码如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getObj.put(<span class="string">"iTotalRecords"</span>,trafficMonitorFailed.size());</span><br><span class="line">getObj.put(<span class="string">"iTotalDisplayRecords"</span>,count);</span><br></pre></td></tr></table></figure>
+<p>即将原来两个放置数据统计个数的值互换。运行之后，问题解决，心心念念的后端分页终于实现了。</p>
+<h2 id="Q4-后端分页实现之后，检索筛选、排序功能失效。"><a href="#Q4-后端分页实现之后，检索筛选、排序功能失效。" class="headerlink" title="Q4.后端分页实现之后，检索筛选、排序功能失效。"></a>Q4.后端分页实现之后，检索筛选、排序功能失效。</h2><p>&ensp;&ensp;&ensp;&ensp;实现了基本的后端分页，点击了几页试了一下，分页效果没问题，但是检索跟排序的功能都没有反应。于是F12开启调试模式，发现点击排序和在检索框输入文字之后，都发起了后台请求，因此可以判定，后端分页的检索跟排序功能需要后端代码实现。实现原理，在前端传递的aoData中，会储存要排序的列、排序的方式以及检索的内容。因此可以通过后端修改SQL的形式完成。<br>修改之后的Controller代码为:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping</span>(value=<span class="string">"/page/getTrafficMonitorFailedList"</span>,method=RequestMethod.POST)</span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getTrafficMonitorFailedList</span><span class="params">(String aoData)</span></span>&#123;</span><br><span class="line">	List&lt;TrafficMonitorFailed&gt; trafficMonitorFailed = <span class="keyword">new</span> ArrayList&lt;TrafficMonitorFailed&gt;();</span><br><span class="line">       JSONArray jsonarray=(JSONArray) JSONArray.fromObject(aoData);<span class="comment">//json格式化用的是fastjson</span></span><br><span class="line">       <span class="keyword">if</span>(jsonarray == <span class="keyword">null</span>||jsonarray.size() ==<span class="number">0</span>)&#123;</span><br><span class="line">          <span class="keyword">return</span> WebFactory.createErrorResponse(<span class="string">"错误的查询条件"</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       String startDate = formatDate.format(<span class="keyword">new</span> Date());</span><br><span class="line">       String endDate = formatDate.format(<span class="keyword">new</span> Date());</span><br><span class="line">       String sEcho = <span class="keyword">null</span>;</span><br><span class="line">       <span class="keyword">int</span> iDisplayStart = <span class="number">0</span>; <span class="comment">// 起始索引</span></span><br><span class="line">       <span class="keyword">int</span> iDisplayLength = <span class="number">10</span>; <span class="comment">// 每页显示的行数</span></span><br><span class="line">       <span class="keyword">int</span> orderColumn = <span class="number">0</span>;<span class="comment">//默认排序列</span></span><br><span class="line">       String orderDir = <span class="string">"asc"</span>;<span class="comment">//默认排序方式为升序</span></span><br><span class="line">       String sSearch = <span class="string">""</span>;<span class="comment">//默认检索内容</span></span><br><span class="line">       <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">       <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; jsonarray.size(); i++) &#123;</span><br><span class="line">           JSONObject obj = (JSONObject) jsonarray.get(i);</span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"sEcho"</span>))</span><br><span class="line">               sEcho = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"iDisplayStart"</span>))</span><br><span class="line">               iDisplayStart =Integer.parseInt(obj.get(<span class="string">"value"</span>).toString());</span><br><span class="line"></span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"iDisplayLength"</span>))</span><br><span class="line">               iDisplayLength = Integer.parseInt(obj.get(<span class="string">"value"</span>).toString());</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"startDate"</span>))</span><br><span class="line">           	startDate = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"endDate"</span>))</span><br><span class="line">           	endDate = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"iSortCol_0"</span>))</span><br><span class="line">           	orderColumn = Integer.parseInt(obj.get(<span class="string">"value"</span>).toString());</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"sSortDir_0"</span>))</span><br><span class="line">           	orderDir = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (obj.get(<span class="string">"name"</span>).equals(<span class="string">"sSearch"</span>))</span><br><span class="line">           	sSearch = obj.get(<span class="string">"value"</span>).toString();</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">       <span class="keyword">if</span>(<span class="string">""</span>.equals(sSearch)||sSearch == <span class="keyword">null</span>)&#123;</span><br><span class="line">           trafficMonitorFailed = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedList(startDate, endDate, iDisplayStart, iDisplayLength, orderColumn, orderDir);</span><br><span class="line">           count = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedListCount(startDate, endDate).getTotal();</span><br><span class="line">       &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">           trafficMonitorFailed = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedListSearch(startDate, endDate, iDisplayStart, iDisplayLength, orderColumn, orderDir,sSearch);</span><br><span class="line">           count = <span class="keyword">this</span>.trafficMonitorFailedService.getTrafficMonitorFailedListCountSearch(startDate, endDate,sSearch).getTotal();</span><br><span class="line">       &#125;</span><br><span class="line">       JSONObject getObj = <span class="keyword">new</span> JSONObject();</span><br><span class="line">       getObj.put(<span class="string">"sEcho"</span>, sEcho);<span class="comment">// DataTable前台必须要的</span></span><br><span class="line">       getObj.put(<span class="string">"iTotalRecords"</span>,trafficMonitorFailed.size());<span class="comment">//显示的行数,这个要和上面写的一样</span></span><br><span class="line">       getObj.put(<span class="string">"iTotalDisplayRecords"</span>,count);<span class="comment">//总行数</span></span><br><span class="line">       getObj.put(<span class="string">"aaData"</span>, trafficMonitorFailed);<span class="comment">//把查到数据装入aaData,要以JSON格式返回</span></span><br><span class="line">       <span class="keyword">return</span> getObj.toString();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里前端传递的orderColumn是int类型，标记的是列的序号，SQL语句中可以判断序号然后ORDER BY指定的列，orderDir传递的是排序方式有两种一种是ASC另一种是DESC。sSearch传递的是检索框的内容，这里为了避免没有检索的情况还使用like语句模糊查找而影响效率，没有想到其它办法，单单的使用了判断sSearch如果为空则不使用like语句查找。多说一句，分页查询使用的sql语句我这里使用了limit a，b的形式，从a+1位置查，查b条数据。这里忘了贴SQL语句，大概的形式就是select xxx from xxx where xxx order by xxx asc/desc limit a,b 这种，如果后期数据量大了出现瓶颈再继续优化。</p>
+<h2 id="Q5-给DataTable增加横向滚动条"><a href="#Q5-给DataTable增加横向滚动条" class="headerlink" title="Q5.给DataTable增加横向滚动条"></a>Q5.给DataTable增加横向滚动条</h2><p>&ensp;&ensp;&ensp;&ensp;为了美观，我想保证每一条数据都在一行上显示，不进行换行。然后就会出现数据过长，一页显示不下的情况，因此需要增加滚动条。网上查到不同版本使用的形式不同，我这里是使用如下形式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sScrollX:<span class="string">"100%"</span></span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;还有另一种方式是将“100%”改为true的形式。增加滚动条还需要设置文本框的数据处于一行显示而不是自动换行。</p>
+<p>修改html代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">       <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"mr-20 ml-20"</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">table</span> <span class="attr">id</span>=<span class="string">"trafficMonitorFailed"</span> <span class="attr">class</span>=<span class="string">"table table-border table-bordered table-hover table-bg table-sort"</span> <span class="attr">style</span>=<span class="string">"white-space:nowrap"</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;<span class="name">thead</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;<span class="name">tr</span> <span class="attr">class</span>=<span class="string">"text-c"</span>&gt;</span></span><br><span class="line">                        	<span class="tag">&lt;<span class="name">th</span>&gt;</span>交易日期<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易时间<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易流水号<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易唯一标识<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>渠道<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易响应时间<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易分类<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易编码<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>交易描述<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>错误码<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                           <span class="tag">&lt;<span class="name">th</span>&gt;</span>错误描述<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">                       <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">                   <span class="tag">&lt;/<span class="name">thead</span>&gt;</span></span><br><span class="line">               <span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>即增加了样式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">style=<span class="string">"white-space:nowrap"</span></span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;至此，后端分页的功能全部实现。如有不足，还望指正。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DataTable/" rel="tag"># DataTable</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/" rel="next" title="【Zookeeper】Zookeeper源码环境搭建出现的问题">
+                <i class="fa fa-chevron-left"></i> 【Zookeeper】Zookeeper源码环境搭建出现的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/20/【RabbitMQ】java-lang-NoClassDefFoundError/" rel="prev" title="【RabbitMQ】java.lang.NoClassDefFoundError: org/springframework/util/backoff/BackOff">
+                【RabbitMQ】java.lang.NoClassDefFoundError: org/springframework/util/backoff/BackOff <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、场景"><span class="nav-number">1.</span> <span class="nav-text">一、场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、基础代码"><span class="nav-number">2.</span> <span class="nav-text">二、基础代码</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、问题描述-解决"><span class="nav-number">3.</span> <span class="nav-text">三、问题描述/解决</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Q1-Cannot-read-property-‘length’-of-undefined"><span class="nav-number">3.1.</span> <span class="nav-text">Q1.Cannot read property ‘length’ of undefined</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q2-DataTables-warning-table-id-‘trafficMonitorFailed’-Requested-unknown-parameter-‘0’-from-the-data-source-for-row-0"><span class="nav-number">3.2.</span> <span class="nav-text">Q2.DataTables warning (table id = ‘trafficMonitorFailed’):Requested unknown parameter ‘0’ from the data source for row 0</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q3-数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。"><span class="nav-number">3.3.</span> <span class="nav-text">Q3.数据明明很多，DataTable仅显示了一页的数据，并且没有显示其它页的按钮，不可以翻页。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q4-后端分页实现之后，检索筛选、排序功能失效。"><span class="nav-number">3.4.</span> <span class="nav-text">Q4.后端分页实现之后，检索筛选、排序功能失效。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Q5-给DataTable增加横向滚动条"><span class="nav-number">3.5.</span> <span class="nav-text">Q5.给DataTable增加横向滚动条</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

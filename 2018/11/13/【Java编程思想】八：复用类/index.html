@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Java,Think in Java,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、组合语法&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;代码复用是优化程序结构的一种必要手段，我们不需要重新编写代码，只需要获取一个类似的类在其基础上进行改动，保留一些原有的功能。改动的手段有组合跟继承两种。组合就是在一个新的类中引入原来的类的实例对象，这个对象是一个成员变量。如果不是一个对象，是一个基本数据类型，那么编译器会自动为其初始化。而当是一个对象的引用时，编译器则为其初始化为null">
+<meta name="keywords" content="Java,Think in Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java编程思想】八：复用类">
+<meta property="og:url" content="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、组合语法&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;代码复用是优化程序结构的一种必要手段，我们不需要重新编写代码，只需要获取一个类似的类在其基础上进行改动，保留一些原有的功能。改动的手段有组合跟继承两种。组合就是在一个新的类中引入原来的类的实例对象，这个对象是一个成员变量。如果不是一个对象，是一个基本数据类型，那么编译器会自动为其初始化。而当是一个对象的引用时，编译器则为其初始化为null">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/[Java编程思想]八：复用类/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/[Java编程思想]八：复用类/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/[Java编程思想]八：复用类/png3.png">
+<meta property="og:updated_time" content="2018-12-18T14:58:54.464Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Java编程思想】八：复用类">
+<meta name="twitter:description" content="一、组合语法&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;代码复用是优化程序结构的一种必要手段，我们不需要重新编写代码，只需要获取一个类似的类在其基础上进行改动，保留一些原有的功能。改动的手段有组合跟继承两种。组合就是在一个新的类中引入原来的类的实例对象，这个对象是一个成员变量。如果不是一个对象，是一个基本数据类型，那么编译器会自动为其初始化。而当是一个对象的引用时，编译器则为其初始化为null">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/[Java编程思想]八：复用类/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/">
+
+
+
+
+
+  <title>【Java编程思想】八：复用类 | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/【Java编程思想】八：复用类/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Java编程思想】八：复用类</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T14:24:20+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/13/【Java编程思想】八：复用类/" class="leancloud_visitors" data-flag-title="【Java编程思想】八：复用类">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、组合语法"><a href="#一、组合语法" class="headerlink" title="一、组合语法"></a>一、组合语法</h1><p>&ensp;&ensp;&ensp;&ensp;代码复用是优化程序结构的一种必要手段，我们不需要重新编写代码，只需要获取一个类似的类在其基础上进行改动，保留一些原有的功能。改动的手段有组合跟继承两种。组合就是在一个新的类中引入原来的类的实例对象，这个对象是一个成员变量。如果不是一个对象，是一个基本数据类型，那么编译器会自动为其初始化。而当是一个对象的引用时，编译器则为其初始化为null，这样在使用这个对象时，就会发生错误。因此我们需要如下几个方法，初始化组合中的引用：</p>
+<p>&ensp;&ensp;&ensp;&ensp;1.在定义对象的地方，也就是对象引用建立的时候直接指定对象，这意味着对象的初始化发生在构造器调用之前。</p>
+<p>&ensp;&ensp;&ensp;&ensp;2.在类的构造器中，如第5章所述，我们可以通过构造器的形式，也就是new，初始化一个对象。</p>
+<p>&ensp;&ensp;&ensp;&ensp;3.就在这样使用这些对象之前，也就是所谓的延时加载，当我们必须要使用这个对象的时候，发现没有初始化该对象呢，那么进行初始化，这种方式可以提供系统性能，降低资源消耗，在必须用到的时候才创建。</p>
+<p>&ensp;&ensp;&ensp;&ensp;4.使用实例初始化，这种与构造器的相同之处都是在代码中显式的去创建一个对象，区别在于一个调用了构造器方法，一个赋值了一个实例。</p>
+<p>下面分别举例说明四种初始化的方式：</p>
+<p>&ensp;&ensp;&ensp;&ensp;1.在定义对象的地方，我们在类中定义了String的引用，直接初始化赋值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Construct</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> String cont = <span class="string">"Hello World"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;2.在类的构造器中，如第五章的构造方法初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Construct</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> String cont;</span><br><span class="line">	Construct(String cont)&#123;</span><br><span class="line">		<span class="keyword">this</span>.cont = cont;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructTest</span> </span>&#123;</span><br><span class="line">	Construct construct = <span class="keyword">new</span> Construct(<span class="string">"Hello"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;3.延迟加载，我们需要用到这个对象引用了，判断一下是否为null，然后再决定是否初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> String s;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(s==<span class="keyword">null</span>)&#123;</span><br><span class="line">			s=<span class="keyword">new</span> String(<span class="string">"Hello"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;4.使用实例进行初始化，如下边这种，我们没有使用构造方法而是直接赋值了个实例进行初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructTest</span> </span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> String s;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		s=<span class="string">"Hello"</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="二、继承语法"><a href="#二、继承语法" class="headerlink" title="二、继承语法"></a>二、继承语法</h1><p>&ensp;&ensp;&ensp;&ensp;另一种复用类的手段就是继承，我们创建一个新的类，如果没有显示的指明继承哪个类，那么它默认继承自Object类，我们也可以通过extends关键字继承一个指定的类。继承表现的是一种is-a的关系或者说是like-a，被继承的类称作父类或者基类，继承之后新生成的类称为子类或者派生类。子类拥有父类中所有被public或protected域修饰的方法、属性。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> String Name;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">double</span> money;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doPrint</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Hello World"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Son son = <span class="keyword">new</span> Son();</span><br><span class="line">		son.Name = <span class="string">"Zhang San"</span>;</span><br><span class="line">		son.doPrint();</span><br><span class="line">		<span class="comment">//money是父类私有的域，所以子类不能进行访问</span></span><br><span class="line">		<span class="comment">//son.money = 2014;</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="三、代理"><a href="#三、代理" class="headerlink" title="三、代理"></a>三、代理</h1><p>&ensp;&ensp;&ensp;&ensp;Java中还有一种基于组合与继承之间的关系，称作代理。但是实际上Java中并没有提供对它的直接支持。后续学习代理模式时会有专门的讲述。这里大概说一下，就是在使用组合的过程中，不提供成员对象的直接访问，而是通过一个新的方法暴露出来给其它使用者调用。避免直接暴露组合的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Construct</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"print"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">say</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"say"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clean</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"clean"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> Construct construct = <span class="keyword">new</span> Construct();</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delegation</span><span class="params">()</span></span>&#123;</span><br><span class="line">		construct.clean();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Son son = <span class="keyword">new</span> Son();</span><br><span class="line">		son.delegation();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="四、结合使用组合和继承"><a href="#四、结合使用组合和继承" class="headerlink" title="四、结合使用组合和继承"></a>四、结合使用组合和继承</h1><p>&ensp;&ensp;&ensp;&ensp;同时使用组合和继承是很常用的事情，一般就是在一个子类中引用一个其它的类实例对象即可。诸如下边这种形式：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="comment">//---</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Mother</span></span>&#123;</span><br><span class="line">	<span class="comment">//---</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> Mother mother = <span class="keyword">new</span> Mother();</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//---</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;关于继承还有一点说明，前文说到子类可以继承父类的全部，所以对于父类重载了的方法，子类也是可以继承并可以重载使用的。而且可以灵活的使用，避免了像C++中需要屏蔽父类该方法的方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="comment">//---</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFunc</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">		<span class="comment">//--</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doFunc</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">		<span class="comment">//--</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Son son = <span class="keyword">new</span> Son();</span><br><span class="line">		son.doFunc();</span><br><span class="line">		son.doFunc(<span class="string">"H"</span>);</span><br><span class="line">		son.doFunc(<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="五、组合和继承之间选择"><a href="#五、组合和继承之间选择" class="headerlink" title="五、组合和继承之间选择"></a>五、组合和继承之间选择</h1><p>&ensp;&ensp;&ensp;&ensp;组合和继承都允许在新类中放置子对象，组合是显式的，而继承是隐式的。一般情况下，使用组合的地方多出是想使用其对象，就是在新类内部引用一个对象，然后利用这个对象完成一系列功能。而继承的使用场景主要是新类想使用原来类的一部分接口这种。在使用组合和继承的时候，要注意把我访问权限控制，因为一个完善的访问权限控制可以使程序更加健壮稳定。</p>
+<h1 id="六、protected关键字"><a href="#六、protected关键字" class="headerlink" title="六、protected关键字"></a>六、protected关键字</h1><p>&ensp;&ensp;&ensp;&ensp;前文说到访问权限控制，在一般情况下，为了保证不被他人修改自己的私有域，父类的只有自己可以有权使用的域跟方法会被设置为private，而在一些特殊情况下或许我们会放宽这种约束，即我的东西其他人都不可以用，但是我的子类可以用，这时候就是前文所说的protected关键字的作用了。被protected关键字修饰的域，可以被子类访问：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="keyword">protected</span> String s = <span class="string">"Hello"</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Son son = <span class="keyword">new</span> Son();</span><br><span class="line">		System.out.println(son.s);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果，因为字符串s被声明为protected，所以在子类的对象引用son可以访问到：</p>
+<p><img src="[Java编程思想]八：复用类/png1.png" alt="png1"></p>
+<h1 id="七、向上转型"><a href="#七、向上转型" class="headerlink" title="七、向上转型"></a>七、向上转型</h1><p>&ensp;&ensp;&ensp;&ensp;在继承的关系中，由于子类继承了父类所有的方法，所以发给父类方法的所有消息，子类都可以接收，注意这里是发给父类方法的所有消息，而不是子类调用了继承的方法。编译器会知道传递的参数引用属于哪一种类型，并将其子类对象引用的类型转换成父类，这个过程称作向上引用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> String s;</span><br><span class="line">	Father(String s)&#123;</span><br><span class="line">		<span class="keyword">this</span>.s = s;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">doFunc</span><span class="params">(Father father)</span></span>&#123;</span><br><span class="line">		System.out.println(s);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Son</span> <span class="keyword">extends</span> <span class="title">Father</span></span>&#123;</span><br><span class="line">	Son(String s) &#123;</span><br><span class="line">		<span class="keyword">super</span>(s);</span><br><span class="line">		<span class="comment">// TODO Auto-generated constructor stub</span></span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Son son = <span class="keyword">new</span> Son(<span class="string">"Hello"</span>);</span><br><span class="line">		Father.doFunc(son);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;如上所示，父类中有一个static的方法，并且方法的参数是父类的对象，在子类中直接通过类名.方法的形式调用了该方法，并传递了子类的对象引用作为参数。编译器没有报错，运行结果如下：</p>
+<p><img src="[Java编程思想]八：复用类/png2.png" alt="png2"></p>
+<p>&ensp;&ensp;&ensp;&ensp;向上转型的概念来源于子类继承父类，子类在下，父类在上，由子类转换成父类，所以称作是向上转型。因为子类是父类的超集，所以向上转型总是安全的，相对也有向下转型，将在后文介绍。对于组合和继承，组合关系跟加方便且便于理解也常用，继承的关系虽然重要但不是说一定要多用。</p>
+<h1 id="八、Final关键字"><a href="#八、Final关键字" class="headerlink" title="八、Final关键字"></a>八、Final关键字</h1><p>&ensp;&ensp;&ensp;&ensp;final关键字与static同等重要，final顾名思义就是最终的，不可改变的。所以Java中final关键字也是指“这是无法改变的”。一般无法改变主要是出于两种理由，设计或者效率，这两种相差比较远，所以容易误用。这里主要从三个方面说明final关键字的用法。</p>
+<p>&ensp;&ensp;&ensp;&ensp;<strong>1.final数据：</strong>当我们需要告诉编译器这一块数据区域不得改变的时候，比如一个固定的常量，或者一个在运行时候被初始化的值而我们却不希望它被改变，那么就可以使用final来修饰。比如类库中的某个成员变量，提供给开发者使用，但是不允许开发者修改这个变量在程序运行过程中的值，那么就可以使用final修饰。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FinalTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String ARG_NAME = <span class="string">"Hello World"</span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(ARG_NAME);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果一个常量被修饰为static final 那么表明这个常量是不可被修改且只有一份的，并且它的命名规则要使用大写且用下划线分割所有单词。对于基本数据类型，final表示这个值不可以修改，对于对象的引用，表示这个引用不可以修改，也就是不可以指向别的对象。</p>
+<p>&ensp;&ensp;&ensp;&ensp;<strong>2.final参数</strong>：Java中允许方法使用final修饰的参数，这意味着这个参数指向的对象不可以被修改</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">package com.chenxyt.java.practice;</span><br><span class="line">class Gzino&#123;</span><br><span class="line">	public void doFunc()&#123;</span><br><span class="line">		//--</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">public class FinalTest&#123;</span><br><span class="line">	public void with(final Gzino g)&#123;</span><br><span class="line">		//error! 此处不可以修改该对象的引用</span><br><span class="line">		//g = new Gzino();</span><br><span class="line">		//可以使用该参数</span><br><span class="line">		g.doFunc();</span><br><span class="line">	&#125;</span><br><span class="line">	public void without(Gzino g)&#123;</span><br><span class="line">		//没有被final修饰，可以使用</span><br><span class="line">		g = new Gzino();</span><br><span class="line">		g.doFunc();</span><br><span class="line">	&#125;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		FinalTest ft = new FinalTest();</span><br><span class="line">		ft.with(new Gzino());</span><br><span class="line">		ft.without(new Gzino());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;<strong>3.final方法：</strong>使用final方法的原因有两个，第一个是把它锁定，以防任何继承它的类修改这个方法。第二个原因是提高效率，如果一个方法被声明为final方法，那么编译器会跳过这个方法的常规调用方式（参数入栈，跳到方法的执行部分，然后返回清理栈中参数，最后返回结果），并且以方法体中的实际代码副本代替方法调用，这样减小了方法调用的开销，但在方法过大的时候却不实用，因此在JDK1.5之后，取消了该种形式的作用，final方法只用来锁定防止其它类修改。</p>
+<p>&ensp;&ensp;&ensp;&ensp;类中所有的private域都被隐式的注为private，因为不允许其它人修改。还有一种是final类，被final类修饰的方法我们认为这个类不能被其它人修改，也不能被继承，当你想达到这样的目的时，可以使用final类。</p>
+<h1 id="九、初始化及类加载"><a href="#九、初始化及类加载" class="headerlink" title="九、初始化及类加载"></a>九、初始化及类加载</h1><p>&ensp;&ensp;&ensp;&ensp;在许多语言中，程序在启动的过程中发生了加载，然后是初始化，最后是程序运行。Java不同，Java采用不同的加载机制， 每个类的编译文件都在它自己的代码文件中，该文件只有在用到该程序的时候才被加载。所以一般可以说“类的代码在初次使用时才发生加载“，这通常是指加载发生在创建第一个类对象时，但是当static域被访问时，也会发生加载。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Insect</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> i = <span class="number">9</span>;</span><br><span class="line">	<span class="keyword">protected</span> <span class="keyword">int</span> j;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Insect</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"i="</span> + i + <span class="string">"--j="</span> + j);</span><br><span class="line">		j=<span class="number">39</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> x1 = printInit(<span class="string">"static Insect.x1 initialized"</span>);</span><br><span class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">printInit</span><span class="params">(String s)</span></span>&#123;</span><br><span class="line">		System.out.println(s);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">53</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadTest</span> <span class="keyword">extends</span> <span class="title">Insect</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> k = printInit(<span class="string">"LoadTest.k initialized"</span>);</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">LoadTest</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"k= "</span> + k);</span><br><span class="line">		System.out.println(<span class="string">"j= "</span> + j);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> x2 = printInit(<span class="string">"static LoadTest.x2 initialized"</span>);</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"LoadTest constructor"</span>);</span><br><span class="line">		LoadTest lt = <span class="keyword">new</span> LoadTest();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="[Java编程思想]八：复用类/png3.png" alt="png3"></p>
+<p>&ensp;&ensp;&ensp;&ensp;分析上面的程序，程序在启动的时候先查找main函数，在多数语言中，main函数都是程序的入口，发现main方法在LoadTest类中，这时开始加载LoadTest类，在加载的过程中，发现这个类有基类，于是他继续加载基类，如果还有基类那么继续加载另一个基类，因为子类中可能会用到基类的内容。然后基类中的static域初始化，这时第一行打印。然后子类中的static域初始化，这时第二行执行。这时必要的类资源已经加载完毕，可以进行对象创建，第三行打印。初始化对象，首先对象中的所有基本类型被赋初始值0，对象被赋值为null，这是通过将对象内存设置为二进制零实现的。然后基类的构造函数被调用，这里是自动调用的，也可以通过super方法直接调用，这时第四行被打印。基类构造器和子类构造器执行相同的方式经过相同的过程。基类构造器执行完毕之后，实例变量按顺序被创建，最后执行子类的构造方法，所以最后两行被打印。</p>
+<h1 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h1><p>&ensp;&ensp;&ensp;&ensp;继承和组合都能从现有类中得到新的类型，区别在于组合一般是将现有类型作为底层实现的一部分使用，而继承复用的是接口。本章的重点内容是熟悉final关键字的用法以及类加载和初始化的过程，最后一点尤为重要。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/Think-in-Java/" rel="tag"># Think in Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/13/【Java编程思想】七：访问权限控制/" rel="next" title="【Java编程思想】七：访问权限控制">
+                <i class="fa fa-chevron-left"></i> 【Java编程思想】七：访问权限控制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/13/【Java编程思想】九：多态/" rel="prev" title="【Java编程思想】九：多态">
+                【Java编程思想】九：多态 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、组合语法"><span class="nav-number">1.</span> <span class="nav-text">一、组合语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、继承语法"><span class="nav-number">2.</span> <span class="nav-text">二、继承语法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、代理"><span class="nav-number">3.</span> <span class="nav-text">三、代理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、结合使用组合和继承"><span class="nav-number">4.</span> <span class="nav-text">四、结合使用组合和继承</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#五、组合和继承之间选择"><span class="nav-number">5.</span> <span class="nav-text">五、组合和继承之间选择</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#六、protected关键字"><span class="nav-number">6.</span> <span class="nav-text">六、protected关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#七、向上转型"><span class="nav-number">7.</span> <span class="nav-text">七、向上转型</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#八、Final关键字"><span class="nav-number">8.</span> <span class="nav-text">八、Final关键字</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#九、初始化及类加载"><span class="nav-number">9.</span> <span class="nav-text">九、初始化及类加载</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#十、总结"><span class="nav-number">10.</span> <span class="nav-text">十、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
