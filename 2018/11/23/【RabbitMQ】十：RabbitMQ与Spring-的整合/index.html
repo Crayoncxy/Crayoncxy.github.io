@@ -87,20 +87,20 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前面的文章中整理了常规项目下RabbitMQ实现各种通用消息队列的方式，一般的企业级项目，通常使用Spring框架来实现项目，本文主要讲述RabbitMQ与Spring的集成，通过一个简单的示例演示集成。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：通过Spring管理项目，实现RabbitMQ的fanout类型交换机的消息队列，一">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png2.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png3.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png4.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png5.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png6.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png7.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png8.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png9.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.712Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【RabbitMQ】十：RabbitMQ与Spring 的整合">
 <meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前面的文章中整理了常规项目下RabbitMQ实现各种通用消息队列的方式，一般的企业级项目，通常使用Spring框架来实现项目，本文主要讲述RabbitMQ与Spring的集成，通过一个简单的示例演示集成。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：通过Spring管理项目，实现RabbitMQ的fanout类型交换机的消息队列，一">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/[RabbitMQ]十：RabbitMQ与Spring%20的整合/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png1.png">
 
 
 
@@ -365,7 +365,7 @@
       
         <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;前面的文章中整理了常规项目下RabbitMQ实现各种通用消息队列的方式，一般的企业级项目，通常使用Spring框架来实现项目，本文主要讲述RabbitMQ与Spring的集成，通过一个简单的示例演示集成。</p>
 <p>&ensp;&ensp;&ensp;&ensp;示例：通过Spring管理项目，实现RabbitMQ的fanout类型交换机的消息队列，一个生产者Producer，一个fanout类型的交换机exchangeTest，两个队列queueTest和queueTest1以及两个消费者Consumer和Consumer1接收消息</p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png1.png" alt="png1"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png1.png" alt="png1"></p>
 <h1 id="二、代码"><a href="#二、代码" class="headerlink" title="二、代码"></a>二、代码</h1><p>首先是在pom文件中加入用于整合的依赖</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--rabbitmq依赖 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.amqp<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-rabbit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.5.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span></span></span><br></pre></td></tr></table></figure>
 <p>同时贴出完整的pom依赖</p>
@@ -382,7 +382,7 @@
 <p>创建启动类，加载spring配置文件，并获取发送者的bean进行消息发送</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.producer;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProjectStart</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> ApplicationContext context = <span class="keyword">null</span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">		context = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"application.xml"</span>);</span><br><span class="line">		MessageProducer messageProducer = (MessageProducer) context.getBean(<span class="string">"messageProducer"</span>);</span><br><span class="line">		Random random = <span class="keyword">new</span> Random(); </span><br><span class="line">		<span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">			Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">			messageProducer.sendMessage(random.nextInt());	</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>启动ProjectStart.java可以看见控制台打印出消息的内容</p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png2.png" alt="png2"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png2.png" alt="png2"></p>
 <p>以上就是RabbitMQ整合Spring的示例.</p>
 <h1 id="三、关于缓冲池以及并发的控制"><a href="#三、关于缓冲池以及并发的控制" class="headerlink" title="三、关于缓冲池以及并发的控制"></a>三、关于缓冲池以及并发的控制</h1><p>&ensp;&ensp;&ensp;&ensp;前文讲过关于RabbitMQ消息处理缓冲池prefetch的概念，当两个消费者处理消息的能力差距在千倍级别以上时，可以考虑通过改变prefetch大小的方式来合理的利用资源。这里在整合了Spring之后，还可以通过给处理慢的消费者增开线程的方式来提高处理速度（查阅了很多资料，没有找到如何在不整合Spring的前提下增加线程数量）。对比上文rabbitMQ.xml文件中，两个消费者监听的配置是有不一样的地方的</p>
 <p>消费者1</p>
@@ -400,21 +400,21 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.consumer;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.MessageListener;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageConsumer1</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(MessageConsumer1.class);</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			Thread.sleep(<span class="number">20000</span>);</span><br><span class="line">			logger.info(<span class="string">"消费者1线程:&#123;&#125;"</span>,message);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;这里有个地方要注意，每做一个测试之前，要先看RabbitMQ控制台已经存在的队列中是否有未处理的消息，有的话及时处理或删除，以免影响测试结果。</p>
 <p>&ensp;&ensp;&ensp;&ensp;启动ProjectStart。控制台间隔1s打印一条发送消息的日志，一共打印20条，并且间隔20s会打印一条收到消息的日志。RabbitMQ管理台上可以看到开始的时候有1个处于unacked状态的消息，然后从1递增到19个ready状态的消息，total从1递增到20之后开始每隔20s减1，直到最后全部为0（ready是队列中存在的未被消费者接收的消息数量，unacked是被消费者接收但是未返回的消息数量，total是他们二者之和），可以看到eclipse的控制台和RabbitMQ的管理台展示的结果相同，均表明此种情况是一种阻塞状况，20条消息是按照顺序执行的，全部执行完的时间大约是20x20=400s</p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png3.png" alt="png3"></p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png4.png" alt="png4"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png3.png" alt="png3"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png4.png" alt="png4"></p>
 <p>&ensp;&ensp;&ensp;&ensp;场景2：生产者1s发送1条消息，发送20条，消费者20s处理一条消息，设置消费者的concurrency=20，prefetch=1，即启动20个线程，每个线程能缓冲的最大消息数目为1</p>
 <p>修改配置文件</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">rabbit:listener-container</span> <span class="attr">connection-factory</span>=<span class="string">"connectionFactory"</span> <span class="attr">concurrency</span>=<span class="string">"20"</span> <span class="attr">prefetch</span>=<span class="string">"1"</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">rabbit:listener</span> <span class="attr">queues</span>=<span class="string">"queueTest"</span> <span class="attr">ref</span>=<span class="string">"messageReceiver1"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rabbit:listener-container</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;等待上一个测试的消息完全处理完成之后，启动ProjectStart.java 可以看到控制台依然间隔1s打印一条发送消息，同时在20s之后开始间隔1s打印一条收到消息，并且RabbitMQ控制台ready，unacked，total数目与eclipse控制台状态相同，同时我们可以看到启动了20个线程，即创建了20个通道。测试结果表明，消息发送出去的时候，就已经被消费者接收了，只不过消息间隔1s发送，所以消息也是间隔1s接收，然后延迟20s打印，所以这种情况处理速度约为20+20=40s</p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png5.png" alt="png5"></p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png6.png" alt="png6"></p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png7.png" alt="png7"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png5.png" alt="png5"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png6.png" alt="png6"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png7.png" alt="png7"></p>
 <p>&ensp;&ensp;&ensp;&ensp;场景3：生产者间隔1s发送一条消息，发送20次，消费者间隔20s处理一条消息，设置消费者prefetch=20</p>
 <p>修改配置文件：</p>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">rabbit:listener-container</span> <span class="attr">connection-factory</span>=<span class="string">"connectionFactory"</span> <span class="attr">prefetch</span>=<span class="string">"20"</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">rabbit:listener</span> <span class="attr">queues</span>=<span class="string">"queueTest"</span> <span class="attr">ref</span>=<span class="string">"messageReceiver1"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rabbit:listener-container</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;确保上次测试的消息成功处理完之后启动ProjectStart.java，控制台间隔1s打印一条消息发出日志，间隔20s打印一条消息收到日志，与场景1的结果相同，不同的地方在于，RabbitMQ控制台ready状态为0，unacked状态间隔1s递增到20之后间隔20s递减，这种情况说明，消息都被消费者拿走了，但是由于消费者处理能力有限（一个线程，间隔时间20s）所以虽然一次拿了20个消息，但是仍然是顺序执行，20s处理一条数据。与场景1不同的是，场景1压力主要在RabbitMQ服务端，而该场景压力在消费者上。这种情况的处理速度与场景1相同约为20x20=400s</p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png8.png" alt="png8"></p>
-<p><img src="[RabbitMQ]十：RabbitMQ与Spring 的整合/png9.png" alt="png9"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png8.png" alt="png8"></p>
+<p><img src="/2018/11/23/【RabbitMQ】十：RabbitMQ与Spring-的整合/png9.png" alt="png9"></p>
 <p>以上就是关于整合了spring之后的RabbitMQ并发测试相关内容。</p>
 <h1 id="四、代码下载"><a href="#四、代码下载" class="headerlink" title="四、代码下载"></a>四、代码下载</h1><p><a href="https://pan.baidu.com/s/1pNoRXNl" target="_blank" rel="noopener">下载地址</a></p>
 
@@ -536,7 +536,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -558,7 +558,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、问题描述：&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;最近学习了一下Websocket，然后使用它结合spring做了一个实施监控的页面（使用的是spring-websocket），功能是监控交易发生，当交易发生时主动推送给前端页面展示交易流水。测试的时候一个线程顺序批量执行接口没有什么问题，页面哗啦啦的显示很顺利。当启动两个线程以上之后跑了一会儿之后就宕掉了。日志报错“Blocking">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/[Websocket]Blocking-message-pending-10000-for-BLOCKING/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/[Websocket]Blocking-message-pending-10000-for-BLOCKING/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/png2.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.778Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Websocket】Blocking message pending 10000 for BLOCKING">
 <meta name="twitter:description" content="一、问题描述：&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;最近学习了一下Websocket，然后使用它结合spring做了一个实施监控的页面（使用的是spring-websocket），功能是监控交易发生，当交易发生时主动推送给前端页面展示交易流水。测试的时候一个线程顺序批量执行接口没有什么问题，页面哗啦啦的显示很顺利。当启动两个线程以上之后跑了一会儿之后就宕掉了。日志报错“Blocking">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/[Websocket]Blocking-message-pending-10000-for-BLOCKING/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/png1.png">
 
 
 
@@ -365,9 +365,9 @@
 <p>运行报错信息：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Exception in thread <span class="string">"Thread-25"</span> java.lang.IllegalStateException: Blocking message pending <span class="number">10000</span> <span class="keyword">for</span> BLOCKING</span><br><span class="line">	at org.eclipse.jetty.websocket.common.WebSocketRemoteEndpoint.lockMsg(WebSocketRemoteEndpoint.java:<span class="number">130</span>)</span><br><span class="line">	at org.eclipse.jetty.websocket.common.WebSocketRemoteEndpoint.sendString(WebSocketRemoteEndpoint.java:<span class="number">379</span>)</span><br><span class="line">	at org.springframework.web.socket.adapter.jetty.JettyWebSocketSession.sendTextMessage(JettyWebSocketSession.java:<span class="number">184</span>)</span><br><span class="line">	at org.springframework.web.socket.adapter.AbstractWebSocketSession.sendMessage(AbstractWebSocketSession.java:<span class="number">104</span>)</span><br><span class="line">	at com.dcits.api.rateStatistics.websocket.SpringWebSocketHandler.sendMessageToUser(SpringWebSocketHandler.java:<span class="number">85</span>)</span><br><span class="line">	at com.dcits.api.rateStatistics.websocket.TestThread.run(TestThread.java:<span class="number">23</span>)</span><br></pre></td></tr></table></figure>
 <h1 id="二、解决方案："><a href="#二、解决方案：" class="headerlink" title="二、解决方案："></a>二、解决方案：</h1><p>&ensp;&ensp;&ensp;&ensp;网上查了一圈，基本都是StackOverFlow上的一些英文问答</p>
-<p><img src="[Websocket]Blocking-message-pending-10000-for-BLOCKING/png1.png" alt="png1"></p>
+<p><img src="/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/png1.png" alt="png1"></p>
 <p>唯一一条中文问答还答非所问</p>
-<p><img src="[Websocket]Blocking-message-pending-10000-for-BLOCKING/png2.png" alt="png2"></p>
+<p><img src="/2018/11/20/【Websocket】Blocking-message-pending-10000-for-BLOCKING/png2.png" alt="png2"></p>
 <p>&ensp;&ensp;&ensp;&ensp;大概看了一下其中一个StackOverFlow的答案，原文部分如下:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">I don<span class="string">'t thing you necessarily have to use Futures or mechanisms described in the above post. What I don'</span>t really get is : why doing asynchronous call to servlets ? Ofcourse several could send messages on the same RemoteEndPoint.. But can<span class="string">'t you simply make synchronous calls to the relevant classes and keep the same request-response flow that you use when records are found in your database ? :)</span></span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;我理解是这样的，在使用同一个RemoteEndPoint节点发送消息时，发生了阻塞。而阻塞的原因是因为异步调用，即一条消息没有发送给前端呢就已经开始准备发送第二条消息了，然后就产生了阻塞。有人提供了一种解决方案是使用Future多线程模型，将要处理的消息发送方法放在FutureTask中执行，等待正确返回之后再执行下一次发送。我这里的话，使用Future未免有点小题大做了，因为实际上我不需要等待异步执行的结果，也就是消息只要发出去就好。因为我使用synchronized关键字把sendMessageToUser方法加了锁，从而保证同一时间只发送一条消息。此时此刻我开了10个线程在跑交易，页面正在有条不紊的哗哗哗刷新着。后边如果再出现问题再想办法解决吧。</p>
@@ -490,7 +490,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -512,7 +512,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

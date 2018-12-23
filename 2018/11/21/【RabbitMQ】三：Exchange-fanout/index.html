@@ -87,20 +87,20 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;上一篇文章中讲述了一个简单的消息传递模型，消息从生产者发送到消费者再发送到队列，实际的工作中生产者不知道要把消息发送给哪个队列，可能有多个消费者要生产者的消息，也可能有的消费者不需要生产者的全部消息，比如日志系统，一个消费者需要info级别的信息，另一个消费者需要error和info级别的信息，这时候我们就用到了交换机，生产者把消息发送到交换">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png2.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png3.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png4.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png5.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png6.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png7.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png8.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png9.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.587Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【RabbitMQ】三：Exchange-fanout">
 <meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;上一篇文章中讲述了一个简单的消息传递模型，消息从生产者发送到消费者再发送到队列，实际的工作中生产者不知道要把消息发送给哪个队列，可能有多个消费者要生产者的消息，也可能有的消费者不需要生产者的全部消息，比如日志系统，一个消费者需要info级别的信息，另一个消费者需要error和info级别的信息，这时候我们就用到了交换机，生产者把消息发送到交换">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/[RabbitMQ]三：Exchange-fanout/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】三：Exchange-fanout/png1.png">
 
 
 
@@ -364,10 +364,10 @@
 
       
         <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;上一篇文章中讲述了一个简单的消息传递模型，消息从生产者发送到消费者再发送到队列，实际的工作中生产者不知道要把消息发送给哪个队列，可能有多个消费者要生产者的消息，也可能有的消费者不需要生产者的全部消息，比如日志系统，一个消费者需要info级别的信息，另一个消费者需要error和info级别的信息，这时候我们就用到了交换机，生产者把消息发送到交换机，交换机像是一个消息中转站，一边接收生产者的消息，一边将消息根据绑定队列的路由规则发送给指定的队列，这种我们称作“发布/订阅”模式。</p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png1.png" alt="png1"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png1.png" alt="png1"></p>
 <h1 id="二、交换机"><a href="#二、交换机" class="headerlink" title="二、交换机"></a>二、交换机</h1><p>&ensp;&ensp;&ensp;&ensp;这是这篇文章的主题，在学习笔记一种有说到，一共有四种交换机，fanout（分发），topic（匹配），direct（直连），header（主题），这篇文章中，我们先探讨fanout类型的交换机。</p>
 <p>我们可以先从管理台上看一下RabbitMQ为我们提供的交换机，如下图：</p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png2.png" alt="png2"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png2.png" alt="png2"></p>
 <p>图上所有amq.*的交换机，都是RabbitMQ为我们创建的交换机。</p>
 <p>&ensp;&ensp;&ensp;&ensp;<strong>匿名交换机：</strong>这里有个概念要说明一下，在上篇文章中我们发送消息时并没有使用交换机，但是消息依然发送到了指定的队列，这是因为RabbitMQ为我们创建了一个“”空字符串的匿名交换机，我们看下上篇文章中的发送消息的代码</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.basicPublish(<span class="string">""</span>,QUEUE_NAME,<span class="keyword">null</span>,message.getBytes(<span class="string">"UTF-8"</span>));</span><br></pre></td></tr></table></figure>
@@ -388,16 +388,16 @@
 <p>&ensp;&ensp;&ensp;&ensp;接下来创建消费者2，消费者2与消费者1相同，各自创建了一个随机临时队列并绑定在交换机上，为了便于区分，打印日志处区分了名字。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer2</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">""</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer2 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer2 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;接下来我们分别启动消费者1和消费者2，使他们处在监听状态。</p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png3.png" alt="png3"></p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png4.png" alt="png4"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png3.png" alt="png3"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png4.png" alt="png4"></p>
 <p>&ensp;&ensp;&ensp;&ensp;同时我们在RabbitMQ的管理台可以看到新建了两条名字随机由RabbitMQ生成的队列，并且当消费者1和消费者2服务断开时，这两个队列会被删除</p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png5.png" alt="png5"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png5.png" alt="png5"></p>
 <p>&ensp;&ensp;&ensp;&ensp;接下来我们启动消息生产者，每2s发送一条消息</p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png6.png" alt="png6"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png6.png" alt="png6"></p>
 <p>&ensp;&ensp;&ensp;&ensp;同时可以看到消费者1和消费者2都收到了相同的消息，并且RabbitMQ管理台新建了一个名为“HelloMq”类型为”fanout”的交换机 </p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png7.png" alt="png7"></p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png8.png" alt="png8"></p>
-<p><img src="[RabbitMQ]三：Exchange-fanout/png9.png" alt="png9"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png7.png" alt="png7"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png8.png" alt="png8"></p>
+<p><img src="/2018/11/21/【RabbitMQ】三：Exchange-fanout/png9.png" alt="png9"></p>
 <p>&ensp;&ensp;&ensp;&ensp;如上所示，我们就完成了使用fanout类型的交换机进行消息的“发布/订阅”，总结一下，我们可以使用fanout类型的交换机进行消息的广播发送。</p>
 <h1 id="六、代码下载"><a href="#六、代码下载" class="headerlink" title="六、代码下载"></a>六、代码下载</h1><p><a href="https://pan.baidu.com/s/1dGcdsCL" target="_blank" rel="noopener">下载地址</a></p>
 
@@ -519,7 +519,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -541,7 +541,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

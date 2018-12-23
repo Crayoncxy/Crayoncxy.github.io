@@ -252,6 +252,170 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/【Java编程思想】五：控制执行流程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/【Java编程思想】五：控制执行流程/" itemprop="url">【Java编程思想】五：控制执行流程</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T09:48:20+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/13/【Java编程思想】五：控制执行流程/" class="leancloud_visitors" data-flag-title="【Java编程思想】五：控制执行流程">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、true和false"><a href="#一、true和false" class="headerlink" title="一、true和false"></a>一、true和false</h1><p>&ensp;&ensp;&ensp;&ensp;关系操作符构造的条件语句如“==”的返回值是true和false，Java中不允许将一个数字作为布尔值使用。</p>
+<h1 id="二、if-else"><a href="#二、if-else" class="headerlink" title="二、if-else"></a>二、if-else</h1><p>&ensp;&ensp;&ensp;&ensp;if else语句与其它语言的相同，其中else是可选的。if else用来实现多种条件下的执行。</p>
+<h1 id="三、迭代"><a href="#三、迭代" class="headerlink" title="三、迭代"></a>三、迭代</h1><p>&ensp;&ensp;&ensp;&ensp;while、do-while、for用来控制循环，有时候将他们称为迭代语句。语句会重复执行，直到起控制作用的布尔值得到“假”的结果时停止</p>
+<h1 id="四、for-each"><a href="#四、for-each" class="headerlink" title="四、for-each"></a>四、for-each</h1><p>&ensp;&ensp;&ensp;&ensp;for-each是一种更加简洁的for语句，语法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i:x)&#123;</span><br><span class="line">    <span class="comment">//---</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;x是要被访问的循环体，i是一个变量，类型int只是一种，具体的类型要与x内部的值的类型相同，这个语句的意思就是循环取x内部的值赋值给i</p>
+<h1 id="五、return"><a href="#五、return" class="headerlink" title="五、return"></a>五、return</h1><p>&ensp;&ensp;&ensp;&ensp;return关键字有两个用途，一方面指定一个方法返回什么值，另一方面它会强制结束当前方法，并返回那个值。</p>
+<h1 id="六、break和continue"><a href="#六、break和continue" class="headerlink" title="六、break和continue"></a>六、break和continue</h1><p>&ensp;&ensp;&ensp;&ensp;在任何迭代语句的主体部分，都可以用break和continue控制循环的流程，其中break用于强制退出循环，不执行循环剩余的语句，比如一共五组数据循环到第三组break，那么后面两组不管了继续执行下边的数据。continue是停止当前的迭代，退到循环开始执行下一次迭代，比如一共五组数据执行到第三组开始的时候continue，那么这个循环体主体剩余的部分不执行，继续从第四组开始执行。</p>
+<h1 id="七、臭名昭著的go-to"><a href="#七、臭名昭著的go-to" class="headerlink" title="七、臭名昭著的go-to"></a>七、臭名昭著的go-to</h1><p>&ensp;&ensp;&ensp;&ensp;go-to语句会破坏代码的逻辑结构，降低代码的可读性。因此不建议使用。</p>
+<h1 id="八、switch"><a href="#八、switch" class="headerlink" title="八、switch"></a>八、switch</h1><p> &ensp;&ensp;&ensp;&ensp;switch也被划为一种选择语句，根据整数表达式的值，从一系列语句中选择一组执行。语法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">switch</span>(a)&#123;</span><br><span class="line">    <span class="keyword">case</span> value1:</span><br><span class="line">       <span class="comment">//---;</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> value2:</span><br><span class="line">        <span class="comment">//---;</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        <span class="comment">//---;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="九、总结"><a href="#九、总结" class="headerlink" title="九、总结"></a>九、总结</h1><p>&ensp;&ensp;&ensp;&ensp;文中多数控制语句在其它语言中都通用，注意for-each语句的使用。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/12/【Java编程思想】四：操作符/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -372,47 +536,47 @@
 <p>&ensp;&ensp;&ensp;&ensp;对于基本的数据类型，赋值操作没有引用的涉及，只是单纯的将一个值赋值给另一个值。例如a=b，当b再次被修改时，a不会受到影响，因为a与b相互独立。但是对于对对象的赋值来说，情况却大大不同，因为我们对对象的操作是操作了对象的引用，所以当一个对象赋值给另一个对象时，实际上是拷贝了引用到左值，也就是比如c和d是指向两个不同对象的引用，当c=d时，实际发生的情况是c和d都指向了原本只有d指向的对象。而c被赋值之后，原来的引用丢失了，它曾经所指向的不再被引用的对象被垃圾回收器回收了。如下例子创建了两个不同的对象，进行赋值操作。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tank</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> level;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Tank tk1 = <span class="keyword">new</span> Tank();</span><br><span class="line">		Tank tk2 = <span class="keyword">new</span> Tank();</span><br><span class="line">		tk1.level = <span class="number">2</span>;</span><br><span class="line">		tk2.level = <span class="number">3</span>;</span><br><span class="line">		System.out.println(<span class="string">"tk1.level = "</span> + tk1.level + <span class="string">"---tk2.level = "</span> + tk2.level);</span><br><span class="line">		tk1=tk2;</span><br><span class="line">		System.out.println(<span class="string">"tk1.level = "</span> + tk1.level + <span class="string">"---tk2.level = "</span> + tk2.level);</span><br><span class="line">		tk2.level=<span class="number">5</span>;</span><br><span class="line">		System.out.println(<span class="string">"tk1.level = "</span> + tk1.level + <span class="string">"---tk2.level = "</span> + tk2.level);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png1.png" alt="png1"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png1.png" alt="png1"></p>
 <p>&ensp;&ensp;&ensp;&ensp;tk1和tk2分别是两个独立的对象，它们内部有level属性，赋值之前两个对象的属性值不同，赋值操作完成之后两个对象的属性值相同，当再次更改对象tk2的level值时，预期的理想情况是不会影响tk1的值，但实际结果并非如此，tk1与tk2对象的属性相同，这与前面的分析结果相同。<br>&ensp;&ensp;&ensp;&ensp;Java中这种针对对象的特殊现象叫做“<strong>别名现象</strong>”，如果想避免这种现象的话，可以使用如下操作，赋值操作针对属性而不是对象的引用:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tk1.level=tk2.level</span><br></pre></td></tr></table></figure>
 <p>这样操作就可以保持两个对象本身相互独立。</p>
 <p>&ensp;&ensp;&ensp;&ensp;在调用方法传参的时候也是会产生“别名问题”，如下例子，调用方法copy之后，理想的是只改变了方法内的值，实际上是改变了方法之外对象的值：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tank</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> level;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CopyTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copy</span><span class="params">(Tank tk3)</span></span>&#123;</span><br><span class="line">		tk3.level = <span class="number">9</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Tank tk1 = <span class="keyword">new</span> Tank();</span><br><span class="line">		tk1.level = <span class="number">2</span>;</span><br><span class="line">		System.out.println(<span class="string">"tk1.level = "</span> + tk1.level);</span><br><span class="line">		copy(tk1);</span><br><span class="line">		System.out.println(<span class="string">"tk1.level = "</span> + tk1.level);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果，方法外部tk1对象的值被修改了</p>
-<p><img src="[Java编程思想]四：操作符/png2.png" alt="png2"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png2.png" alt="png2"></p>
 <h1 id="五、算术操作符"><a href="#五、算术操作符" class="headerlink" title="五、算术操作符"></a>五、算术操作符</h1><p>&ensp;&ensp;&ensp;&ensp;Java中的算术操作符与其它语言基本类似，有加号（+）、减号（-）、乘号（*）、取整（/）、取余（%），同时也具有简化运算符的功能如要将x加4之后再赋值给x，则可以写成：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x+=<span class="number">4</span>;</span><br></pre></td></tr></table></figure>
 <h1 id="六、自动递增递减"><a href="#六、自动递增递减" class="headerlink" title="六、自动递增递减"></a>六、自动递增递减</h1><p>&ensp;&ensp;&ensp;&ensp;Java中的递增递减操作与其它语言基本类似，递增符合（++），递减符合（–），操作目的是快速使一个整数加1或者减1如a++等同于a=a+1，这两种符号分别有两种使用方式称为“前缀式”和“后缀式”，前缀式意味着符号在变量前边，后缀式意味着符号在变量后边。二者的区别，对于前缀式是先做运算再取值，如a=1，b=++a，此时a跟b的值都是2，而后缀式则是先取值再做运算，如a=1，b=a++，此时b的值为1，a的值为2</p>
 <h1 id="七、关系操作符"><a href="#七、关系操作符" class="headerlink" title="七、关系操作符"></a>七、关系操作符</h1><p>&ensp;&ensp;&ensp;&ensp;关系操作符生成的是一个boolean（布尔）结果，它们计算操作数之间的关系，如果关系为真则结果为true，如果关系为假则结果为false。关系操作符号包括小于（＜）、大于（＞）、小于等于（＜=）、大于等于（＞＝）、等于（==）以及不等于（！=）。等于和不等于适用于所有的基本数据类型，而其它的操作符不适用于boolean类型，因为它们的值为true或者false，比较大小没有意义。<br>操作符“==”和“！=”同样适用于操作对象，但是与基本操作类型相比有一些不同。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Integer itg1 = <span class="keyword">new</span> Integer(<span class="number">22</span>);</span><br><span class="line">		Integer itg2 = <span class="keyword">new</span> Integer(<span class="number">22</span>);</span><br><span class="line">		System.out.println(itg1==itg2);</span><br><span class="line">		System.out.println(itg1!=itg2);</span><br><span class="line">		<span class="keyword">int</span> int1 = <span class="number">22</span>;</span><br><span class="line">		<span class="keyword">int</span> int2 = <span class="number">22</span>;</span><br><span class="line">		System.out.println(int1==int2);</span><br><span class="line">		System.out.println(int1!=int2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如上创建了两个Integer对象和两个int基本数据类型值，分别做“==”和“！=”判断，结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png3.png" alt="png3"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png3.png" alt="png3"></p>
 <p>&ensp;&ensp;&ensp;&ensp;从结果可见，两个对象是“！=”，而两个int基本数据类型值是“==”，这是为什么呢？因为对于对象来说，“==”和“！=”比较的是对象的引用，虽然这两个对象的值相同，但是他们对象的引用并不是一个，也就是他们在内存中有两个不同的存储位置，所以不相同。所以要想比较对象的值是否相同，我们可以使用对象的equals（）方法来进行比较，它是Object类的一个通用方法，第一章中说到过所有类的父类都是Object，因此任何类的对象都可以调用这个方法。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Integer itg1 = <span class="keyword">new</span> Integer(<span class="number">22</span>);</span><br><span class="line">		Integer itg2 = <span class="keyword">new</span> Integer(<span class="number">22</span>);</span><br><span class="line">		System.out.println(itg1.equals(itg2));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png4.png" alt="png4"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png4.png" alt="png4"></p>
 <p>&ensp;&ensp;&ensp;&ensp;新的问题来了，我们看如下示例，我们自定义了一个新的类，创建了两个对象进行比较：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Oper</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Oper op1 = <span class="keyword">new</span> Oper();</span><br><span class="line">		Oper op2 = <span class="keyword">new</span> Oper();</span><br><span class="line">		op1.i=<span class="number">2</span>;</span><br><span class="line">		op2.i=<span class="number">2</span>;</span><br><span class="line">		System.out.println(op1.equals(op2));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png5.png" alt="png5"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png5.png" alt="png5"></p>
 <p>&ensp;&ensp;&ensp;&ensp;结果仍然为fasle！这是为什么呢？这是因为Object类中equals（）方法实际上是比较两个引用是否相同，就是它与“==”的本质效果是一样的，但是在第一个示例中的Integer类中，Java覆盖了这个方法，方法内容判断两个对象的类型是否相同以及值是否相同即可。而我们自己创建的Oper类并没有覆盖这个方法，所以沿用的还是Object类的方法。常见的String类也是覆盖了equals（）方法，效果与Integer类的对象相同。</p>
 <h1 id="八、逻辑操作符"><a href="#八、逻辑操作符" class="headerlink" title="八、逻辑操作符"></a>八、逻辑操作符</h1><p>&ensp;&ensp;&ensp;&ensp;Java中的逻辑操作符与其它语言基本类似，包括与（&amp;&amp;）、或（||）、非（！），不同的是Java中的逻辑操作符只能应用与布尔值之间或者是表达式结果为布尔值。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> a = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> b = <span class="number">2</span>;</span><br><span class="line">		<span class="keyword">int</span> c = <span class="number">3</span>;</span><br><span class="line">		System.out.println((a&gt;b)&amp;&amp;(b&gt;c));</span><br><span class="line">		System.out.println((a&gt;b)||(b&lt;c));</span><br><span class="line">		System.out.println(!(a&lt;b));		</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png6.png" alt="png6"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png6.png" alt="png6"></p>
 <p>&ensp;&ensp;&ensp;&ensp;逻辑运算满足如下关系，“&amp;&amp;”逻辑与运算符必须两边同时为真则结果为真，否则为假。“||”逻辑或运算符只要有一边为真则结果为真，“！”非运算符取对应值的对立面，即非真则假。对于逻辑与和逻辑或运算还有个名词叫做<strong>短路</strong>，即当两个算式做逻辑与运算时，如果左边第一个算式为假，则显然这个逻辑表达式最后的结果一定为假，那么就没有必要进行下边的表达式计算，直接结束运算，这个过程称作短路。</p>
 <h1 id="九、直接常量"><a href="#九、直接常量" class="headerlink" title="九、直接常量"></a>九、直接常量</h1><p>&ensp;&ensp;&ensp;&ensp;Java中同样可以使用例如“π”这种常量表示。</p>
 <h1 id="十、按位操作符"><a href="#十、按位操作符" class="headerlink" title="十、按位操作符"></a>十、按位操作符</h1><p>&ensp;&ensp;&ensp;&ensp;Java中的按位操作符与其他语言基本相似，有按位与（&amp;）、按位或（|）、按位异或（^）和按位非（~）操作符。它们针对基本数据类型的一个比特位（bit）进行运算。运算规则如下，&amp;操作符必须同时为1才为1，|操作符只有同时为0时才为0，^操作符只要有一个为1就为1，~是单目运算符，取反，若值为1则结果为0，反之为1。按位操作符除了~还可以与“=”合起来使用，如&amp;=或者|=、^=。<br>对于布尔值，同样可以进行按位与、按位或和按位异或运算，但是不能进行按位非运算，并且他们不会被短路，不管第一个表达式结果是什么，都会继续运算下去。</p>
 <h1 id="十一、移位操作符"><a href="#十一、移位操作符" class="headerlink" title="十一、移位操作符"></a>十一、移位操作符</h1><p>&ensp;&ensp;&ensp;&ensp;移位操作符操作的也是二进制的“位”，移位操作符只能用来处理整数类型。移位操作也是二元操作符，一共有三种，左移操作符（&lt;&lt;），右移操作符（&gt;&gt;），无符号右移操作符（&gt;&gt;&gt;），左移操作符是操作符左边的数向左移动操作符右边指定的位数，<strong>低位补0</strong>，右移操作符是操作符左边的数向右移动操作符右边指定的位数，其中<strong>正数高位补0，负数高位补1</strong>。无符号右移操作符是Java独有的一种，<strong>即不管正数还是负数，右移之后高位都补0</strong>。关于移位操作有两点说明，一是高位指的是左边的位，二是对于int类型，最大长度为32位，对于long类型最大长度为64位。移位示例如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> a = <span class="number">6297</span>;</span><br><span class="line">		<span class="keyword">int</span> b = -<span class="number">6297</span>;</span><br><span class="line">		System.out.println(Integer.toBinaryString(a));</span><br><span class="line">		System.out.println(Integer.toBinaryString(b));</span><br><span class="line">		System.out.println(Integer.toBinaryString(a&gt;&gt;<span class="number">5</span>));</span><br><span class="line">		System.out.println(Integer.toBinaryString(a&lt;&lt;<span class="number">5</span>));</span><br><span class="line">		System.out.println(Integer.toBinaryString(a&gt;&gt;&gt;<span class="number">5</span>));</span><br><span class="line">		System.out.println(Integer.toBinaryString(b&gt;&gt;<span class="number">5</span>));</span><br><span class="line">		System.out.println(Integer.toBinaryString(b&lt;&lt;<span class="number">5</span>));</span><br><span class="line">		System.out.println(Integer.toBinaryString(b&gt;&gt;&gt;<span class="number">5</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;我们以int类型6297为例，分别对正6297和负6297做三种位移操作，结果如下：</p>
-<p><img src="[Java编程思想]四：操作符/png7.png" alt="png7"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png7.png" alt="png7"></p>
 <p>满足前边所说，左移低位补0，右移正数高位补0，低位补1，因为高位0没有实际意义，所以没有写出。同时，因为数据类型为int类型，所以最大长度为32位，超出的部分被截断了。</p>
 <p>&ensp;&ensp;&ensp;&ensp;如果对char、short、byte类型的数值进行移位处理，那么他们会被先转成int类型，并且得到的结果也只是int类型。只有数值右端对的低5位才会有用，这样可以防止移位得到超过int类型的最大位数。比如说5&lt;&lt;34，因为最多能移32位，所以要把34转成二进制，然后取低5位，34转换成2进制是100010，取低5位就是00010，也就是5&lt;&lt;34实际上就是5&lt;&lt;2=10100=20。同样的对于long类型，long的最大长度为64位，所以数值的低6位有效。移位运算符同时也支持“&lt;&lt;=”等运算操作。</p>
 <h1 id="十二、三元操作符IF-ELSE"><a href="#十二、三元操作符IF-ELSE" class="headerlink" title="十二、三元操作符IF-ELSE"></a>十二、三元操作符IF-ELSE</h1><p>&ensp;&ensp;&ensp;&ensp;三元操作符也称条件操作符，它有三个操作符。表达形式如下：<br>boolean-exp？value1：value2；<br>boolean-exp是一个布尔表达值，如果值为真，则返回value1的值，如果值为假，则返回value2的值。如：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OperationTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line">		<span class="keyword">int</span> b = a&gt;<span class="number">10</span>?a*<span class="number">100</span>:a*<span class="number">10</span>;</span><br><span class="line">		System.out.println(<span class="string">"b===="</span>+ b);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[Java编程思想]四：操作符/png8.png" alt="png8"></p>
+<p><img src="/2018/11/12/【Java编程思想】四：操作符/png8.png" alt="png8"></p>
 <p>因为a&lt;10，所以布尔表达式的值为假，所以取value2也就是a*10的值。</p>
 <h1 id="十三、字符串操作符-和"><a href="#十三、字符串操作符-和" class="headerlink" title="十三、字符串操作符+和+="></a>十三、字符串操作符+和+=</h1><p>&ensp;&ensp;&ensp;&ensp;Java中可以使用+和+=连接String类型，并且当操作符左边你的数为String时，Java会试图将操作符右边的类型转换成String。</p>
 <h1 id="十四、使用操作符常犯的错误"><a href="#十四、使用操作符常犯的错误" class="headerlink" title="十四、使用操作符常犯的错误"></a>十四、使用操作符常犯的错误</h1><p>&ensp;&ensp;&ensp;&ensp;注意“=”和“==”的区别，以及逻辑运算符如（&amp;&amp;）和位运算符（&amp;）的区别和前自增“++i”和后自增“i++”的区别。注意“==”和“equals（）”的使用，注意别名现象。</p>
@@ -575,37 +739,37 @@
 <h1 id="一、修饰成员变量"><a href="#一、修饰成员变量" class="headerlink" title="一、修饰成员变量"></a>一、修饰成员变量</h1><p>&ensp;&ensp;&ensp;&ensp;static最常用的作用就是修饰成员变量，被static修饰的成员变量也叫做类变量。它与普通成员变量的区别是，它在内存中只有一份拷贝，Java虚拟机只为其分配一次内存。通俗的讲就是，这个变量，不管被多少人使用，他们使用的都是同一个变量，彼此的修改会有影响。可以通过类名.变量的形式进行访问。而普通的成员变量则是没实例化一个对象就产生一个拷贝，虚拟机为每一个变量拷贝都分配了内存。所以类变量的用处一般在于进行变量共享的时候。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Name:"</span> + name + <span class="string">"---Age:"</span> + age);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic ts1 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		TestStatic ts2 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		ts1.name = <span class="string">"zhangsan"</span>;</span><br><span class="line">		ts1.age = <span class="number">22</span>;</span><br><span class="line">		ts2.name = <span class="string">"lisi"</span>;</span><br><span class="line">		ts2.age = <span class="number">33</span>;</span><br><span class="line">		ts1.print();</span><br><span class="line">		ts2.print();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这是普通的成员变量的例子，ts1和ts2对于变量name和age分别拥有自己的副本，互相不影响，所以赋值之后，他们能得到他们期望的值。</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png1.png" alt="png1"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png1.png" alt="png1"></p>
 <p>接下来将成员变量age修改为类变量：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Name:"</span> + name + <span class="string">"---Age:"</span> + age);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic ts1 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		TestStatic ts2 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		ts1.name = <span class="string">"zhangsan"</span>;</span><br><span class="line">		ts1.age = <span class="number">22</span>;</span><br><span class="line">		ts2.name = <span class="string">"lisi"</span>;</span><br><span class="line">		ts2.age = <span class="number">33</span>;</span><br><span class="line">		ts1.print();</span><br><span class="line">		ts2.print();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这时由于age变成了类变量，因此ts1和ts2共用了一个变量副本，先赋值的会被后赋值的覆盖掉。</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png2.png" alt="png2"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png2.png" alt="png2"></p>
 <p>此外第二个示例代码中，静态成员变量使用了对象.变量的方式进行调用，这里编译器会给出警告，使用类名.方法之后警告就会解除。</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png3.png" alt="png3"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png3.png" alt="png3"></p>
 <h1 id="二、修饰成员方法"><a href="#二、修饰成员方法" class="headerlink" title="二、修饰成员方法"></a>二、修饰成员方法</h1><p>&ensp;&ensp;&ensp;&ensp;static另一个作用是修饰类中的方法，其目的是可以通过类名.方法的形式调用方法，而避免频繁的创建对象。同时对于存储空间来说也只有一个，不同对象调用的是同一个方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span> </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"Name:"</span> + name + <span class="string">"---Age:"</span> + age);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic ts1 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		TestStatic ts2 = <span class="keyword">new</span> TestStatic();</span><br><span class="line">		ts1.name = <span class="string">"zhangsan"</span>;</span><br><span class="line">		ts1.age = <span class="number">22</span>;</span><br><span class="line">		ts2.name = <span class="string">"lisi"</span>;</span><br><span class="line">		TestStatic.age = <span class="number">33</span>;</span><br><span class="line">		TestStatic.print();</span><br><span class="line">		TestStatic.print();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>将之前代码中的print方法改为使用static修饰之后，这个方法就可以不用对象.方法的形式调用了。</p>
 <h1 id="三、修饰代码块"><a href="#三、修饰代码块" class="headerlink" title="三、修饰代码块"></a>三、修饰代码块</h1><p>&ensp;&ensp;&ensp;&ensp;我们先看一下对象的初始化过程：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Load</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Load</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span></span>&#123;</span><br><span class="line">	Load ld1 = <span class="keyword">new</span> Load(<span class="string">"普通变量1"</span>);</span><br><span class="line">	Load ld2 = <span class="keyword">new</span> Load(<span class="string">"普通变量2"</span>);</span><br><span class="line">	<span class="keyword">static</span> Load ld3 = <span class="keyword">new</span> Load(<span class="string">"静态变量3"</span>);</span><br><span class="line">	<span class="keyword">static</span> Load ld4 = <span class="keyword">new</span> Load(<span class="string">"静态变量4"</span>);</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">TestStatic</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic ts = <span class="keyword">new</span> TestStatic(<span class="string">"TestStatic 初始化"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;在类TestStatic中，我们初始化了两个普通成员变量和两个静态成员变量，并在main函数开始的时候初始化了TestStatic对象。结果如下：</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png4.png" alt="png4"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png4.png" alt="png4"></p>
 <p>&ensp;&ensp;&ensp;&ensp;静态成员变量最先被初始化，并且按照执行的先后顺序进行初始化。其次初始化的是成员变量，最后初始化的是构造方法。所以在创建一个对象的时候，最先被初始化的是静态成员变量。</p>
 <p>&ensp;&ensp;&ensp;&ensp;在看另外一个调用了静态方法的例子：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Load</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Load</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span></span>&#123;</span><br><span class="line">	Load ld1 = <span class="keyword">new</span> Load(<span class="string">"普通变量1"</span>);</span><br><span class="line">	Load ld2 = <span class="keyword">new</span> Load(<span class="string">"普通变量2"</span>);</span><br><span class="line">	<span class="keyword">static</span> Load ld3 = <span class="keyword">new</span> Load(<span class="string">"静态变量3"</span>);</span><br><span class="line">	<span class="keyword">static</span> Load ld4 = <span class="keyword">new</span> Load(<span class="string">"静态变量4"</span>);</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">TestStatic</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">staticFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"静态方法"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic.staticFunc();</span><br><span class="line">		System.out.println(<span class="string">"@@@@@@@@@"</span>);</span><br><span class="line">		TestStatic ts = <span class="keyword">new</span> TestStatic(<span class="string">"TestStatic 初始化"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p> 我们在创建对象之前先调用了静态方法，结果如下:</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png5.png" alt="png5"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png5.png" alt="png5"></p>
 <p>&ensp;&ensp;&ensp;&ensp;我们可以看到，静态成员的初始化发生在创建对象之前，确切的说是在调用静态方法之前就已经被初始化了。并且，当我们创建对象的时候，原本被初始化过的静态成员变量跟静态方法没有再次被初始化。</p>
 <p>&ensp;&ensp;&ensp;&ensp;这时我们的static的作用就是，修饰一段都需要被修饰为static的域。被static修饰的代码域，域中所有的内容都被当成static变量，且优先初始化。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Load</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">Load</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestStatic</span></span>&#123;</span><br><span class="line">	Load ld1 = <span class="keyword">new</span> Load(<span class="string">"普通变量1"</span>);</span><br><span class="line">	Load ld2 = <span class="keyword">new</span> Load(<span class="string">"普通变量2"</span>);</span><br><span class="line">	<span class="keyword">static</span> Load ld3;</span><br><span class="line">	<span class="keyword">static</span> Load ld4;</span><br><span class="line">	<span class="keyword">static</span>&#123;</span><br><span class="line">		ld3 = <span class="keyword">new</span> Load(<span class="string">"静态变量3"</span>);</span><br><span class="line">		ld4 = <span class="keyword">new</span> Load(<span class="string">"静态变量4"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">TestStatic</span><span class="params">(String msg)</span></span>&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">staticFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"静态方法"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		TestStatic.staticFunc();</span><br><span class="line">		System.out.println(<span class="string">"@@@@@@@@@"</span>);</span><br><span class="line">		TestStatic ts = <span class="keyword">new</span> TestStatic(<span class="string">"TestStatic 初始化"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>修改之前的代码将静态成员变量放在由static修饰的域中，结果如下：</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png6.png" alt="png6"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png6.png" alt="png6"></p>
 <p>与分开修饰结果相同。</p>
 <h1 id="四、静态导入"><a href="#四、静态导入" class="headerlink" title="四、静态导入"></a>四、静态导入</h1><p>&ensp;&ensp;&ensp;&ensp;前边三种都是比较常用的场景，还有一种不是太常用，是JDK1.5之后新加入的功能，导入一个带有静态方法的包，并将包修饰为static，从而在当前类中直接调用修饰的静态方法，就好像是自己的方法一样：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">package com.chenxyt.java.test;</span><br><span class="line">public class Printer &#123;</span><br><span class="line">	public static void print(String msg)&#123;</span><br><span class="line">		System.out.println(msg);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>然后另一个包中使用import static导入这个类</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package com.chenxyt.java.practice;</span><br><span class="line">import static com.chenxyt.java.test.Printer.*;</span><br><span class="line">public class TestStatic&#123;</span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		print(&quot;This is TestStatic&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[Java编程思想]三：static关键字的四种用法/png7.png" alt="png7"></p>
+<p><img src="/2018/11/09/【Java编程思想】三：static关键字的四种用法/png7.png" alt="png7"></p>
 <h1 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h1><p>&ensp;&ensp;&ensp;&ensp;static是Java语言中的一个很重要的关键字，主要用途有三个方面修饰成员变量，修饰成员方法以及修饰代码块。使用static修饰的成员变量在类加载的时候就已经被初始化了，它属于类变量，不属于某个对象，所有该类的实例化对象拥有同一个静态成员变量副本，常用的用途可以用它来做计数器。</p>
 
           
@@ -774,7 +938,7 @@
 <p>&ensp;&ensp;&ensp;&ensp;<strong>4.常量存储：</strong>常量池通常存在程序代码内部，这样使得他们永远不会被改变。在部分嵌入式系统中，常量本身会与其它部分分离，这种情况通常将常量存在（ROM）只读存储器中。</p>
 <p>&ensp;&ensp;&ensp;&ensp;<strong>5.非RAM存储：</strong>数据可以完全脱离程序存储在外部，从而不受程序的控制。比如文件流对象和持久化对象，文件流通常发给另外一台机器，而持久化对象则通常是存储在硬盘中。</p>
 <p>&ensp;&ensp;&ensp;&ensp;Java中有一种特殊的类型称作是基本类型，通常情况下，new将对象存储在堆里，当创建一个简单的小的对象时，显得不是很有效，因此Java采用跟C或者C++相同的方式，不用new创建变量，而创建一个并非是引用的自动变量，这个变量直接存储值，并将其存储在堆栈中。与其他语言不同的是，Java中所有的基本类型的大小在各个平台都相同，这使得Java程序有更好的跨平台移植性。</p>
-<p><img src="[Java编程思想]二：一切都是对象/png1.png" alt="png1"></p>
+<p><img src="/2018/11/09/【Java编程思想】二：一切都是对象/png1.png" alt="png1"></p>
 <p>&ensp;&ensp;&ensp;&ensp;所有的数值类型都有正负号，所以Java中不存在无符号类型。基本类型具有包装器类，使得可以在堆中创建一个非基本对象，用来表示对应的基本类型。例如：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> c = ‘x’；</span><br><span class="line">Character ch = <span class="keyword">new</span> Character（c）；</span><br></pre></td></tr></table></figure>
 <p>也可以这样用：</p>
@@ -797,7 +961,7 @@
 <p>&ensp;&ensp;&ensp;&ensp;定义好了字段属性之后就可以创建一个对象，并通过对象引用操作对象内的字段属性，使用对象引用“.”方法的形式为对象内的字段属性赋值：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Students student = <span class="keyword">new</span> Students();</span><br><span class="line">student.i=<span class="number">1</span>;</span><br><span class="line">student.j=<span class="number">1.1</span>;</span><br><span class="line">student.k=<span class="keyword">true</span>;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;Java会为类中的基本类型成员提供一个默认的初始值，以确保可以有效的初始化，防止程序运行出错。如果这个初始值不符合业务要求，那么需要开发者自行初始化。如果不是类中的基本类型数据变量，那么它的初始值就是随机的。</p>
-<p><img src="[Java编程思想]二：一切都是对象/png2.png" alt="png2"></p>
+<p><img src="/2018/11/09/【Java编程思想】二：一切都是对象/png2.png" alt="png2"></p>
 <h1 id="五、方法、参数和返回值"><a href="#五、方法、参数和返回值" class="headerlink" title="五、方法、参数和返回值"></a>五、方法、参数和返回值</h1><p>&ensp;&ensp;&ensp;&ensp;Java类中的方法决定了能做哪些事情，传递哪些消息。方法的组成包括：名称、参数、返回值和方法体，其基本形式如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ReturnType <span class="title">methodName</span><span class="params">(Arg arg)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*Method Body*/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>其中ReturuType是方法返回给调用方的返回值类型，methodName是方法名，Arg是参数类型，arg是参数，注释中的是方法要做的事情。</p>
@@ -1071,7 +1235,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1093,7 +1257,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

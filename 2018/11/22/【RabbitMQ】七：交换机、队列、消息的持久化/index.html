@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在生产过程中，难免会发生服务器宕机的事情，RabbitMQ也不例外，可能由于某种特殊情况下的异常而导致RabbitMQ宕机从而重启，那么这个时候对于消息队列里的数据，包括交换机、队列以及队列中存在消息恢复就显得尤为重要了。RabbitMQ本身带有持久化机制，包括交换机、队列以及消息的持久化。持久化的主要机制就是将信息写入磁盘，当RabbtiM">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/[RabbitMQ]七：交换机、队列、消息的持久化/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/[RabbitMQ]七：交换机、队列、消息的持久化/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/png2.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【RabbitMQ】七：交换机、队列、消息的持久化">
 <meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在生产过程中，难免会发生服务器宕机的事情，RabbitMQ也不例外，可能由于某种特殊情况下的异常而导致RabbitMQ宕机从而重启，那么这个时候对于消息队列里的数据，包括交换机、队列以及队列中存在消息恢复就显得尤为重要了。RabbitMQ本身带有持久化机制，包括交换机、队列以及消息的持久化。持久化的主要机制就是将信息写入磁盘，当RabbtiM">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/[RabbitMQ]七：交换机、队列、消息的持久化/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/png1.png">
 
 
 
@@ -360,13 +360,13 @@
 <h1 id="二、交换机的持久化"><a href="#二、交换机的持久化" class="headerlink" title="二、交换机的持久化"></a>二、交换机的持久化</h1><p>&ensp;&ensp;&ensp;&ensp;在前面的示例中，我们使用常规的声明交换机的方法</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"fanout"</span>);</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;使用这种方法声明的交换机，默认不是持久化的，在服务器重启之后，交换机会消失。我们在管理台的Exchange页签下查看交换机，可以看到使用上述方法声明的交换机，Features一列是空的，即没有任何附加属性。</p>
-<p><img src="[RabbitMQ]七：交换机、队列、消息的持久化/png1.png" alt="png1"></p>
+<p><img src="/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/png1.png" alt="png1"></p>
 <p>我们换用另一种方法声明交换机</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">"fanout"</span>,<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure>
 <p>查看一下方法的说明</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Actively declare a non-autodelete exchange with no extra arguments</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> com.rabbitmq.client.AMQP.Exchange.Declare</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> com.rabbitmq.client.AMQP.Exchange.DeclareOk</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> exchange the name of the exchange</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> type the exchange type</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> durable true if we are declaring a durable exchange (the exchange will survive a server restart)</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> java.io.IOException if an error is encountered</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> a declaration-confirm method to indicate the exchange was successfully declared</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">Exchange.<span class="function">DeclareOk <span class="title">exchangeDeclare</span><span class="params">(String exchange, String type, <span class="keyword">boolean</span> durable)</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;我们可以看到第三个参数durable，如果为true时则表示要做持久化，当服务重启时，交换机依然存在，所以使用该方法声明的交换机是下面这个样子的（做测试的时候，需要先在管理台删掉原来的同名交换机）D表示durable，鼠标放在上边会显示为true</p>
-<p><img src="[RabbitMQ]七：交换机、队列、消息的持久化/png2.png" alt="png2"></p>
+<p><img src="/2018/11/22/【RabbitMQ】七：交换机、队列、消息的持久化/png2.png" alt="png2"></p>
 <p>&ensp;&ensp;&ensp;&ensp;现在重启RabbitMQ服务之后，可以看到我们声明的交换机仍然存在。</p>
 <h1 id="三、队列的持久化"><a href="#三、队列的持久化" class="headerlink" title="三、队列的持久化"></a>三、队列的持久化</h1><p>&ensp;&ensp;&ensp;&ensp;与交换机的持久化相同，队列的持久化也是通过durable参数实现的，默认生成的随机队列不是持久化的。前面示例中声明的带有我们自定义名字的队列都是持久化的。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">channel.queueDeclare(QUEUE_NAME, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
@@ -505,7 +505,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -527,7 +527,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

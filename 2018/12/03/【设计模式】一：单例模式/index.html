@@ -87,16 +87,16 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、场景问题&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;考虑这样一个问题，在我们的项目中需要连接Mysql数据库，数据库连接相关配置信息都写在配置文件中，常用的配置文件有xml和properties格式，那么我们读取配置文件的时候应该怎么做呢？这里我们以properties格式的配置文件为例，在没有使用设计模式的前提下，我们通过Java中读取配置文件的方法将连接信息读取出来放在对象中，然后使用">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png2.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png3.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png4.png">
-<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png5.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.791Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【设计模式】一：单例模式">
 <meta name="twitter:description" content="一、场景问题&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;考虑这样一个问题，在我们的项目中需要连接Mysql数据库，数据库连接相关配置信息都写在配置文件中，常用的配置文件有xml和properties格式，那么我们读取配置文件的时候应该怎么做呢？这里我们以properties格式的配置文件为例，在没有使用设计模式的前提下，我们通过Java中读取配置文件的方法将连接信息读取出来放在对象中，然后使用">
-<meta name="twitter:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/[设计模式]一：单例模式/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/03/【设计模式】一：单例模式/png1.png">
 
 
 
@@ -367,11 +367,11 @@
 <p>编写一个用于测试读取配置文件的客户端类Client.java</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.test.AppConfig;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		AppConfig ac1 = <span class="keyword">new</span> AppConfig();</span><br><span class="line">		System.out.println(<span class="string">"paramA:"</span> + ac1.getParameterA());</span><br><span class="line">		System.out.println(<span class="string">"paramB:"</span> + ac1.getParameterB());</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[设计模式]一：单例模式/png1.png" alt="png1"></p>
+<p><img src="/2018/12/03/【设计模式】一：单例模式/png1.png" alt="png1"></p>
 <p>&ensp;&ensp;&ensp;&ensp;如上所示，利用基本的对象操作，完成了对配置文件的读取。接下来思考一个问题，如果项目中有很多地方需要获取配置文件，那是不是我们需要在多个地方都new出这个对象呢？如果配置文件资源内容过多，那么频繁大量的创建相同的对象，那么将是一个不小的开销。如下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.test.AppConfig;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		AppConfig ac1 = <span class="keyword">new</span> AppConfig();</span><br><span class="line">		AppConfig ac2 = <span class="keyword">new</span> AppConfig();</span><br><span class="line">		System.out.println(<span class="string">"paramA:"</span> + ac1.getParameterA());</span><br><span class="line">		System.out.println(<span class="string">"paramB:"</span> + ac1.getParameterB());</span><br><span class="line">		System.out.println(<span class="string">"paramA:"</span> + ac2.getParameterA());</span><br><span class="line">		System.out.println(<span class="string">"paramB:"</span> + ac2.getParameterB());</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[设计模式]一：单例模式/png2.png" alt="png2"></p>
+<p><img src="/2018/12/03/【设计模式】一：单例模式/png2.png" alt="png2"></p>
 <p>&ensp;&ensp;&ensp;&ensp;我们每创建一个对象对象内部的私有数据源就要被使用，并且也占用了大量的内存。事实上对于AppConfig这种公用的类，在运行时获取一次资源就可以了，因为资源都是固定的。</p>
 <p>所以上面的问题抽象出来就是，一个类在程序的运行过程中，只需要一个实例，应该怎样做。</p>
 <h1 id="二、解决方案"><a href="#二、解决方案" class="headerlink" title="二、解决方案"></a>二、解决方案</h1><p>&ensp;&ensp;&ensp;&ensp;上述问题的解决方案就是使用单例模式，单例模式的目的是只创造一个类的实例，但是可以多次访问，只不过每次访问的都是之前的实例。这一点有点类似static作用域。其次，对于类中的构造函数，理论上我们可以通过构造函数进行实例的创建，因此我们需要避免用户客户端可以通过构造函数创建实例的方式，也就是使用private作用域修饰构造方法。然后提供一个公用的方法作为接入点，获取单例。因此单例模式的主要实现思路就是使用static+private+新的方法完成。</p>
@@ -386,11 +386,11 @@
 <p>客户端的调用方式也要相应改变一下：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.test.Singleton;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Singleton sl = Singleton.getInstance();</span><br><span class="line">		System.out.println(<span class="string">"paraA:"</span> + sl.getParameterA());</span><br><span class="line">		System.out.println(<span class="string">"paraB:"</span> + sl.getParameterB());</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果如下：</p>
-<p><img src="[设计模式]一：单例模式/png3.png" alt="png3"></p>
+<p><img src="/2018/12/03/【设计模式】一：单例模式/png3.png" alt="png3"></p>
 <p>&ensp;&ensp;&ensp;&ensp;那么怎样验证单例模式呢？在《Java编程思想》中我们了解到了“==”运算符在比较两个对象的时候，实际上是比较两个对象的引用是否相同，也就是说当两个对象的引用相同的时候，这两个引用实际上是一个，指向同一个内存区域，也就是我们说的只有一个实例。那么我们测试下，在客户端代码中进行修改：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.test.Singleton;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Singleton sl1 = Singleton.getInstance();</span><br><span class="line">		Singleton sl2 = Singleton.getInstance();</span><br><span class="line">		<span class="keyword">if</span>(sl1==sl2)&#123;</span><br><span class="line">			System.out.println(<span class="string">"单例模式成功！只产生了一个实例！"</span>);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			System.out.println(<span class="string">"单例模式失败！我们是两个不同的实例！"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[设计模式]一：单例模式/png4.png" alt="png4"></p>
+<p><img src="/2018/12/03/【设计模式】一：单例模式/png4.png" alt="png4"></p>
 <h1 id="三、模式讲解"><a href="#三、模式讲解" class="headerlink" title="三、模式讲解"></a>三、模式讲解</h1><h2 id="1-单例模式的功能"><a href="#1-单例模式的功能" class="headerlink" title="1.单例模式的功能"></a>1.单例模式的功能</h2><p>&ensp;&ensp;&ensp;&ensp;单例模式是用来保证程序运行过程中只会产生这一个实例，并且提供一个可以供全局访问的点也就是getInstance()方法来获取这个实例。单例模式只关系实例的创建方式，不涉及具体的业务场景。</p>
 <h2 id="2-单例模式的作用范围"><a href="#2-单例模式的作用范围" class="headerlink" title="2.单例模式的作用范围"></a>2.单例模式的作用范围</h2><p>&ensp;&ensp;&ensp;&ensp;由于单例模式的原理是控制类实例的创建，因此它的作用范围在一个虚机上，因为类的加载过程是在虚机上执行的。所以我们讨论的单例模式只针对单一的系统，不讨论在集群上的情况。同时，通过Java的反射机制也可以创建类的实例，这种情况我们也不考虑，姑且暂认为没有反射机制。</p>
 <h2 id="3-懒汉式的实现"><a href="#3-懒汉式的实现" class="headerlink" title="3.懒汉式的实现"></a>3.懒汉式的实现</h2><p>&ensp;&ensp;&ensp;&ensp;前边我们写了懒汉式的实现示例代码，下面我们分析一下这段代码的设计思路。</p>
@@ -453,7 +453,7 @@
 <p>测试类：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		DBConnection conn1 = DataSourceEnum.DATASURCE.getConnection();</span><br><span class="line">		DBConnection conn2 = DataSourceEnum.DATASURCE.getConnection();</span><br><span class="line">		System.out.println(conn1 == conn2);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>运行结果：</p>
-<p><img src="[设计模式]一：单例模式/png5.png" alt="png5"></p>
+<p><img src="/2018/12/03/【设计模式】一：单例模式/png5.png" alt="png5"></p>
 <h1 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h1><p>&ensp;&ensp;&ensp;&ensp;单例模式是较为常用的一种设计模式，掌握单例模式的应用场景以及掌握懒汉式、饿汉式的写法与区别，还有更高级别的使用内部类或者枚举形式的实现。同时也了解懒加载和缓存的设计思想。</p>
 
       
@@ -494,6 +494,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/23/【编程技巧】如何正确的使用布尔类型/" rel="prev" title="【编程技巧】如何正确的使用布尔类型">
+                【编程技巧】如何正确的使用布尔类型 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -570,7 +574,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -592,7 +596,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

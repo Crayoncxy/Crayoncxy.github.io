@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、ant eclipse时提示Connection reset&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;从GitHub下载下来的压缩包不是eclipse版本的工程，我们需要使用ant eclipse命令编译成eclipse版本的项目，运行过程提示Connection reset 是编译文件build.xml中的路径不支持下载了。修改源码路径下的build.xml文件 修改前： 1&amp;lt;g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/[Zookeeper]Zookeeper源码环境搭建出现的问题/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/[Zookeeper]Zookeeper源码环境搭建出现的问题/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/png2.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.787Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Zookeeper】Zookeeper源码环境搭建出现的问题">
 <meta name="twitter:description" content="一、ant eclipse时提示Connection reset&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;从GitHub下载下来的压缩包不是eclipse版本的工程，我们需要使用ant eclipse命令编译成eclipse版本的项目，运行过程提示Connection reset 是编译文件build.xml中的路径不支持下载了。修改源码路径下的build.xml文件 修改前： 1&amp;lt;g">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/[Zookeeper]Zookeeper源码环境搭建出现的问题/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/png1.png">
 
 
 
@@ -363,12 +363,12 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;get src=<span class="string">"http://ufpr.dl.sourceforge.net/project/ant-eclipse/ant-eclipse/1.0/ant-eclipse-1.0.bin.tar.bz2"</span></span><br></pre></td></tr></table></figure>
 <p>修改完成重新执行即可。</p>
 <h1 id="二、导入工程编译之后报错‘-lt-gt-’operator-is-not-allowed-for-source-level-below-1-7"><a href="#二、导入工程编译之后报错‘-lt-gt-’operator-is-not-allowed-for-source-level-below-1-7" class="headerlink" title="二、导入工程编译之后报错‘&lt;&gt;’operator is not allowed for source level below 1.7"></a>二、导入工程编译之后报错‘&lt;&gt;’operator is not allowed for source level below 1.7</h1><p>&ensp;&ensp;&ensp;&ensp;导入工程之后报错85个，其中有多数都是这个错误，这个错误是编译版本的原因。解决方法将编译版本改成1.7，选中项目然后右键–&gt;Properties–&gt;Java Compiler 将编译器版本修改为1.7</p>
-<p><img src="[Zookeeper]Zookeeper源码环境搭建出现的问题/png1.png" alt="png1"></p>
+<p><img src="/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/png1.png" alt="png1"></p>
 <h1 id="三、报错“org-apache-zookeeper-version-Info-can-not-be-resolved-to-a-type”"><a href="#三、报错“org-apache-zookeeper-version-Info-can-not-be-resolved-to-a-type”" class="headerlink" title="三、报错“org.apache.zookeeper.version.Info can not be resolved to a type”"></a>三、报错“org.apache.zookeeper.version.Info can not be resolved to a type”</h1><p>&ensp;&ensp;&ensp;&ensp;看了下其它的人搭建工程过程，在修改完编译器之后就万事大吉了，我这里还有9个错误，发生在Version.Java中，这个类实现了Info这个接口，但是Info这个接口没有找到。</p>
 <p>&ensp;&ensp;&ensp;&ensp;解决方法是在org.apache.zookeeper.version.util包里有个VerGen.java文件，运行这个文件来生成Info.Java，我理解这个是用来在Zookeeper每次发布版本的时候用来固定生成版本号和日期的。在VerGen.Java的main方法上有提示</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Emits a org.apache.zookeeper.version.Info interface file with version and</span></span><br><span class="line"><span class="comment">   * revision information constants set to the values passed in as command</span></span><br><span class="line"><span class="comment">   * line parameters. The file is created in the current directory. &lt;br&gt;</span></span><br><span class="line"><span class="comment">   * Usage: java org.apache.zookeeper.version.util.VerGen maj.min.micro[-qualifier]</span></span><br><span class="line"><span class="comment">   * rev buildDate</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> args</span></span><br><span class="line"><span class="comment">   *            &lt;ul&gt;</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;maj - major version number</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;min - minor version number</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;micro - minor minor version number</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;qualifier - optional qualifier (dash followed by qualifier text)</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;rev - current Git revision number</span></span><br><span class="line"><span class="comment">   *            &lt;li&gt;buildDate - date the build</span></span><br><span class="line"><span class="comment">   *            &lt;/ul&gt;</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (args.length != <span class="number">3</span>)</span><br><span class="line">          printUsage();</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          Version version = parseVersionString(args[<span class="number">0</span>]);</span><br><span class="line">          <span class="keyword">if</span> (version == <span class="keyword">null</span>) &#123;</span><br><span class="line">              System.err.println(</span><br><span class="line">                      <span class="string">"Invalid version number format, must be \"x.y.z(-.*)?\""</span>);</span><br><span class="line">              System.exit(<span class="number">1</span>);</span><br><span class="line">          &#125;</span><br><span class="line">          String rev = args[<span class="number">1</span>];</span><br><span class="line">          <span class="keyword">if</span> (rev == <span class="keyword">null</span> || rev.trim().isEmpty()) &#123;</span><br><span class="line">              rev = <span class="string">"-1"</span>;</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              rev = rev.trim();</span><br><span class="line">          &#125;</span><br><span class="line">          generateFile(<span class="keyword">new</span> File(<span class="string">"."</span>), version, rev, args[<span class="number">2</span>]);</span><br><span class="line">      &#125; <span class="keyword">catch</span> (NumberFormatException e) &#123;</span><br><span class="line">          System.err.println(</span><br><span class="line">                  <span class="string">"All version-related parameters must be valid integers!"</span>);</span><br><span class="line">          <span class="keyword">throw</span> e;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;传入三个参数运行这个文件，运行方式右键–&gt;Run As–&gt;Run Configuration–&gt;JavaApplication–&gt;Arguments 在Program arguments 中输入三个参数我理解的第一个参数是版本号，第二个是GIT版本，第三个是发布日期，所以我输入的如下内容，三个参数空格隔开</p>
-<p><img src="[Zookeeper]Zookeeper源码环境搭建出现的问题/png2.png" alt="png2"></p>
+<p><img src="/2018/11/20/【Zookeeper】Zookeeper源码环境搭建出现的问题/png2.png" alt="png2"></p>
 <p>&ensp;&ensp;&ensp;&ensp;运行成功之后控制台是什么也没有打印的，刷新工程会看见多了一个org目录，该目录下有了一个Info.Java 不知道为什么没有生成到包中，所以我手动创建了一个org.apache.zookeeper.version 包 然后将文件拖了进去，世界就安静了。创建包的时候如果报错那么选中下边的Create package-info.java 生成之后删了就可以了。</p>
 
       
@@ -491,7 +491,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -513,7 +513,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

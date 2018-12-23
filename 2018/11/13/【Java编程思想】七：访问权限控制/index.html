@@ -87,13 +87,13 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;一个优秀的程序员是通过不断的重构代码让自己的程序变得更加易用、可读和完善的。在重构修改的过程中，如果是一个类库编写人员，那么怎么样保证自己修改的部分不会影响到客户端编写人员（即使用这个类库的程序员）呢？同时也要避免他们对自己类库内部的程序进行改动。Java中提供了访问权限控制的概念，提供了三种不同级别的访问控制，访问开放程度由高到低依次为“publ">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/[Java编程思想]七：访问权限控制/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/[Java编程思想]七：访问权限控制/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/png2.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.443Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Java编程思想】七：访问权限控制">
 <meta name="twitter:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;一个优秀的程序员是通过不断的重构代码让自己的程序变得更加易用、可读和完善的。在重构修改的过程中，如果是一个类库编写人员，那么怎么样保证自己修改的部分不会影响到客户端编写人员（即使用这个类库的程序员）呢？同时也要避免他们对自己类库内部的程序进行改动。Java中提供了访问权限控制的概念，提供了三种不同级别的访问控制，访问开放程度由高到低依次为“publ">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/[Java编程思想]七：访问权限控制/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/13/【Java编程思想】七：访问权限控制/png1.png">
 
 
 
@@ -362,9 +362,9 @@
 <p>在另一个包com.chenxyt.java.practice中的PackageTest类，类中使用print方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">import</span> com.chenxyt.java.test.Printer;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PackageTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Printer printer = <span class="keyword">new</span> Printer();</span><br><span class="line">		printer.print(<span class="string">"This is Package Test"</span>);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>结果如下：</p>
-<p><img src="[Java编程思想]七：访问权限控制/png1.png" alt="png1"></p>
+<p><img src="/2018/11/13/【Java编程思想】七：访问权限控制/png1.png" alt="png1"></p>
 <p>看一下程序的目录结构:</p>
-<p><img src="[Java编程思想]七：访问权限控制/png2.png" alt="png2"></p>
+<p><img src="/2018/11/13/【Java编程思想】七：访问权限控制/png2.png" alt="png2"></p>
 <h1 id="二、Java访问权限修饰词"><a href="#二、Java访问权限修饰词" class="headerlink" title="二、Java访问权限修饰词"></a>二、Java访问权限修饰词</h1><p>&ensp;&ensp;&ensp;&ensp;public：所有可见，被public修饰的内容在同一个包中的所有类都可见。同时Java提供默认的访问权限，即不被任何修饰符修饰的内容默认为public权限。</p>
 <p>&ensp;&ensp;&ensp;&ensp;private：私有可见，只有该类可见，该类的对象都不可见。如果一个类的构造函数被声明为private，那么就不能通过这个类的构造函数来进行初始化对象。</p>
 <p>&ensp;&ensp;&ensp;&ensp;protected:受保护的可见，与private不同，除了只有自己的类可见之外，该类的继承者也可见被修饰的域。除此之外还可以被当前包的类访问，但是其它包的类不可以访问，即便是使用了import的关键字</p>
@@ -493,7 +493,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -515,7 +515,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

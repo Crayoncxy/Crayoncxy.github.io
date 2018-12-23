@@ -87,23 +87,23 @@
 <meta property="og:site_name" content="Ordinary Road">
 <meta property="og:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png1.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png2.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png3.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png4.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png5.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png6.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png7.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png8.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png9.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png10.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png11.png">
-<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png12.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png1.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png2.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png3.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png4.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png5.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png6.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png7.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png8.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png9.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png10.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png11.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png12.png">
 <meta property="og:updated_time" content="2018-12-18T14:58:54.616Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【RabbitMQ】五：Exchange-topic">
 <meta name="twitter:description" content="一、概述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。 &amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;示例：">
-<meta name="twitter:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/[RabbitMQ]五：Exchange-topic/png1.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/png1.png">
 
 
 
@@ -370,7 +370,7 @@
 <p>&ensp;&ensp;&ensp;&ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。</p>
 <p>&ensp;&ensp;&ensp;&ensp;示例：假设我们有两条队列，队列的绑定规则不确定，只有部分是确定的，也就是我们会接收包含这确定路由规则的信息。</p>
 <p>&ensp;&ensp;&ensp;&ensp;实现方式：使用Topic类型的交换机，定义路由规则带有匹配符号‘#’或者‘<em>’,如图，为了更好的说明‘</em>’和‘#’之间的关系，我们定义如下四个队列分别绑定四种绑定规则com.chen.#  #.com.chen  com.chen.<em>和</em>.com.chen 。预期功能，当传入消息绑定com.chen.me时，能被13消费者收到，当传入消息绑定me.com.chen时，能被24消费者收到，当传入消息绑定com.chen.its.me时，能被消费者1收到，当传入消息绑定its.me.com.chen时，能被2消费者收到。</p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png1.png" alt="png1"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png1.png" alt="png1"></p>
 <h1 id="二、源代码"><a href="#二、源代码" class="headerlink" title="二、源代码"></a>二、源代码</h1><p>&ensp;&ensp;&ensp;&ensp;与前面两篇相同，先写生产者，创建Topic类型的交换机，发送四条消息，带有上述四个routingKey</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqProducer</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机、用户名、密码和客户端端口号</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 factory.setUsername(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPassword(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPort(<span class="number">5672</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 String message1 = <span class="string">"我是com.chen.its.me"</span>;</span><br><span class="line">		 String message2 = <span class="string">"我是its.me.com.chen"</span>;</span><br><span class="line">		 String message3 = <span class="string">"我是com.chen.me"</span>;</span><br><span class="line">		 String message4 = <span class="string">"我是me.com.chen"</span>;</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.its.me"</span>,<span class="keyword">null</span>,message1.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"its.me.com.chen"</span>,<span class="keyword">null</span>,message2.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.me"</span>,<span class="keyword">null</span>,message3.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"me.com.chen"</span>,<span class="keyword">null</span>,message4.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;编写消费者1代码，由于我们要先启动消费者，所以消费者里也创建一个交换机，（生产者即可不用创建），新建一个随机队列，绑定com.chen.#路由规则。</p>
@@ -382,18 +382,18 @@
 <p>新建消费者4，绑定路由规则*.com.chen</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer4</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"*.com.chen"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer4 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer4 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>&ensp;&ensp;&ensp;&ensp;分别启动消费者1234，使其处于监听状态，可以在RabbitMQ控制台看见声明了一个名为’HelloMq’类型为topic的交换机和四个随机队列</p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png2.png" alt="png2"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png3.png" alt="png3"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png4.png" alt="png4"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png5.png" alt="png5"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png6.png" alt="png6"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png7.png" alt="png7"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png8.png" alt="png8"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png2.png" alt="png2"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png3.png" alt="png3"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png4.png" alt="png4"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png5.png" alt="png5"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png6.png" alt="png6"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png7.png" alt="png7"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png8.png" alt="png8"></p>
 <p>&ensp;&ensp;&ensp;&ensp;启动生产者，可以看见消费者12收到了两条消息，消费者34收到了一条消息，实际结果与开篇的预期结果吻合。</p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png9.png" alt="png9"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png10.png" alt="png10"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png11.png" alt="png11"></p>
-<p><img src="[RabbitMQ]五：Exchange-topic/png12.png" alt="png12"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png9.png" alt="png9"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png10.png" alt="png10"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png11.png" alt="png11"></p>
+<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png12.png" alt="png12"></p>
 <p>&ensp;&ensp;&ensp;&ensp;至此，topic类型的交换机功能就实现了。</p>
 <h1 id="三、代码下载"><a href="#三、代码下载" class="headerlink" title="三、代码下载"></a>三、代码下载</h1><p><a href="https://pan.baidu.com/s/1mj2nEly" target="_blank" rel="noopener">下载地址</a></p>
 
@@ -515,7 +515,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">35</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -537,7 +537,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
