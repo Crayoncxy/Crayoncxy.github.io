@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码,并发编程,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="一、基本概念&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;AQS全称AbstractQueuedSynchronizer，抽象式的队列同步器。干什么用的呢？AQS定义了一套多线程访问共享资源的同步器框架。为什么说是框架呢，因为它并不是直接实现了同步器功能，而是提供了一套基础的功能，许多同步类都依赖它，诸如ReetrantLock（可重入锁）、Semaphore（信号量）、CountDownLat">
+<meta name="keywords" content="源码,并发编程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【源码学习】Java并发之AQS源码学习">
+<meta property="og:url" content="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/index.html">
+<meta property="og:site_name" content="Ordinary Road">
+<meta property="og:description" content="一、基本概念&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;AQS全称AbstractQueuedSynchronizer，抽象式的队列同步器。干什么用的呢？AQS定义了一套多线程访问共享资源的同步器框架。为什么说是框架呢，因为它并不是直接实现了同步器功能，而是提供了一套基础的功能，许多同步类都依赖它，诸如ReetrantLock（可重入锁）、Semaphore（信号量）、CountDownLat">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/png1.png">
+<meta property="og:updated_time" content="2019-03-20T13:51:48.140Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【源码学习】Java并发之AQS源码学习">
+<meta name="twitter:description" content="一、基本概念&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;AQS全称AbstractQueuedSynchronizer，抽象式的队列同步器。干什么用的呢？AQS定义了一套多线程访问共享资源的同步器框架。为什么说是框架呢，因为它并不是直接实现了同步器功能，而是提供了一套基础的功能，许多同步类都依赖它，诸如ReetrantLock（可重入锁）、Semaphore（信号量）、CountDownLat">
+<meta name="twitter:image" content="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/png1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/">
+
+
+
+
+
+  <title>【源码学习】Java并发之AQS源码学习 | Ordinary Road</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Ordinary Road</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【源码学习】Java并发之AQS源码学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-19T19:43:13+08:00">
+                2019-03-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码学习/" itemprop="url" rel="index">
+                    <span itemprop="name">源码学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/19/【源码学习】Java并发之AQS源码学习/" class="leancloud_visitors" data-flag-title="【源码学习】Java并发之AQS源码学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="一、基本概念"><a href="#一、基本概念" class="headerlink" title="一、基本概念"></a>一、基本概念</h1><p>&ensp;&ensp;&ensp;&ensp;AQS全称AbstractQueuedSynchronizer，抽象式的队列同步器。干什么用的呢？AQS定义了一套多线程访问共享资源的同步器框架。为什么说是框架呢，因为它并不是直接实现了同步器功能，而是提供了一套基础的功能，许多同步类都依赖它，诸如ReetrantLock（可重入锁）、Semaphore（信号量）、CountDownLatch（多线程访问计数）</p>
+<p>该框架结构如图：</p>
+<p><img src="/2019/03/19/【源码学习】Java并发之AQS源码学习/png1.png" alt="png1"></p>
+<p>&ensp;&ensp;&ensp;&ensp;它维护了一个volatile修饰的int类型变量state（表示共享资源）和一个双向的FIFO线程等待队列（同步器嘛，肯定是会有等待的噻，等待的线程放入等待队列），同步队列拥有指向头结点的head节点和指向尾节点的tail节点。volatile保证资源状态的更新可以对其它线程可见，具体细节不赘述。state表示共享资源，访问方式有三种：</p>
+<ul>
+<li>getState（）</li>
+<li>setState（）</li>
+<li>compareAndSetState（）</li>
+</ul>
+<p>&ensp;&ensp;&ensp;&ensp;结合线程获取锁的场景可以理解state共享变量就是一个锁标记，有获取锁操作，有获取到了上锁操作（要释放的时候解锁操作）和基于CAS形式的上锁/解锁操作（该方法可以保证原子性）。</p>
+<p>&ensp;&ensp;&ensp;&ensp;AQS定义了两种资源共享方式，一种是Exclusive（读占式，只有一个线程可以占用如ReentrantLock），另一种是Share（共享式，可以被多个线程占用，如读锁，CountDownLatch，Semaphore）</p>
+<p>&ensp;&ensp;&ensp;&ensp;前文说到，AQS主要是提供一种并发访问资源的框架，其具体需要使用哪种共享方式需要根据不同的自定义同步器来决定。AQS的设计是基于模板方法模式的，也就是说使用者（自定义同步器）需要继承同步器AQS并重写相应的方法，然后将同步器AQS组合在我们的自定义同步组件中，并调用AQS提供的模板方法，该方法会调用我们重写的方法来完成相应的功能。</p>
+<p>&ensp;&ensp;&ensp;&ensp;自定义同步器需要实现的方法是共享资源state的获取与释放，至于线程等待队列的维护等一系列操作都由AQS实现好了，自定义同步器主要实现以下方法：</p>
+<ul>
+<li>boolean tryAcquire（int）：独占式尝试获取资源，成功返回true，失败返回false</li>
+<li>boolean tryRelease（int）：独占式尝试释放资源，成功返回true，失败返回false</li>
+<li>int tryAcquireShared（int）：共享式尝试获取资源，负数表示失败，0表示成功但没有剩余可用资源，正数表示成功且有剩余可用资源</li>
+<li>boolean tryReleaseShared（int）：共享式尝试释放资源，如果释放之后允许唤醒后续等待节点则返回true，否则返回false</li>
+<li>isHeldExculsively（）：该线程是否独占资源，只有用到Condition才去实现它</li>
+</ul>
+<p>&ensp;&ensp;&ensp;&ensp;以ReentrantLock为例，共享资源state初始化为0，当线程A调用Lock.lock（）方法之后，会调用tryAcqurie（）方法获取独占锁并将state+1，后续其它线程再调用lock（）方法时会报错，当前线程可以继续调用，state继续+1，这是重入锁的概念，获取了多少次锁就需要释放多少次锁，最终目的是保证state状态等于0，以便其它线程有机会可以获取到锁。</p>
+<p>&ensp;&ensp;&ensp;&ensp;以CountDownLatch为例，在没看源码之前，一直认为CountDownLatch是通过类似wait/notify的形式实现的。实际上对于CountDownLatch，当将任务分成N个线程执行时，state也被初始化为N，两个N相同，然后调用了await（）方法的线程会阻塞直到state归零，其它子线程执行完对应任务之后，显示的调用countDown（）方法之后，共享资源state会以CAS的方式减一，直到减为0之后可以unpark（）主线程继续执行后续任务。</p>
+<p>&ensp;&ensp;&ensp;&ensp;通常情况下，自定义同步器都是独占或者共享中的一种，有特殊的就是ReentrantReadWriteLock（），实现了独占和共享两种方式。</p>
+<ul>
+<li>小结：AQS是抽象式的队列同步器，基本框架是维护了一个volatile类型的变量和FIFO双端链表队列主要是通过模板方法模式为其它自定义同步类提供并发下的队列等待等功能，至于获取资源和释放资源的实现由自定义同步器自己完成。AQS主要分为独占式和共享式两种，实现哪种自己决定，也可以都实现。</li>
+</ul>
+<h1 id="二、源码分析"><a href="#二、源码分析" class="headerlink" title="二、源码分析"></a>二、源码分析</h1><p>&ensp;&ensp;&ensp;&ensp;本章开始分析AQS源码，前文说到AQS提供了模板方法来供自定义同步器访问然后调用重写的方法。这里分析源码中提供的模板方法以及其它诸如等待队列的相关实现。（重写方法我们在这里也分析不了啊哈哈~）我们按照独享式acquire-release和共享式acquireShared-releaseShared的顺序进行分析</p>
+<h2 id="2-1acquire（int）"><a href="#2-1acquire（int）" class="headerlink" title="2.1acquire（int）"></a>2.1acquire（int）</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!tryAcquire(arg) &amp;&amp;</span><br><span class="line">            acquireQueued(addWaiter(Node.EXCLUSIVE), arg))</span><br><span class="line">            selfInterrupt();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;此方法是独占模式下线程获取共享资源的顶层入口，如果获取到了资源则直接返回，否则进入等待队列，直至获取到资源为止。<strong>且这个过程忽略中断的影响</strong>，是不是与lock（）相同了。获取到共享资源之后就可以执行临界区代码了。</p>
+<p>方法流程如下：</p>
+<ol>
+<li>tryAcquire（）尝试直接获取资源，获取到直接返回；</li>
+<li>addWaiter（）将线程加入到等待队列的尾部，并标记为独占模式；</li>
+<li>acqurieQueued（）队列中线程处理方法，不断尝试使队列中的线程可以获取资源，直到成功后返回。如果在等待过程中被中断过，则返回true，否则返回false；</li>
+<li>如果线程在等待过程中被中断过，它是不响应的，直到成功返回之后，再进行自我中断，将中断补上。</li>
+</ol>
+<p>&ensp;&ensp;&ensp;&ensp;这里的设计利用了&amp;&amp;短路的方式简化了编码，首先&amp;&amp;左边调用tryAcquire（）尝试直接获取资源，如果获取成功则tryAcquire（）返回true，方法前加了！将&amp;&amp;左半边的结果置为false，通过&amp;&amp;短路的功能不继续执行后续的操作。其它细节问题我们按顺序梳理：</p>
+<h3 id="2-1-1tryAcquire（int）"><a href="#2-1-1tryAcquire（int）" class="headerlink" title="2.1.1tryAcquire（int）"></a>2.1.1tryAcquire（int）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法尝试获取共享资源，如果成功则返回true，否则返回false，emmm那么为什么这里描述的与代码不符呢。因为前边说到这个方法是需要在自定义同步器中被重写的，比如在ReentrantLock中重写该方法。因此这里源码只抛出了异常，具体不同自定义同步器如何重写就等到学习对应源码的时候再看啦。不过前边也说到，基本的资源操作只有get/set/CAS三种方式。这个需要被重写方法没有设计成abstract形式，是因为一般情况下独占式只需要重写独占式对应的tryAcquire和tryRelease方法，而共享式也仅重写共享式的两个方法，这里避免了每个模式都需要实现以下另一个模式的接口的情况。</p>
+<h3 id="2-1-2addWaiter（Node）"><a href="#2-1-2addWaiter（Node）" class="headerlink" title="2.1.2addWaiter（Node）"></a>2.1.2addWaiter（Node）</h3><p>该方法用于将等待线程放入到队列尾端，并返回当前线程节点。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">addWaiter</span><span class="params">(Node mode)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//新建一个Node类型的节点 mode是AQS模式，独占EXCLUSIVE；共享SHARED</span></span><br><span class="line">    Node node = <span class="keyword">new</span> Node(Thread.currentThread(), mode);</span><br><span class="line">    <span class="comment">// Try the fast path of enq; backup to full enq on failure</span></span><br><span class="line">    <span class="comment">//尝试使用最快的方式直接放到队尾</span></span><br><span class="line">    Node pred = tail;</span><br><span class="line">    <span class="keyword">if</span> (pred != <span class="keyword">null</span>) &#123;</span><br><span class="line">        node.prev = pred;</span><br><span class="line">        <span class="keyword">if</span> (compareAndSetTail(pred, node)) &#123;</span><br><span class="line">            pred.next = node;</span><br><span class="line">            <span class="keyword">return</span> node;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//失败则使用另一种形式添加</span></span><br><span class="line">    enq(node);</span><br><span class="line">    <span class="keyword">return</span> node;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;如上代码注释，创建一个Node类型的节点，然后尝试通过CAS设置队尾节点为当前节点，如果设置失败则通过enq（）方法完成入队。</p>
+<h4 id="2-1-2-1Node"><a href="#2-1-2-1Node" class="headerlink" title="2.1.2.1Node"></a>2.1.2.1Node</h4><p>我们看一下Node的结构，Node是一个静态内部类，主要内容如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span></span>&#123;</span><br><span class="line">        <span class="comment">/** Marker to indicate a node is waiting in shared mode */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> Node SHARED = <span class="keyword">new</span> Node();</span><br><span class="line">        <span class="comment">/** Marker to indicate a node is waiting in exclusive mode */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> Node EXCLUSIVE = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/** waitStatus value to indicate thread has cancelled */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CANCELLED =  <span class="number">1</span>;</span><br><span class="line">        <span class="comment">/** waitStatus value to indicate successor's thread needs unparking */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SIGNAL    = -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">/** waitStatus value to indicate thread is waiting on condition */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CONDITION = -<span class="number">2</span>;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * waitStatus value to indicate the next acquireShared should</span></span><br><span class="line"><span class="comment">         * unconditionally propagate</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> PROPAGATE = -<span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">volatile</span> <span class="keyword">int</span> waitStatus;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">volatile</span> Node prev;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">volatile</span> Node next;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">volatile</span> Thread thread;</span><br><span class="line"></span><br><span class="line">        Node nextWaiter;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">isShared</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> nextWaiter == SHARED;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">final</span> Node <span class="title">predecessor</span><span class="params">()</span> <span class="keyword">throws</span> NullPointerException </span>&#123;</span><br><span class="line">            Node p = prev;</span><br><span class="line">            <span class="keyword">if</span> (p == <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">                <span class="keyword">return</span> p;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Node() &#123;    <span class="comment">// Used to establish initial head or SHARED marker</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Node(Thread thread, Node mode) &#123;     <span class="comment">// Used by addWaiter</span></span><br><span class="line">            <span class="keyword">this</span>.nextWaiter = mode;</span><br><span class="line">            <span class="keyword">this</span>.thread = thread;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Node(Thread thread, <span class="keyword">int</span> waitStatus) &#123; <span class="comment">// Used by Condition</span></span><br><span class="line">            <span class="keyword">this</span>.waitStatus = waitStatus;</span><br><span class="line">            <span class="keyword">this</span>.thread = thread;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;Node节点是对每一个访问共享资源的线程的封装，主要包含了线程本身以及线程状态（是否阻塞、是否等待唤醒、是否被取消等等）。变量waitStatus表示当前线程被封装成Node节点的等待状态，共有四种取值，CANCELLED、SIGNAL、CONDITION、PROPAGATE：</p>
+<ul>
+<li>CANCELLED：值为1，表示线程被取消，被取消了的线程不会参与资源获取，状态不会再改变，直至该节点被GC收回。</li>
+<li>SIGNAL：值为-1，表示该节点如果执行完成之后，会唤醒其后续节点。</li>
+<li>CONDITION：值为-2，表示该节点等待在Condition上，当其他线程的Condition调用了singal（）方法后，该线程会从等待队列移到同步队列中，加入到同步状态的获取。</li>
+<li>PROPAGATE：值为-3，表示下一次共享式同步状态获取会被无条件传播下去。</li>
+<li>默认值为0，表示初始化状态。</li>
+</ul>
+<p>AQS判断状态时，当waitStatus&gt;0时表示无效状态，waitStatus&lt;0时表示有效状态。</p>
+<h4 id="2-1-2-2compareAndSetTail"><a href="#2-1-2-2compareAndSetTail" class="headerlink" title="2.1.2.2compareAndSetTail"></a>2.1.2.2compareAndSetTail</h4><p>该代码通过底层UNSFATE方式完成CAS操作。关于UNSFAE相关内容这里不做讨论。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">compareAndSetTail</span><span class="params">(Node expect, Node update)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> unsafe.compareAndSwapObject(<span class="keyword">this</span>, tailOffset, expect, update);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-1-2-3enq（Node）"><a href="#2-1-2-3enq（Node）" class="headerlink" title="2.1.2.3enq（Node）"></a>2.1.2.3enq（Node）</h4><p>该方法是另外一种设置队列尾节点的方式。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">enq</span><span class="params">(<span class="keyword">final</span> Node node)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//自旋进行CAS操作，直至成功变成尾节点</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        Node t = tail;</span><br><span class="line">        <span class="comment">//尾节点为空则表示队列为空，初始化一个头节点，该节点也为尾节点</span></span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123; <span class="comment">// Must initialize</span></span><br><span class="line">            <span class="keyword">if</span> (compareAndSetHead(<span class="keyword">new</span> Node()))</span><br><span class="line">                tail = head;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//否则的话就与前边快速流程相同</span></span><br><span class="line">            node.prev = t;</span><br><span class="line">            <span class="keyword">if</span> (compareAndSetTail(t, node)) &#123;</span><br><span class="line">                t.next = node;</span><br><span class="line">                <span class="keyword">return</span> t;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-1-3acquireQueued（Node，int）"><a href="#2-1-3acquireQueued（Node，int）" class="headerlink" title="2.1.3acquireQueued（Node，int）"></a>2.1.3acquireQueued（Node，int）</h3><p>&ensp;&ensp;&ensp;&ensp;我们通过tryAcquire（）形式获取资源失败了，然后将当前线程放入到了等待队列中，接下来就是对等待队列中的线程进行处理操作了，是进行等待唤醒状态，还是可以尝试获取锁然后完成临界区操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">acquireQueued</span><span class="params">(<span class="keyword">final</span> Node node, <span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//是否失败（这里开始理解错了，不细心容易产生歧义）</span></span><br><span class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//是否响应了中断</span></span><br><span class="line">        <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">//自旋操作</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="comment">//获取当前节点的前驱节点</span></span><br><span class="line">            <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">            <span class="comment">//如果前驱节点为head，那么就可以尝试获取锁了（这里可能是被前驱通知了，也可以）</span></span><br><span class="line">            <span class="keyword">if</span> (p == head &amp;&amp; tryAcquire(arg)) &#123;</span><br><span class="line">                <span class="comment">//如果获取成功则把当前节点置为头节点</span></span><br><span class="line">                setHead(node);</span><br><span class="line">                <span class="comment">//当前节点跳过它的前驱变成头结点，原来的头结点也就是前驱就无效了，等待被GC回收</span></span><br><span class="line">                p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                <span class="comment">//获取成功，则把失败标记置为false</span></span><br><span class="line">                failed = <span class="keyword">false</span>;</span><br><span class="line">                <span class="comment">//返回是否响应了中断</span></span><br><span class="line">                <span class="keyword">return</span> interrupted;</span><br><span class="line">            &#125;</span><br><span class="line">           <span class="comment">//这里同样用到了&amp;&amp;短路的操作，首先判断获取锁失败之后是否可以进入等待唤醒状态，如果可以则等待被唤醒变判断是否响应了中断以便返回中断信息</span></span><br><span class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//避免在获取锁的过程中发生异常</span></span><br><span class="line">        <span class="keyword">if</span> (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>继续看一下shouldParkAfterFailedAcquire（Node，Node）方法</p>
+<h4 id="2-1-3-1shouldParkAfterFailedAcquire（Node，Node）"><a href="#2-1-3-1shouldParkAfterFailedAcquire（Node，Node）" class="headerlink" title="2.1.3.1shouldParkAfterFailedAcquire（Node，Node）"></a>2.1.3.1shouldParkAfterFailedAcquire（Node，Node）</h4><p>&ensp;&ensp;&ensp;&ensp;这个方法是判断当前线程是不是在当前队列位置中就不动了，如前边所说，万一前边的线程取消了，或者是释放了，那么队列中的节点就要一点一点向前移动。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">shouldParkAfterFailedAcquire</span><span class="params">(Node pred, Node node)</span> </span>&#123;</span><br><span class="line">    	<span class="comment">//前驱节点的等待状态</span></span><br><span class="line">        <span class="keyword">int</span> ws = pred.waitStatus;</span><br><span class="line">    	<span class="comment">//如前边介绍样，当前驱节点的状态为SIGNAL时，表示它结束之后会通知当前节点</span></span><br><span class="line">        <span class="keyword">if</span> (ws == Node.SIGNAL)</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * This node has already set status asking a release</span></span><br><span class="line"><span class="comment">             * to signal it, so it can safely park.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    <span class="comment">//大于0的状态只有取消一种，所以将当前节点前移直到前驱是有效节点处</span></span><br><span class="line">        <span class="keyword">if</span> (ws &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * Predecessor was cancelled. Skip over predecessors and</span></span><br><span class="line"><span class="comment">             * indicate retry.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="keyword">do</span> &#123;</span><br><span class="line">                node.prev = pred = pred.prev;</span><br><span class="line">            &#125; <span class="keyword">while</span> (pred.waitStatus &gt; <span class="number">0</span>);</span><br><span class="line">            pred.next = node;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * waitStatus must be 0 or PROPAGATE.  Indicate that we</span></span><br><span class="line"><span class="comment">             * need a signal, but don't park yet.  Caller will need to</span></span><br><span class="line"><span class="comment">             * retry to make sure it cannot acquire before parking.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            <span class="comment">//除了SIGNAL之外的有效状态，尝试将其设置成SIGNAL状态</span></span><br><span class="line">            compareAndSetWaitStatus(pred, ws, Node.SIGNAL);</span><br><span class="line">        &#125;</span><br><span class="line">    	<span class="comment">//没有到可以等待唤醒的状态话继续外部的自旋操作</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>然后看下如果返回可以等待唤醒之后的代码也就是返回true之后&amp;&amp;右边的parkAndCheckInterrupt（）</p>
+<h4 id="2-1-3-2parkAndCheckInterrupt（）"><a href="#2-1-3-2parkAndCheckInterrupt（）" class="headerlink" title="2.1.3.2parkAndCheckInterrupt（）"></a>2.1.3.2parkAndCheckInterrupt（）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">parkAndCheckInterrupt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    LockSupport.park(<span class="keyword">this</span>);</span><br><span class="line">    <span class="keyword">return</span> Thread.interrupted();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法调用LockSupport的park方法使当前线程等待，当等待结束之后检查是否发生了中断。</p>
+<p>&ensp;&ensp;&ensp;&ensp;至此，acquireQueued（Node，int）方法就梳理清楚了：首先是进行自旋操作，自旋内部一步一步的移动当前线程节点，直到可以获取共享资源，否则的话就移动到一个可以安全等待通知的节点等待唤醒，最后需要返回是否响应了中断，结合最外部的acquire（int）方法来看，需要判断是否进行了中断，因为需要自己弥补中断。</p>
+<h3 id="2-1-4小结"><a href="#2-1-4小结" class="headerlink" title="2.1.4小结"></a>2.1.4小结</h3><p>综上所述，acquire（int）的流程：</p>
+<ol>
+<li>先通过tryAcquire（）尝试获取资源，如果能获取到资源则直接处理临界区操作；</li>
+<li>如果获取资源失败则调用addWaiter（）将线程存储为Node节点放入等待队列队尾；</li>
+<li>因为队列是FIFO形式，因此需要自旋判断当前节点的最佳等待节点等待唤醒，唤醒之后尝试获取锁并返回是否响应过中断；</li>
+<li>如果响应过中断则自己弥补一下中断。</li>
+</ol>
+<p>这个流程也就是Lock.lock（）的流程，查看源码可以看见lock（）方法只执行了一个acquire（1）</p>
+<h2 id="2-2release（int）"><a href="#2-2release（int）" class="headerlink" title="2.2release（int）"></a>2.2release（int）</h2><p>&ensp;&ensp;&ensp;&ensp;上一小节说完了acquire，这里说它的反向操作，也就是释放资源。release（int）这个方法是独占式同步器释放资源的顶层入口，同样是通过get/set/cas操作共享资源完成，如果完全释放了资源即state=0时，将会唤醒等待队列中的线程来获取资源，即上边自旋操作中处于等待状态节点的线程会被唤醒，从而尝试获取资源退出自旋。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">release</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//与获取资源时相同，尝试调用重写的同步器方法释放资源</span></span><br><span class="line">    <span class="keyword">if</span> (tryRelease(arg)) &#123;</span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h.waitStatus != <span class="number">0</span>)</span><br><span class="line">            <span class="comment">//唤醒等待队列里的下一个节点（当前进行释放的线程为头结点）</span></span><br><span class="line">            unparkSuccessor(h);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法判断资源是否成功释放是通过tryRelease（）方法的返回值判断的，因此在自定义同步器中重写该方法时需要注意返回值的问题。</p>
+<h3 id="2-2-1tryRelease（int）"><a href="#2-2-1tryRelease（int）" class="headerlink" title="2.2.1tryRelease（int）"></a>2.2.1tryRelease（int）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryRelease</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>该方法前边说过，是需要由自定义同步器重写的，因此此处只抛出异常。</p>
+<h3 id="2-2-2unparkSuccessor（Node）"><a href="#2-2-2unparkSuccessor（Node）" class="headerlink" title="2.2.2unparkSuccessor（Node）"></a>2.2.2unparkSuccessor（Node）</h3><p>该方法通过unpark方式唤醒队列中的下一个线程节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">unparkSuccessor</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * If status is negative (i.e., possibly needing signal) try</span></span><br><span class="line"><span class="comment">     * to clear in anticipation of signalling.  It is OK if this</span></span><br><span class="line"><span class="comment">     * fails or if status is changed by waiting thread.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//获取当前节点状态（传入的节点为头节点，即当前即将释放资源的节点）</span></span><br><span class="line">    <span class="keyword">int</span> ws = node.waitStatus;</span><br><span class="line">    <span class="comment">//如果线程状态正常，则通过CAS的形式将其置为0 表示该线程节点要离开了（释放资源的线程节点）</span></span><br><span class="line">    <span class="keyword">if</span> (ws &lt; <span class="number">0</span>)</span><br><span class="line">        compareAndSetWaitStatus(node, ws, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Thread to unpark is held in successor, which is normally</span></span><br><span class="line"><span class="comment">     * just the next node.  But if cancelled or apparently null,</span></span><br><span class="line"><span class="comment">     * traverse backwards from tail to find the actual</span></span><br><span class="line"><span class="comment">     * non-cancelled successor.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//获取下一个节点准备唤醒</span></span><br><span class="line">    Node s = node.next;</span><br><span class="line">    <span class="comment">//如果下一个节点为空或者等待状态为取消态</span></span><br><span class="line">    <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.waitStatus &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//从后向前遍历最后一个状态正常的节点</span></span><br><span class="line">        s = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">for</span> (Node t = tail; t != <span class="keyword">null</span> &amp;&amp; t != node; t = t.prev)</span><br><span class="line">            <span class="keyword">if</span> (t.waitStatus &lt;= <span class="number">0</span>)</span><br><span class="line">                <span class="comment">//赋值即将唤醒的节点</span></span><br><span class="line">                s = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//唤醒线程</span></span><br><span class="line">    <span class="keyword">if</span> (s != <span class="keyword">null</span>)</span><br><span class="line">        LockSupport.unpark(s.thread);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法概括起来就是唤醒等待队列中最前边的没有放弃的线程，这里和acquireQueued（）方法的自旋结合起来看，当线程唤醒，自旋里的parkAndCheckInterrupt（）会返回，然后进入自旋初始判断状态，即判断当前节点是否为head，即使不为head也没有关系，因为前边遍历过了它前边的节点均已为放弃状态，因此通过shouldParkAfterFailedAcquire（）之后，必然会到达头节点，然后获取资源，然后执行临界区方法！</p>
+<h3 id="2-2-3小结"><a href="#2-2-3小结" class="headerlink" title="2.2.3小结"></a>2.2.3小结</h3><p>&ensp;&ensp;&ensp;&ensp;release（int）方法是独占式同步器的顶层入口，它会释放指定的资源，如果资源释放完毕即state=0，那么它会唤醒等待队列中的下一个节点获取同步资源。</p>
+<h2 id="2-3acquireShared（int）"><a href="#2-3acquireShared（int）" class="headerlink" title="2.3acquireShared（int）"></a>2.3acquireShared（int）</h2><p>&ensp;&ensp;&ensp;&ensp;前边两节说的是独占式同步器获取/释放方式，接下来说共享式同步器获取/方式。这个方法是共享式线程获取共享资源的顶层入口。它获取成功直接返回，获取失败则将线程放入等待队列。获取过程中忽略中断。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquireShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//调用重写的方法尝试获取指定个数资源</span></span><br><span class="line">    <span class="keyword">if</span> (tryAcquireShared(arg) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="comment">//将线程放入等待队列</span></span><br><span class="line">        doAcquireShared(arg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;同样是先通过重写的同步器方法tryAcquireShared（）获取指定个数的资源，这个方法在AQS中定义好了返回值的语义，返回小于0表示获取失败，返回0表示获取成功但没有剩余资源，返回大于0表示获取成功并且还有剩余资源。获取失败之后会将线程放入等待队列。</p>
+<h3 id="2-3-1tryAcquireShared（int）"><a href="#2-3-1tryAcquireShared（int）" class="headerlink" title="2.3.1tryAcquireShared（int）"></a>2.3.1tryAcquireShared（int）</h3><p>该方法为自定义同步器需要重写的方法，基类方法抛出异常信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">tryAcquireShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-2doAcquireShared（int）"><a href="#2-3-2doAcquireShared（int）" class="headerlink" title="2.3.2doAcquireShared（int）"></a>2.3.2doAcquireShared（int）</h3><p>该方法将线程放入等待队列队尾</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doAcquireShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//创建Node节点 节点类型为 方法与独占式的相同 区别在节点模式变为SHARED</span></span><br><span class="line">    <span class="keyword">final</span> Node node = addWaiter(Node.SHARED);</span><br><span class="line">    <span class="comment">//是否失败标记</span></span><br><span class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//中断标记</span></span><br><span class="line">        <span class="keyword">boolean</span> interrupted = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">//自旋操作</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="comment">//获取当前节点的前驱</span></span><br><span class="line">            <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">            <span class="comment">//如果前驱为head 也就是当前节点为第二个节点</span></span><br><span class="line">            <span class="keyword">if</span> (p == head) &#123;</span><br><span class="line">                <span class="comment">//尝试获取指定个数资源</span></span><br><span class="line">                <span class="keyword">int</span> r = tryAcquireShared(arg);</span><br><span class="line">                <span class="comment">//如果还有剩余</span></span><br><span class="line">                <span class="keyword">if</span> (r &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="comment">//将head指向自己，因当前资源剩余 因此唤醒后边的线程</span></span><br><span class="line">                    setHeadAndPropagate(node, r);</span><br><span class="line">                    <span class="comment">//辅助前驱进行GC</span></span><br><span class="line">                    p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                    <span class="comment">//被中断过则自己弥补中断</span></span><br><span class="line">                    <span class="keyword">if</span> (interrupted)</span><br><span class="line">                        selfInterrupt();</span><br><span class="line">                    failed = <span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//前驱不为head 则寻找安全等待唤醒点 与独占模式相同</span></span><br><span class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                interrupted = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (failed)</span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;通读这个方法的代码，与独占式基本相同。区别在于将自身中断的过程放在了方法内部。另外一个区别是因为是共享资源，所以当前线程如果发现资源有剩余时会唤醒下一个线程。</p>
+<h4 id="2-3-2-1setHeadAndPropagate（Node，int）"><a href="#2-3-2-1setHeadAndPropagate（Node，int）" class="headerlink" title="2.3.2.1setHeadAndPropagate（Node，int）"></a>2.3.2.1setHeadAndPropagate（Node，int）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setHeadAndPropagate</span><span class="params">(Node node, <span class="keyword">int</span> propagate)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//获取头节点</span></span><br><span class="line">    Node h = head; <span class="comment">// Record old head for check below</span></span><br><span class="line">    <span class="comment">//将当前节点设置成头结点</span></span><br><span class="line">    setHead(node);</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Try to signal next queued node if:</span></span><br><span class="line"><span class="comment">     *   Propagation was indicated by caller,</span></span><br><span class="line"><span class="comment">     *     or was recorded (as h.waitStatus either before</span></span><br><span class="line"><span class="comment">     *     or after setHead) by a previous operation</span></span><br><span class="line"><span class="comment">     *     (note: this uses sign-check of waitStatus because</span></span><br><span class="line"><span class="comment">     *      PROPAGATE status may transition to SIGNAL.)</span></span><br><span class="line"><span class="comment">     * and</span></span><br><span class="line"><span class="comment">     *   The next node is waiting in shared mode,</span></span><br><span class="line"><span class="comment">     *     or we don't know, because it appears null</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * The conservatism in both of these checks may cause</span></span><br><span class="line"><span class="comment">     * unnecessary wake-ups, but only when there are multiple</span></span><br><span class="line"><span class="comment">     * racing acquires/releases, so most need signals now or soon</span></span><br><span class="line"><span class="comment">     * anyway.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//如果资源有剩余或者当前头节点已经释放资源离开</span></span><br><span class="line">    <span class="keyword">if</span> (propagate &gt; <span class="number">0</span> || h == <span class="keyword">null</span> || h.waitStatus &lt; <span class="number">0</span> ||</span><br><span class="line">        (h = head) == <span class="keyword">null</span> || h.waitStatus &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        Node s = node.next;</span><br><span class="line">        <span class="comment">//唤醒下一个节点</span></span><br><span class="line">        <span class="keyword">if</span> (s == <span class="keyword">null</span> || s.isShared())</span><br><span class="line">            doReleaseShared();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法是共享式与独占式的主要区别，资源充足时会唤醒下一个节点。doRelaseShared（）方法放在后边释放的时候说。</p>
+<h3 id="2-3-3小结"><a href="#2-3-3小结" class="headerlink" title="2.3.3小结"></a>2.3.3小结</h3><p>&ensp;&ensp;&ensp;&ensp;可以看出独占式获取与共享式获取差别并不是很大，总的流程依然是先尝试通过重写的方法获取资源，获取不到就将线程加入到等待队列然后自旋直到前边节点通知可以获取时，如果获取之后资源有剩余，则唤醒后续可以获取的节点线程。</p>
+<h2 id="2-4releaseShared（int）"><a href="#2-4releaseShared（int）" class="headerlink" title="2.4releaseShared（int）"></a>2.4releaseShared（int）</h2><p>这个方法是共享式线程释放共享资源的顶层入口，流程比较简单，释放资源，唤醒后续节点</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">releaseShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//释放共享资源</span></span><br><span class="line">    <span class="keyword">if</span> (tryReleaseShared(arg)) &#123;</span><br><span class="line">        <span class="comment">//唤醒下一个节点</span></span><br><span class="line">        doReleaseShared();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里与独占式有一个区别，独占式是基于可重入来完成的，也就是必须当state=0完全释放之后才会通知，这里因为是共享式，其根本目的是支持并发访问，因此只要释放了资源成功就会唤醒后边的节点。</p>
+<h3 id="2-4-1tryReleaseShared（int）"><a href="#2-4-1tryReleaseShared（int）" class="headerlink" title="2.4.1tryReleaseShared（int）"></a>2.4.1tryReleaseShared（int）</h3><p>这个跟前边一样，需要自定义重写</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-2doReleaseShared（）"><a href="#2-4-2doReleaseShared（）" class="headerlink" title="2.4.2doReleaseShared（）"></a>2.4.2doReleaseShared（）</h3><p>这个方法唤醒下一个节点获取资源，在获取资源时也用到了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doReleaseShared</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Ensure that a release propagates, even if there are other</span></span><br><span class="line"><span class="comment">     * in-progress acquires/releases.  This proceeds in the usual</span></span><br><span class="line"><span class="comment">     * way of trying to unparkSuccessor of head if it needs</span></span><br><span class="line"><span class="comment">     * signal. But if it does not, status is set to PROPAGATE to</span></span><br><span class="line"><span class="comment">     * ensure that upon release, propagation continues.</span></span><br><span class="line"><span class="comment">     * Additionally, we must loop in case a new node is added</span></span><br><span class="line"><span class="comment">     * while we are doing this. Also, unlike other uses of</span></span><br><span class="line"><span class="comment">     * unparkSuccessor, we need to know if CAS to reset status</span></span><br><span class="line"><span class="comment">     * fails, if so rechecking.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//自旋</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">//获取头节点</span></span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="comment">//头结点不为空并且还有后继</span></span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h != tail) &#123;</span><br><span class="line">            <span class="comment">//头结点线程状态</span></span><br><span class="line">            <span class="keyword">int</span> ws = h.waitStatus;</span><br><span class="line">            <span class="comment">//头结点是SIGNAL即释放需要通知后继节点</span></span><br><span class="line">            <span class="keyword">if</span> (ws == Node.SIGNAL) &#123;</span><br><span class="line">                <span class="comment">//尝试将头结点状态置为0 失败重试</span></span><br><span class="line">                <span class="keyword">if</span> (!compareAndSetWaitStatus(h, Node.SIGNAL, <span class="number">0</span>))</span><br><span class="line">                    <span class="keyword">continue</span>;            <span class="comment">// loop to recheck cases</span></span><br><span class="line">                <span class="comment">//唤醒后继节点 与独占式相同</span></span><br><span class="line">                unparkSuccessor(h);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//如果头结点状态为0 则尝试</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (ws == <span class="number">0</span> &amp;&amp;</span><br><span class="line">                     !compareAndSetWaitStatus(h, <span class="number">0</span>, Node.PROPAGATE))</span><br><span class="line">                <span class="keyword">continue</span>;                <span class="comment">// loop on failed CAS</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果head变化了 则退出自旋</span></span><br><span class="line">        <span class="keyword">if</span> (h == head)                   <span class="comment">// loop if head changed</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-3小结"><a href="#2-4-3小结" class="headerlink" title="2.4.3小结"></a>2.4.3小结</h3><p>&ensp;&ensp;&ensp;&ensp;总的来说，释放共享式资源与释放独占式资源类似，先调用重写方法释放，然后唤醒队列中的节点，区别在于共享式不需要等待state=0时就可以唤醒资源，只要剩余资源数大于待唤醒的节点就可以唤醒。所以我们在自定义tryReleaseShared（int）方法时可以自定义返回值。以便实现不同的功能。</p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>&ensp;&ensp;&ensp;&ensp;这篇文章主要讲了抽象式队列同步器（AQS）的原理及底层源码。AQS是一个基于FIFO循环队列和volatile类型共享变量的多线程并发访问框架。其主要目的是为自定义同步器提供模板方法，包括独占式acquire/release方法，和共享式acquireShared/releaseShared方法，这四个方法是获取/释放共享资源的顶层方法。方法内部分别调用了tryAcquire/tryRelease和tryAcquireShared/tryReleaseShared四种方法，这四种方法是需要自定义同步器自己重写的。重写主要依据set/get/cas三种方式对共享资源进行操作。独占式一个共享资源只能被一个线程获取，支持重入，共享式支持多个线程访问共享资源，如ReentrantReadLock（），处于等待队列中的线程会通过自旋操作等待前边的线程节点将其唤醒以竞争共享资源。</p>
+<p>后续有时间补一下流程图吧，写完翻看了一遍只有一张图。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+            <a href="/tags/并发编程/" rel="tag"># 并发编程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/23/【编程技巧】如何正确的使用布尔类型/" rel="next" title="【编程技巧】如何正确的使用布尔类型">
+                <i class="fa fa-chevron-left"></i> 【编程技巧】如何正确的使用布尔类型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Crayon Cxy</p>
+              <p class="site-description motion-element" itemprop="description">Go over the mountain, and they will hear your story.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                友情链接
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.diosfun.com/" title="六脉神间" target="_blank">六脉神间</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://blog.csdn.net/chenxyt" title="My CSDN" target="_blank">My CSDN</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、基本概念"><span class="nav-number">1.</span> <span class="nav-text">一、基本概念</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、源码分析"><span class="nav-number">2.</span> <span class="nav-text">二、源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1acquire（int）"><span class="nav-number">2.1.</span> <span class="nav-text">2.1acquire（int）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-1tryAcquire（int）"><span class="nav-number">2.1.1.</span> <span class="nav-text">2.1.1tryAcquire（int）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-2addWaiter（Node）"><span class="nav-number">2.1.2.</span> <span class="nav-text">2.1.2addWaiter（Node）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-1Node"><span class="nav-number">2.1.2.1.</span> <span class="nav-text">2.1.2.1Node</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-2compareAndSetTail"><span class="nav-number">2.1.2.2.</span> <span class="nav-text">2.1.2.2compareAndSetTail</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-2-3enq（Node）"><span class="nav-number">2.1.2.3.</span> <span class="nav-text">2.1.2.3enq（Node）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-3acquireQueued（Node，int）"><span class="nav-number">2.1.3.</span> <span class="nav-text">2.1.3acquireQueued（Node，int）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-3-1shouldParkAfterFailedAcquire（Node，Node）"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">2.1.3.1shouldParkAfterFailedAcquire（Node，Node）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-3-2parkAndCheckInterrupt（）"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">2.1.3.2parkAndCheckInterrupt（）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-4小结"><span class="nav-number">2.1.4.</span> <span class="nav-text">2.1.4小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2release（int）"><span class="nav-number">2.2.</span> <span class="nav-text">2.2release（int）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1tryRelease（int）"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1tryRelease（int）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2unparkSuccessor（Node）"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2unparkSuccessor（Node）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3小结"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3acquireShared（int）"><span class="nav-number">2.3.</span> <span class="nav-text">2.3acquireShared（int）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-1tryAcquireShared（int）"><span class="nav-number">2.3.1.</span> <span class="nav-text">2.3.1tryAcquireShared（int）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-2doAcquireShared（int）"><span class="nav-number">2.3.2.</span> <span class="nav-text">2.3.2doAcquireShared（int）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-1setHeadAndPropagate（Node，int）"><span class="nav-number">2.3.2.1.</span> <span class="nav-text">2.3.2.1setHeadAndPropagate（Node，int）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-3小结"><span class="nav-number">2.3.3.</span> <span class="nav-text">2.3.3小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4releaseShared（int）"><span class="nav-number">2.4.</span> <span class="nav-text">2.4releaseShared（int）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1tryReleaseShared（int）"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1tryReleaseShared（int）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2doReleaseShared（）"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2doReleaseShared（）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3小结"><span class="nav-number">2.4.3.</span> <span class="nav-text">2.4.3小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Crayon Cxy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("5L2kF0V7XFDR6a7wmWFyGC3Q-gzGzoHsz", "Cy1yzcQbLJV7TGUDEmRnvC9A");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

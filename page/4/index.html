@@ -252,6 +252,223 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/【Java编程思想】六：初始化与清理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/13/【Java编程思想】六：初始化与清理/" itemprop="url">【Java编程思想】六：初始化与清理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-13T10:53:40+08:00">
+                2018-11-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/11/13/【Java编程思想】六：初始化与清理/" class="leancloud_visitors" data-flag-title="【Java编程思想】六：初始化与清理">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、用构造器确保初始化"><a href="#一、用构造器确保初始化" class="headerlink" title="一、用构造器确保初始化"></a>一、用构造器确保初始化</h1><p>&ensp;&ensp;&ensp;&ensp;Java中通过提供构造器，确保每个类的对象都可以得到初始化，构造器的形式为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">className（）&#123;</span><br><span class="line">    <span class="comment">//---</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;在类的内部定义的一个与类名相同的方法，该方法没有返回值，没有返回值并不是返回void，而是真正的无返回值。该方法在对象创建时会自动执行。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorTest</span></span>&#123;</span><br><span class="line">	ConstructorTest()&#123;</span><br><span class="line">		System.out.println(<span class="string">"Constructor Begin"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">			ConstructorTest ct = <span class="keyword">new</span> ConstructorTest();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png1.png" alt="png1"></p>
+<p>可以看见程序在初始化对象的时候自动执行了构造方法。</p>
+<p>&ensp;&ensp;&ensp;&ensp;上面是无参的构造方法，还可以显示的编写有参的构造方法，给类的成员变量赋值：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">	ConstructorTest(<span class="keyword">int</span> i)&#123;</span><br><span class="line">		age=i;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">5</span>;i++)&#123;</span><br><span class="line">			ConstructorTest ct = <span class="keyword">new</span> ConstructorTest(i);</span><br><span class="line">			System.out.println(<span class="string">"Age="</span> + ct.age);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png2.png" alt="png2"></p>
+<p>&ensp;&ensp;&ensp;&ensp;如果类中只有唯一的一个带参数的构造器，那么默认的无参构造器将不可用。</p>
+<h1 id="二、方法重载"><a href="#二、方法重载" class="headerlink" title="二、方法重载"></a>二、方法重载</h1><p>&ensp;&ensp;&ensp;&ensp;如果我们需求多种多样，既需要无参构造器，又需要有参构造器，我们可不可以把这两个方法都写出来呢？答案是肯定的，对于这种方法名相同，方法参数不同的写法，称作是重载。方法重载不仅支持构造器重载，也支持普通方法重载：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">	<span class="keyword">private</span> String name;</span><br><span class="line">	ConstructorTest()&#123;</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	ConstructorTest(<span class="keyword">int</span> i)&#123;</span><br><span class="line">		age=i;</span><br><span class="line">	&#125;</span><br><span class="line">	ConstructorTest(String j)&#123;</span><br><span class="line">		name=j;</span><br><span class="line">	&#125;</span><br><span class="line">	ConstructorTest(<span class="keyword">int</span> i,String j)&#123;</span><br><span class="line">		age=i;</span><br><span class="line">		name=j;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ConstructorTest ct1 = <span class="keyword">new</span> ConstructorTest();</span><br><span class="line">		ConstructorTest ct2 = <span class="keyword">new</span> ConstructorTest(<span class="number">22</span>);</span><br><span class="line">		ConstructorTest ct3 = <span class="keyword">new</span> ConstructorTest(<span class="string">"张三"</span>);</span><br><span class="line">		ConstructorTest ct4 = <span class="keyword">new</span> ConstructorTest(<span class="number">23</span>,<span class="string">"李四"</span>);</span><br><span class="line">		System.out.println(<span class="string">"ct1 age="</span> + ct1.age + <span class="string">"---name="</span> + ct1.name);</span><br><span class="line">		System.out.println(<span class="string">"ct2 age="</span> + ct2.age + <span class="string">"---name="</span> + ct2.name);</span><br><span class="line">		System.out.println(<span class="string">"ct3 age="</span> + ct3.age + <span class="string">"---name="</span> + ct3.name);</span><br><span class="line">		System.out.println(<span class="string">"ct4 age="</span> + ct4.age + <span class="string">"---name="</span> + ct4.name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png3.png" alt="png3"></p>
+<p>&ensp;&ensp;&ensp;&ensp;四个不同的构造函数初始化了四个不同的对象，可以从打印结果看出，没有初始化的值int类型为0，String类型为null。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConstructorTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"int 类型打印"</span> + i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(String j)</span></span>&#123;</span><br><span class="line">		System.out.println(<span class="string">"String 类型打印"</span> + j);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ConstructorTest.print(<span class="number">22</span>);</span><br><span class="line">		ConstructorTest.print(<span class="string">"张三"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;普通方法的重载最明显的使用就是println（）方法，我们要保证打印任何内容都使用println（）方法，而不是打印int类型用一个方法printint（），然后打印String类型用一个方法printString（），这时候方法重载是最好的办法。</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png4.png" alt="png4"></p>
+<p>如上结果显示了两个重载方法的不同结果。</p>
+<p>&ensp;&ensp;&ensp;&ensp;重载方法中如果传入了低类型的参数，那么如果找不到合适的方法，会被隐式的提升成高类型的数据。如果传入了高类型的参数，如果不进行类型转换，那么编译器会报错。Java中区分重载方法的依据是参数类型和参数个数，参数顺序区分会造成程序易读性较差，在一些情况下，也可以使用返回值区分，当然前提是如果你关心方法的返回值。</p>
+<h1 id="三、缺省构造器"><a href="#三、缺省构造器" class="headerlink" title="三、缺省构造器"></a>三、缺省构造器</h1><p>&ensp;&ensp;&ensp;&ensp;如前文所述，默认的构造器，就是没有形参的构造器，作为一个类的缺省构造器。如果程序员没有显示的在代码中创建一个构造器，那么Java会自动帮你创建一个无参构造器来完成初始化。当然如果程序员显示的创建了构造函数，那么Java就不会给你创建缺省构造器了</p>
+<h1 id="四、this关键字"><a href="#四、this关键字" class="headerlink" title="四、this关键字"></a>四、this关键字</h1><p>&ensp;&ensp;&ensp;&ensp;this关键字也是Java中尤为重要的一个关键字，主要有三个作用：</p>
+<p>&ensp;&ensp;&ensp;&ensp;1.表示当前对象的引用，并返回当前对象，用法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThisTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> ThisTest <span class="title">doFunc</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ThisTest tt = <span class="keyword">new</span> ThisTest().doFunc();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>doFunc（）方法返回的是一个ThisTest类型的值，所以此处使用return this，返回了该类型对象的引用。</p>
+<p>&ensp;&ensp;&ensp;&ensp;2.表示类的成员变量，在有的构造函数中，形参与成员变量使用同一个字符串，这时候可以用this来区分，带有this的表示成员变量，用法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThisTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">private</span> String arg;</span><br><span class="line">	ThisTest(String arg)&#123;</span><br><span class="line">		<span class="keyword">this</span>.arg = arg;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ThisTest tt = <span class="keyword">new</span> ThisTest(<span class="string">"嘻嘻"</span>);</span><br><span class="line">		System.out.println(tt.arg);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png5.png" alt="png5"></p>
+<p>此处this.arg表明了这个变量是成员变量，与构造方法的形参做了区分。</p>
+<p>&ensp;&ensp;&ensp;&ensp;3.可以在构造器中调用另一个构造器，使用this带参数代替构造器的方法名，用法如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ThisTest</span></span>&#123;</span><br><span class="line">	ThisTest(<span class="keyword">int</span> i,String j)&#123;</span><br><span class="line">		<span class="keyword">this</span>(j);</span><br><span class="line">		System.out.println(<span class="string">"我是构造器1"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	ThisTest(String arg)&#123;</span><br><span class="line">		System.out.println(<span class="string">"我是构造器2"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		ThisTest tt = <span class="keyword">new</span> ThisTest(<span class="number">2</span>,<span class="string">"嘻嘻"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png6.png" alt="png6"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到对象在初始化的时候使用了两个构造器，其中一个构造器是在另一个构造器中通过this（）的方式进行了调用。</p>
+<h1 id="五、清理：终结处理和垃圾回收"><a href="#五、清理：终结处理和垃圾回收" class="headerlink" title="五、清理：终结处理和垃圾回收"></a>五、清理：终结处理和垃圾回收</h1><p>&ensp;&ensp;&ensp;&ensp;Java中的内存清理使用的是Java自带的垃圾回收机制，但是不管怎么来说，这种方式都不是绝对安全的。Java的垃圾回收机制清理的是通过new创建的对象，而在某些特殊情况下，可能有些对象不是通过new创建的，这些对象如果不使用的时候，垃圾回收器是不能准确的清理他们的从而造成了这块特殊的内存区域一直得不到释放。Java中提供了finalize()方法来处理这一部分特殊的内存区域。它的处理流程是这样的，在Java垃圾回收器启用之前，会先调用这个方法进行一些必要的回收操作。但是针对这一块特殊的区域，或者是new创建的需要被回收的对象，一般情况下只有当Java虚拟机内存快要消耗殆尽的时候，垃圾回收器才会启动，毕竟启动垃圾回收器也是需要消耗资源的，所以不可能说实时存在。所说的特殊的创建对象方式，一般是指“本地方法”使用时，也就是在Java中调用非Java代码的时候发生的。所以一般情况下是不需要使用finalize（）方法的。</p>
+<p>&ensp;&ensp;&ensp;&ensp;finalize（）通常还有另一个用法，由于它是在Java垃圾回收器启动之前执行的，所以可以用它来判断终结状态，即判断一个对象是否满足回收条件。</p>
+<h1 id="六、成员初始化"><a href="#六、成员初始化" class="headerlink" title="六、成员初始化"></a>六、成员初始化</h1><p>&ensp;&ensp;&ensp;&ensp;Java尽量保证每个变量在使用之前都进行了初始化操作，变量分为局部变量和成员变量，局部变量如果没有显示的初始化，在使用它的时候会报错，而成员变量不会，如果没有显示的初始化一个成员变量，那么它会被默认的分配一个指定的值。</p>
+<h1 id="七、构造器初始化"><a href="#七、构造器初始化" class="headerlink" title="七、构造器初始化"></a>七、构造器初始化</h1><p>&ensp;&ensp;&ensp;&ensp;如前边对构造器的阐述，可以使用构造器来初始化类的成员变量，当对象被实例化之后，对象的成员变量会被初始化。静态成员变量只有在第一次使用它是才会被初始化，后边再次用到时不会被初始化。初始化顺序为创建对象时，先初始化这个类的静态变量，然后在堆上为这个对象分配内存，最后执行构造函数。</p>
+<h1 id="八、数组初始化"><a href="#八、数组初始化" class="headerlink" title="八、数组初始化"></a>八、数组初始化</h1><p>&ensp;&ensp;&ensp;&ensp;数据是一系列相同数据类型封装起来的序列，它的初始化可以发生在任何时候，int[] a1表示一个int类型的数组，这个数组内部所有的值都是int类型，a1只是这个数组的一个引用，可以显示的通过如int[] a1={1，2，3};的形式进行初始化。如果不能确定数组的内容或者是长度，则可以通过new的形式来创建一个数组。int[] a = new int[20];这种创建也只是创建了一个引用数组，直到数组中的每一个字段都有确切的值了，初始化才真正的完成。如a[1]=3;</p>
+<p>&ensp;&ensp;&ensp;&ensp;使用数组我们可以构建一个变参的函数，就是当方法的参数类型和个数都不确定的时候，我们可以使用一个数组作为形参。因为Object类是所有类型的父类，所以这个形参数组的类型就是Obejct类，对于基本数据类型，因为都有对应的包装类，所以也可以转换成Obejct类进行使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DifArgTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printArray</span><span class="params">(Object[] args)</span></span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(Object obj:args)&#123;</span><br><span class="line">			System.out.print(obj + <span class="string">""</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		DifArgTest.printArray(<span class="keyword">new</span> Object[]&#123;<span class="string">"我今年"</span>,<span class="keyword">new</span> Integer(<span class="number">24</span>),<span class="string">"岁！"</span>&#125;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png7.png" alt="png7"></p>
+<p>&ensp;&ensp;&ensp;&ensp;可以看到printArray（）方法将Obejct的数组内容都打印了出来。但是这样传参数是要写成数组的形式，未免有些臃肿。JDK1.5之后真正的变参函数出来啦。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DifArgTest</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">printArray</span><span class="params">(Object...args)</span></span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(Object obj:args)&#123;</span><br><span class="line">			System.out.print(obj + <span class="string">""</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		DifArgTest.printArray(<span class="string">"我"</span>,<span class="string">"今年"</span>,<span class="number">24</span>,<span class="string">"岁"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;用“…”代替了原有的数组符号，同时传递的参数也变得更加简洁了。运行结果：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png8.png" alt="png8"></p>
+<h1 id="九、枚举类型"><a href="#九、枚举类型" class="headerlink" title="九、枚举类型"></a>九、枚举类型</h1><p>&ensp;&ensp;&ensp;&ensp;这里只是初步的了解一下枚举类型，enum，Java中的enum要比C++更加完备。以下是一个简单的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EnumTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">enum</span> EnumSet&#123;</span><br><span class="line">		FIRST,SECOND,THIRD</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		EnumSet es = EnumSet.FIRST;</span><br><span class="line">		System.out.println(es);</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;创建一个枚举类型，类型内部的实例值是常量，因此按照通用的命名规范进行大写。同时需要使用枚举时，可以初始化一个引用然后进行赋值。结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png9.png" alt="png9"></p>
+<p>&ensp;&ensp;&ensp;&ensp;当我们创建枚举的时候编译器会自动为我们添加一些有用的特性，我觉得这是与其它语言相比更加完备的地方，比如它会创建一个toString（）方法，这也就是为什么我们上边可以使用syso打印出来。编译器还会创建ordinal（）方法，用来表示特定enum常量的声明顺序，以及一个static values（）方法，该方法是一个静态的方法可以通过enum名字进行访问，方法的作用是按照enmu的声明顺序，产生一个由enum常量值组成的数组。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EnumTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">enum</span> EnumSet&#123;</span><br><span class="line">		FIRST,SECOND,THIRD</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(EnumSet et:EnumSet.values())&#123;</span><br><span class="line">			System.out.println(<span class="string">"value is:"</span> + et + <span class="string">"---ordinal is:"</span> + et.ordinal());</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png10.png" alt="png10"></p>
+<p>&ensp;&ensp;&ensp;&ensp;enum看起来像是一种新的数据类型，但是实际上enum是一个类，并且具有自己的方法。</p>
+<p>&ensp;&ensp;&ensp;&ensp;除了上边的特性之外，enum还有个更加实用的特性，由于它是一个常量集，因此可以和switch语句完美匹配：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.java.practice;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EnumTest</span></span>&#123;</span><br><span class="line">	<span class="keyword">public</span> EnumSet es;</span><br><span class="line">	EnumTest(EnumSet es)&#123;</span><br><span class="line">		<span class="keyword">this</span>.es = es;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">enum</span> EnumSet&#123;</span><br><span class="line">		FIRST,SECOND,THIRD</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doSwitchPrint</span><span class="params">()</span></span>&#123;</span><br><span class="line">		<span class="keyword">switch</span>(es)&#123;</span><br><span class="line">		<span class="keyword">case</span> FIRST:</span><br><span class="line">			System.out.println(<span class="string">"This is First"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> SECOND:</span><br><span class="line">			System.out.println(<span class="string">"This is Second"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> THIRD:</span><br><span class="line">			System.out.println(<span class="string">"This is Third"</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			System.out.println(<span class="string">"This is Error"</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		EnumTest et1 = <span class="keyword">new</span> EnumTest(EnumSet.FIRST);</span><br><span class="line">		EnumTest et2 = <span class="keyword">new</span> EnumTest(EnumSet.SECOND);</span><br><span class="line">		EnumTest et3 = <span class="keyword">new</span> EnumTest(EnumSet.THIRD);</span><br><span class="line">		et1.doSwitchPrint();</span><br><span class="line">		et2.doSwitchPrint();</span><br><span class="line">		et3.doSwitchPrint();</span><br><span class="line">	&#125;	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果如下：</p>
+<p><img src="/2018/11/13/【Java编程思想】六：初始化与清理/png11.png" alt="png11"></p>
+<p>&ensp;&ensp;&ensp;&ensp;以上是对enum的一个初步了解，后续将会单独阐述。</p>
+<h1 id="十、总结"><a href="#十、总结" class="headerlink" title="十、总结"></a>十、总结</h1><p>&ensp;&ensp;&ensp;&ensp;本章在Java中占有了至关重要的作用，也可以说初始化比较重要。总的来说要掌握如何进行初始化，方法的重载，重载不仅发生在构造方法中，也可以发生在普通方法。this关键的使用可以说很重要，但是便于理解。垃圾回收以及枚举只是初步的了解了一下，后续还会单独进行学习。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/【Java编程思想】五：控制执行流程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1235,7 +1452,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-count">36</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1246,7 +1463,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -1257,7 +1474,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -1312,7 +1529,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
