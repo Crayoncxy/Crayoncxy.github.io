@@ -94,7 +94,7 @@
 <meta property="og:image" content="http://yoursite.com/2018/12/23/【编程技巧】如何正确的使用布尔类型/png5.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/23/【编程技巧】如何正确的使用布尔类型/png6.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/23/【编程技巧】如何正确的使用布尔类型/png7.png">
-<meta property="og:updated_time" content="2018-12-23T14:54:50.067Z">
+<meta property="og:updated_time" content="2019-03-20T13:59:22.514Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【编程技巧】如何正确的使用布尔类型">
 <meta name="twitter:description" content="一、场景描述&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在日常开发的过程中，我们经常需要在类中定义布尔类型的变量。比如在一个业务的执行过程中，设置一个标志变量，来判断业务是否执行成功。一般情况下，有如下四种定义形式。 1234567private boolean success;private boolean isSuccess;private Boolean success;private">
@@ -418,7 +418,7 @@
 <h2 id="使用Boolean还是boolean？"><a href="#使用Boolean还是boolean？" class="headerlink" title="使用Boolean还是boolean？"></a>使用Boolean还是boolean？</h2><p>&ensp;&ensp;&ensp;&ensp;如上我们验证了使用isSuccess在序列化和反序列化过程中会造成的异常情况。然后对比使用基本布尔类型boolean和包装布尔类型Boolean的不同，在对一个没有的属性进行反序列的时候，基本布尔类型会默认赋值false，而包装布尔类型会默认赋值null</p>
 <p>在阿里巴巴开发手册中有如下规定：</p>
 <p><img src="/2018/12/23/【编程技巧】如何正确的使用布尔类型/png7.png" alt="png7"></p>
-<p>&ensp;&ensp;&ensp;&ensp;这里建议我们使用包装类型，理由是包装类型在数据属性为空的时候会默认赋值为null，而基本数据类型在属性为空的时候则会赋值为false或者诸如在double中的0，这在生产环境下很有可能会产生一些微妙的异常情况。</p>
+<p>&ensp;&ensp;&ensp;&ensp;这里建议我们使用包装类型，理由是包装类型在数据属性为空的时候会默认赋值为null，而基本数据类型在属性为空的时候则会赋值为false或者为0。比如常见的Double和double，Integer和int，对于null和0的不同，这在生产环境下很有可能会产生一些灾难性的异常情况。</p>
 <p>&ensp;&ensp;&ensp;&ensp;个人觉得，无论是null还是默认的false与0也好，从本质上讲无非是我们如何在代码中正确的对异常情况进行处理。毕竟代码中出现没有意义的null也未必见得就是一件好事。</p>
 <h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>&ensp;&ensp;&ensp;&ensp;在开发过程中，对于需要对业务进行判断成功与失败的标志变量，避免使用isXXX的命名形式。因为编辑器根据Java Bean的命名规范，会将其自动生成的getter/setter方法中的Is省略。从而在序列化与反序列化的过程中产生异常。</p>
 <p>此外，对于基本布尔类型，与包装布尔类型，其实没有哪一种是绝对完美的，完美的是如何处理异常。</p>
@@ -543,7 +543,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

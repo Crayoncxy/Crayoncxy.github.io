@@ -252,6 +252,210 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/23/【源码学习】Java并发之CountDownLatch/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/23/【源码学习】Java并发之CountDownLatch/" itemprop="url">【源码学习】Java并发之CountDownLatch</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-23T09:50:29+08:00">
+                2019-03-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码学习/" itemprop="url" rel="index">
+                    <span itemprop="name">源码学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/23/【源码学习】Java并发之CountDownLatch/" class="leancloud_visitors" data-flag-title="【源码学习】Java并发之CountDownLatch">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、Demo演示"><a href="#一、Demo演示" class="headerlink" title="一、Demo演示"></a>一、Demo演示</h1><p>&ensp;&ensp;&ensp;&ensp;在并发的场景中，常见的一个场景就是一个任务的执行要等待多个线程都执行完毕之后才执行。CountDownLatch可以很好的解决这个问题。</p>
+<p>以下以多线程累加为背景，演示如何使用CountDownLatch</p>
+<p>首先先看不使用CountDownLatch的时候</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.threadTest;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CountDownLatchDemo</span> </span>&#123;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">10</span>;j++)&#123;</span><br><span class="line">			Thread thread = <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">					<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">					add();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;;</span><br><span class="line">			thread.start();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">		i++;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/2019/03/23/【源码学习】Java并发之CountDownLatch/1553308547970.png" alt="1553308547970"></p>
+<p>再一次运行：</p>
+<p><img src="/2019/03/23/【源码学习】Java并发之CountDownLatch/1553308568992.png" alt="1553308568992"></p>
+<p>&ensp;&ensp;&ensp;&ensp;这里我们如果多次运行的话，会产生随机的结果。原因就是线程并不是按照我们代码看到的逻辑顺序执行的。循环创建的十个线程和主线程都有机会得到CPU的调度，当主线程被调度执行print代码时，有可能会有子线程还没有执行。因此我们需要使用一些措施来让主线程等待着子线程执行完再执行print代码。这时候CountDownLatch就登场了。</p>
+<p>接下来演示CountDownLatch的使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.chenxyt.threadTest;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CountDownLatch;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CountDownLatchDemo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">static</span> CountDownLatch ctl = <span class="keyword">new</span> CountDownLatch(<span class="number">10</span>);</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>;j&lt;<span class="number">10</span>;j++)&#123;</span><br><span class="line">			Thread thread = <span class="keyword">new</span> Thread()&#123;</span><br><span class="line">				<span class="meta">@Override</span></span><br><span class="line">				<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">					<span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">					add();</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;;</span><br><span class="line">			thread.start();</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			ctl.await();</span><br><span class="line">		&#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">			<span class="comment">// TODO Auto-generated catch block</span></span><br><span class="line">			e.printStackTrace();</span><br><span class="line">		&#125;</span><br><span class="line">		System.out.println(i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">()</span></span>&#123;</span><br><span class="line">		i++;</span><br><span class="line">		ctl.countDown();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="/2019/03/23/【源码学习】Java并发之CountDownLatch/1553308877746.png" alt="1553308877746"></p>
+<p>&ensp;&ensp;&ensp;&ensp;这回我们无论运行多少次，最终的结果都是10。我们先初始化了一个CountDownLatch对象，参数为10，然后每个线程执行完自己的任务之后，调用了对象的countDown（）方法，主线程调用了对象的await（）方法，最后就得到了预期的结果。下边分析如何实现的。</p>
+<h1 id="二、源码分析"><a href="#二、源码分析" class="headerlink" title="二、源码分析"></a>二、源码分析</h1><p>这里我们通过分析源码来知道CountDownLatch的工作原理</p>
+<h2 id="2-1CountDownLatch（int）"><a href="#2-1CountDownLatch（int）" class="headerlink" title="2.1CountDownLatch（int）"></a>2.1CountDownLatch（int）</h2><p>CountDownLatch是通过构造器完成初始化的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">CountDownLatch</span><span class="params">(<span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (count &lt; <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"count &lt; 0"</span>);</span><br><span class="line">    <span class="keyword">this</span>.sync = <span class="keyword">new</span> Sync(count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;构造器参数是int类型变量，当入参小于0时会抛出非法参数异常。然后是调用了Sync的构造器，构造了Sync对象，并把入参继续下传。接下来我们看下Sync是什么。</p>
+<h3 id="2-1-1Sync"><a href="#2-1-1Sync" class="headerlink" title="2.1.1Sync"></a>2.1.1Sync</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">4982264981922014374L</span>;</span><br><span class="line"><span class="comment">//获取共享资源 将共享资源state设置成count</span></span><br><span class="line">      Sync(<span class="keyword">int</span> count) &#123;</span><br><span class="line">          setState(count);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//查看当前共享资源个数</span></span><br><span class="line">      <span class="function"><span class="keyword">int</span> <span class="title">getCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> getState();</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//重写获取共享资源方法</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">tryAcquireShared</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">          <span class="comment">//如果当前共享资源个数为0则返回1  否则返回-1</span></span><br><span class="line">          <span class="comment">//即获取成功为1 失败为负1</span></span><br><span class="line">          <span class="keyword">return</span> (getState() == <span class="number">0</span>) ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//重写释放共享资源方法</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">          <span class="comment">// Decrement count; signal when transition to zero</span></span><br><span class="line">          <span class="comment">//自旋保证内部要执行的终态一定会成功</span></span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">              <span class="comment">//获取当前资源个数</span></span><br><span class="line">              <span class="keyword">int</span> c = getState();</span><br><span class="line">              <span class="comment">//如果资源为0 则返回释放失败 false</span></span><br><span class="line">              <span class="keyword">if</span> (c == <span class="number">0</span>)</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">              <span class="comment">//资源个数-1</span></span><br><span class="line">              <span class="keyword">int</span> nextc = c-<span class="number">1</span>;</span><br><span class="line">              <span class="comment">//cas操作将资源个数-1</span></span><br><span class="line">              <span class="keyword">if</span> (compareAndSetState(c, nextc))</span><br><span class="line">                  <span class="comment">//成功则退出自旋 返回true</span></span><br><span class="line">                  <span class="keyword">return</span> nextc == <span class="number">0</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;通过上边的代码我们可以看到，Sync是CountDownLatch的一个内部类，同时也是AbstractQueuedSynchronizer的一个子类。AQS前文有说过，是一个基于volatile共享变量state和FIFO双循环队列的多线程同步器框架，也就是说，Sync是我们自定义的一个同步器。自定义的同步器是重写了tryAcquire/tryRelease独占式或者是tryAcquireShared/tryReleaseShared共享式中的一组或全部，主要是通过对state的set/get/cas操作完成共享变量的获取和释放。</p>
+<h4 id="2-1-1-1Sync（int）"><a href="#2-1-1-1Sync（int）" class="headerlink" title="2.1.1.1Sync（int）"></a>2.1.1.1Sync（int）</h4><p>这里先只展开说一下Sync的构造函数，其它的函数下文再说，并且在上述代码中已经写了注释。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sync(<span class="keyword">int</span> count) &#123;</span><br><span class="line">    setState(count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;如同我们说的自定义同步器的功能一样，通过get/set/cas操作完成对state的修改。这里的构造函数是使用了基类AQS的setState（count）方法，将同步器共享资源的state的值设置成了count。</p>
+<h3 id="2-1-2小结"><a href="#2-1-2小结" class="headerlink" title="2.1.2小结"></a>2.1.2小结</h3><p>&ensp;&ensp;&ensp;&ensp;综上所述，CountDownLatch的构造方法，就是共享式的获取了count个资源。通过内部类Sync继承了AQS并通过构造函数传参修改了共享变量的值。</p>
+<h2 id="2-2countDown"><a href="#2-2countDown" class="headerlink" title="2.2countDown()"></a>2.2countDown()</h2><p>接下来我们看一下Demo中每个线程执行完之后调用的countDown（）方法是如何实现的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">countDown</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    sync.releaseShared(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;哦嚯，竟然如此简单。只调用了sync对象的releaseShared方法，并传参数1。内部类Sync的方法在上一节中已经给出，我们可以看到内部类中并没有releaseShared（int）这个方法，因此可以判定这个方法是AQS的。没错，之前学习AQS的时候说过，acquire/release 和 acqureShared/releaseShared分别是独占式和共享式获取/释放资源的最顶层入口。这里为了能够理解清楚，再重新列出基类的方法。</p>
+<h3 id="2-2-1releaseShared（）"><a href="#2-2-1releaseShared（）" class="headerlink" title="2.2.1releaseShared（）"></a>2.2.1releaseShared（）</h3><p><strong>这个方法是基类AQS的方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">releaseShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">   	<span class="comment">//调用自定义同步器的尝试释放资源方法</span></span><br><span class="line">    <span class="keyword">if</span> (tryReleaseShared(arg)) &#123;</span><br><span class="line">        <span class="comment">//释放成功则尝试唤醒队列中等待的线程</span></span><br><span class="line">        doReleaseShared();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法先调用自定义同步器的tryRleaseShared（int）方法尝试释放资源，因为是共享式的，所以释放成功之后（不需要等待state=0）需要通知队列中等待的资源尝试获取资源。注意这里前边传过来的入参是1，即只释放一个资源（实际上这个参数没有用到）。</p>
+<h4 id="2-2-1-1tryReleaseShared（int）"><a href="#2-2-1-1tryReleaseShared（int）" class="headerlink" title="2.2.1.1tryReleaseShared（int）"></a>2.2.1.1tryReleaseShared（int）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Decrement count; signal when transition to zero</span></span><br><span class="line">    <span class="comment">//自旋</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="comment">//获取当前state值</span></span><br><span class="line">        <span class="keyword">int</span> c = getState();</span><br><span class="line">        <span class="comment">//如果当前state=0 则表示资源都已经释放了</span></span><br><span class="line">        <span class="keyword">if</span> (c == <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">//将当前state值-1</span></span><br><span class="line">        <span class="keyword">int</span> nextc = c-<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//cas更新当前资源个数-1</span></span><br><span class="line">        <span class="keyword">if</span> (compareAndSetState(c, nextc))</span><br><span class="line">            <span class="comment">//更新成功则退出自旋返回true</span></span><br><span class="line">            <span class="keyword">return</span> nextc == <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个方法主要完成的操作就是释放一个资源（文中的释放/获取对于state来说，获取表示state++，释放表示state–，可以反向理解为是对state来说），也就是使state的值-1，这个操作通过自旋CAS来保证一定会执行成功得到最后的结果。</p>
+<h4 id="2-2-1-2doReleaseShared（）"><a href="#2-2-1-2doReleaseShared（）" class="headerlink" title="2.2.1.2doReleaseShared（）"></a>2.2.1.2doReleaseShared（）</h4><p><strong>该方法为基类AQS的方法</strong></p>
+<p>&ensp;&ensp;&ensp;&ensp;由前边对AQS的学习知道，当我们释放了一个资源的时候，我们要尝试去通知队列中第一个等待的线程去获取资源。对于共享式和独占式的区别是独占式是在释放之后资源个数=0时才去通知，共享式是释放了就去通知。这里是共享式释放资源的通知。这个方法也是基类的方法，就如同学习AQS时说的那样，自定义同步器不需要管队列的操作，只需要去重写对资源的获取和释放并处理好返回值即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doReleaseShared</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Ensure that a release propagates, even if there are other</span></span><br><span class="line"><span class="comment">     * in-progress acquires/releases.  This proceeds in the usual</span></span><br><span class="line"><span class="comment">     * way of trying to unparkSuccessor of head if it needs</span></span><br><span class="line"><span class="comment">     * signal. But if it does not, status is set to PROPAGATE to</span></span><br><span class="line"><span class="comment">     * ensure that upon release, propagation continues.</span></span><br><span class="line"><span class="comment">     * Additionally, we must loop in case a new node is added</span></span><br><span class="line"><span class="comment">     * while we are doing this. Also, unlike other uses of</span></span><br><span class="line"><span class="comment">     * unparkSuccessor, we need to know if CAS to reset status</span></span><br><span class="line"><span class="comment">     * fails, if so rechecking.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="comment">//自旋</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">       	<span class="comment">//获取队列头节点</span></span><br><span class="line">        Node h = head;</span><br><span class="line">        <span class="keyword">if</span> (h != <span class="keyword">null</span> &amp;&amp; h != tail) &#123;</span><br><span class="line">            <span class="keyword">int</span> ws = h.waitStatus;</span><br><span class="line">            <span class="keyword">if</span> (ws == Node.SIGNAL) &#123;</span><br><span class="line">                <span class="keyword">if</span> (!compareAndSetWaitStatus(h, Node.SIGNAL, <span class="number">0</span>))</span><br><span class="line">                    <span class="keyword">continue</span>;            <span class="comment">// loop to recheck cases</span></span><br><span class="line">                unparkSuccessor(h);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (ws == <span class="number">0</span> &amp;&amp;</span><br><span class="line">                     !compareAndSetWaitStatus(h, <span class="number">0</span>, Node.PROPAGATE))</span><br><span class="line">                <span class="keyword">continue</span>;                <span class="comment">// loop on failed CAS</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (h == head)                   <span class="comment">// loop if head changed</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里相关内容不再继续展开了，主要的功能就是完成了对队列还活动着的线程进行了一个通知。</p>
+<h3 id="2-2-2小结"><a href="#2-2-2小结" class="headerlink" title="2.2.2小结"></a>2.2.2小结</h3><p>&ensp;&ensp;&ensp;&ensp;通过对源码的分析，我们可以看到，每个线程执行了countDown（）之后会对构造函数获取的state进行-1操作，执行完-1操作会通知队列中等待的线程尝试获取资源。这里我们也可以进行猜测，队列中等待的线程就是我们Demo中执行了await（）方法等待执行print任务的主线程。</p>
+<h2 id="2-3await（）"><a href="#2-3await（）" class="headerlink" title="2.3await（）"></a>2.3await（）</h2><p>主线程为了等待子线程都执行完任务，调用了await（）方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">await</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    sync.acquireSharedInterruptibly(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到这个方法是能够响应中断的。在响应了中断之后会抛出InterruptedException异常</p>
+<h3 id="2-3-1acquireSharedInterruptibly（）"><a href="#2-3-1acquireSharedInterruptibly（）" class="headerlink" title="2.3.1acquireSharedInterruptibly（）"></a>2.3.1acquireSharedInterruptibly（）</h3><p>这个方法是先尝试获取一个资源，如果获取失败了就寻找安全等待点自旋等待通知。等待过程中可以响应中断。</p>
+<p><strong>该方法为基类AQS方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquireSharedInterruptibly</span><span class="params">(<span class="keyword">int</span> arg)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">//被中断则抛出异常</span></span><br><span class="line">    <span class="keyword">if</span> (Thread.interrupted())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedException();</span><br><span class="line">    <span class="comment">//尝试获取资源</span></span><br><span class="line">    <span class="keyword">if</span> (tryAcquireShared(arg) &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="comment">//获取资源如果返回负数则寻找安全等待点</span></span><br><span class="line">        doAcquireSharedInterruptibly(arg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-3-1-1tryAcquireShared（int）"><a href="#2-3-1-1tryAcquireShared（int）" class="headerlink" title="2.3.1.1tryAcquireShared（int）"></a>2.3.1.1tryAcquireShared（int）</h4><p>这个方法是自定义同步器重写的，也是在CountDownLatch中重写的我认为比较重要的一个方法。算是核心逻辑吧</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">tryAcquireShared</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (getState() == <span class="number">0</span>) ? <span class="number">1</span> : -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;哦豁，核心逻辑竟然只有一句话。就是判断当前共享资源值是不是等于0，如果等于0则返回1，否则返回-1。为什么说这里是核心逻辑呢，因为CountDownLatch实现的功能就是初始化对象的时候将共享资源个数设置成N，然后N个线程执行完之后-1，主线程等待时候需要判断共享资源个数，如果为0则表示其他线程都已经退下了。可以继续执行了，否则就需要进入等待队列等待。等待的过程中可以响应中断。</p>
+<h4 id="2-3-1-2doAcquireSharedInterruptibly（）"><a href="#2-3-1-2doAcquireSharedInterruptibly（）" class="headerlink" title="2.3.1.2doAcquireSharedInterruptibly（）"></a>2.3.1.2doAcquireSharedInterruptibly（）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doAcquireSharedInterruptibly</span><span class="params">(<span class="keyword">int</span> arg)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="comment">//将线程构造成Node节点加入到队列 标记为共享类型</span></span><br><span class="line">    <span class="keyword">final</span> Node node = addWaiter(Node.SHARED);</span><br><span class="line">    <span class="comment">//是否失败</span></span><br><span class="line">    <span class="keyword">boolean</span> failed = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//自旋</span></span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="comment">//获取前驱</span></span><br><span class="line">            <span class="keyword">final</span> Node p = node.predecessor();</span><br><span class="line">            <span class="comment">//如果前驱是头节点</span></span><br><span class="line">            <span class="keyword">if</span> (p == head) &#123;</span><br><span class="line">                <span class="comment">//尝试获取资源（这个方法被重写了 实际并没有获取资源 而是检查资源个数是否为0 也就是上述的核心方法）</span></span><br><span class="line">                <span class="keyword">int</span> r = tryAcquireShared(arg);</span><br><span class="line">                <span class="keyword">if</span> (r &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="comment">//如果资源个数为0了把当前节点设置成头</span></span><br><span class="line">                    setHeadAndPropagate(node, r);</span><br><span class="line">                    <span class="comment">//插队导致前边的头结点无效 帮助其GC</span></span><br><span class="line">                    p.next = <span class="keyword">null</span>; <span class="comment">// help GC</span></span><br><span class="line">                    <span class="comment">//没有失败</span></span><br><span class="line">                    failed = <span class="keyword">false</span>;</span><br><span class="line">                    <span class="keyword">return</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//循环遍历寻找一个安全等待点 即跳过队列排在前边无效的线程节点</span></span><br><span class="line">            <span class="keyword">if</span> (shouldParkAfterFailedAcquire(p, node) &amp;&amp;</span><br><span class="line">                <span class="comment">//自旋阻塞等待</span></span><br><span class="line">                parkAndCheckInterrupt())</span><br><span class="line">                <span class="comment">//响应了中断抛出中断异常</span></span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (failed)</span><br><span class="line">            <span class="comment">//如果失败了取消获取资源过程</span></span><br><span class="line">            cancelAcquire(node);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这个过程就是把自己加入到队列中并自旋等待的过程。等待过程中可以响应中断，这里会自旋判断自己是不是头节点了，与释放资源那里是遥相呼应的，因为资源释放之后会通知队列的头节点进行获取。内部的几个方法不再进行展开，相关AQS操作在AQS中已经阐述过。<strong>这里最主要的还是上边的说的核心方法，方法名字是获取资源，但是实际重写操作内部完成的是判断资源个数是否为0</strong>。</p>
+<h3 id="2-3-2小结"><a href="#2-3-2小结" class="headerlink" title="2.3.2小结"></a>2.3.2小结</h3><p>&ensp;&ensp;&ensp;&ensp;综上我们看到await（）方法的核心内容是查看当前资源个数是否为0，如果不为0则加入到等待队列中等待唤醒。等待过程可以响应中断。唤醒之后做了tryAcquireShared（）操作，依旧是判断资源是否为0，而不是字面意义去获取资源。（因为这里不是进行资源竞争，而是等待资源全部释放就可以继续完成后续的工作了。）</p>
+<h2 id="2-4await-long-timeout-TimeUnit-unit"><a href="#2-4await-long-timeout-TimeUnit-unit" class="headerlink" title="2.4await(long timeout, TimeUnit unit)"></a>2.4await(long timeout, TimeUnit unit)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">await</span><span class="params">(<span class="keyword">long</span> timeout, TimeUnit unit)</span></span></span><br><span class="line"><span class="function">    <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sync.tryAcquireSharedNanos(<span class="number">1</span>, unit.toNanos(timeout));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;源码中还有个带timeout参数的await方法，顾名思义就是可以设置超时时间，比如主线程等待了1min之后子线程依然没有将state全部释放掉，那么就不等它了继续执行下边的方法。这里同样是结合了AQS的一些操作。具体就补展开阐述了。</p>
+<h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>&ensp;&ensp;&ensp;&ensp;CountDownLatch在诸如主线程需要等待一系列子线程返回之后才继续执行的场景中使用，当然这种场景不仅仅局限于使用CountDownLatch。CountDownLatch使用方法是先用构造器构造一个对象，对象入参为要执行批量任务的线程个数，其实也可以是一个线程执行多个批量任务。所以这里如果理解为线程个数不是太准确，因为可能一个线程执行了多个任务，然后就需要等待多个任务的返回结果。所以这里合理的解释是构造函数的参数为要等待批量任务执行完成的批量个数。构造之后，每个任务执行之后调用一次countDown（）方法，等待执行最终任务的线程调用await（）方法。其底层原理是结合了AQS同步器完成，进行构造的时候将同步器的共享资源state设置成了N，然后每个任务执行完之后调用了countDown（）方法就将N-1，调用了await（）方法的线程被加入到了线程等待队列，自旋尝试获取资源，这里的获取资源是指自旋判断共享资源state是否等于0，即全部任务结束了。等待过程中可以响应中断。CountDownLatch还提供了一个可以设置超时时间的await（timeout）方法，以避免长时间阻塞。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/19/【源码学习】Java并发之AQS源码学习/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -669,7 +873,7 @@
 <h2 id="使用Boolean还是boolean？"><a href="#使用Boolean还是boolean？" class="headerlink" title="使用Boolean还是boolean？"></a>使用Boolean还是boolean？</h2><p>&ensp;&ensp;&ensp;&ensp;如上我们验证了使用isSuccess在序列化和反序列化过程中会造成的异常情况。然后对比使用基本布尔类型boolean和包装布尔类型Boolean的不同，在对一个没有的属性进行反序列的时候，基本布尔类型会默认赋值false，而包装布尔类型会默认赋值null</p>
 <p>在阿里巴巴开发手册中有如下规定：</p>
 <p><img src="/2018/12/23/【编程技巧】如何正确的使用布尔类型/png7.png" alt="png7"></p>
-<p>&ensp;&ensp;&ensp;&ensp;这里建议我们使用包装类型，理由是包装类型在数据属性为空的时候会默认赋值为null，而基本数据类型在属性为空的时候则会赋值为false或者诸如在double中的0，这在生产环境下很有可能会产生一些微妙的异常情况。</p>
+<p>&ensp;&ensp;&ensp;&ensp;这里建议我们使用包装类型，理由是包装类型在数据属性为空的时候会默认赋值为null，而基本数据类型在属性为空的时候则会赋值为false或者为0。比如常见的Double和double，Integer和int，对于null和0的不同，这在生产环境下很有可能会产生一些灾难性的异常情况。</p>
 <p>&ensp;&ensp;&ensp;&ensp;个人觉得，无论是null还是默认的false与0也好，从本质上讲无非是我们如何在代码中正确的对异常情况进行处理。毕竟代码中出现没有意义的null也未必见得就是一件好事。</p>
 <h1 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h1><p>&ensp;&ensp;&ensp;&ensp;在开发过程中，对于需要对业务进行判断成功与失败的标志变量，避免使用isXXX的命名形式。因为编辑器根据Java Bean的命名规范，会将其自动生成的getter/setter方法中的Is省略。从而在序列化与反序列化的过程中产生异常。</p>
 <p>此外，对于基本布尔类型，与包装布尔类型，其实没有哪一种是绝对完美的，完美的是如何处理异常。</p>
@@ -2104,179 +2308,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/21/【RabbitMQ】四：Exchange-direct/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Crayon Cxy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ordinary Road">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/21/【RabbitMQ】四：Exchange-direct/" itemprop="url">【RabbitMQ】四：Exchange-direct</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-21T15:28:50+08:00">
-                2018-11-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/11/21/【RabbitMQ】四：Exchange-direct/" class="leancloud_visitors" data-flag-title="【RabbitMQ】四：Exchange-direct">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;前一篇文章中，我们了解了交换机的四种类型，并使用了一个广播式发送消息的示例学习了fanout类型的交换机，这篇文章继续学习direct类型的交换机。direct类型的交换机可以实现不同的消息发送到不同的队列中去。</p>
-<p>&ensp;&ensp;&ensp;&ensp;示例场景：在绑定同一个交换机的两个队列中，一个队列负责接收生产者发送的奇数消息，一个队列负责接收生产者发送的偶数消息，当发送的消息为10的整数倍时，两个队列均可收到消息。（目的是为了验证direct类型的交换机可以同时实现fanout功能）</p>
-<p>&ensp;&ensp;&ensp;&ensp;实现方式：使用direct类型的交换机，分别定义绑定在交换机上的两个队列不同的routingKey，和一个相同的routingKey，发送消息指定routingKey，交换机根据指定的routingKey路由到指定的队列中。</p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png1.png" alt="png1"></p>
-<h1 id="二、源代码"><a href="#二、源代码" class="headerlink" title="二、源代码"></a>二、源代码</h1><p>&ensp;&ensp;&ensp;&ensp;整个工程的代码与上一篇的代码相似，只不过是改变了交换机的类型，同时一个消费者队列绑定了两个routingKey</p>
-<p>&ensp;&ensp;&ensp;&ensp;先写生产者代码，相关描述都写在注释中，当是奇数时，发到绑定为odd的队列，是偶数时发到绑定为even的队列，是10的倍数时发送到绑定为all的队列。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqProducer</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机、用户名、密码和客户端端口号</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 factory.setUsername(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPassword(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPort(<span class="number">5672</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"direct"</span>);</span><br><span class="line">		 <span class="keyword">for</span>(<span class="keyword">int</span> i =<span class="number">1</span>;i&lt;<span class="number">1000</span>;i++)&#123;</span><br><span class="line">			 <span class="keyword">if</span>(i%<span class="number">10</span> == <span class="number">0</span>)&#123;</span><br><span class="line">				 <span class="comment">//10的倍数</span></span><br><span class="line">				 String message = <span class="string">"我是10的倍数===》"</span> + i;</span><br><span class="line">				 channel.basicPublish(EXCHANGE_NAME,<span class="string">"all"</span>,<span class="keyword">null</span>,message.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">				 System.out.println(<span class="string">"发给所有队列==="</span> + i);</span><br><span class="line">			 &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">				 <span class="keyword">if</span>(i%<span class="number">2</span> != <span class="number">0</span>)&#123;</span><br><span class="line">					 <span class="comment">//发送奇数</span></span><br><span class="line">					 String message = <span class="string">"我是奇数===》"</span> + i;</span><br><span class="line">					 channel.basicPublish(EXCHANGE_NAME,<span class="string">"odd"</span>,<span class="keyword">null</span>,message.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">					 System.out.println(<span class="string">"发给队列1==="</span> + i);</span><br><span class="line">				 &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">					 <span class="comment">//发送偶数</span></span><br><span class="line">					 String message = <span class="string">"我是偶数===》"</span> + i;</span><br><span class="line">					 channel.basicPublish(EXCHANGE_NAME,<span class="string">"even"</span>,<span class="keyword">null</span>,message.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">					 System.out.println(<span class="string">"发给队列2==="</span> + i);</span><br><span class="line">				 &#125;</span><br><span class="line">			 &#125;</span><br><span class="line">			 Thread.sleep(<span class="number">2000</span>);</span><br><span class="line">		 &#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再写消费者1代码，同样注释有说明，同时，随机队列绑定了odd和all两种routingKey</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer1</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"odd"</span>);</span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"all"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer1 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer1 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>再写消费者2代码，与消费者1相同，随机队列绑定了even和all两种routingKey</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer2</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"even"</span>);</span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"all"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer2 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer2 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>然后分别启动消费者1和消费者2，使两个队列处于监听状态。</p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png2.png" alt="png2"></p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png3.png" alt="png3"></p>
-<p>&ensp;&ensp;&ensp;&ensp;再启动生产者，可以看见RabbitMQ 控制台创建了一个名为“HelloMq”类型为direct的交换机，同时可以看见生产者发送数字，消费者1接收到奇数，消费者2接收到偶数，当数字为10的倍数时，消费者1和2都接收到消息。</p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png4.png" alt="png4"></p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png5.png" alt="png5"></p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png6.png" alt="png6"></p>
-<p><img src="/2018/11/21/【RabbitMQ】四：Exchange-direct/png7.png" alt="png7"></p>
-<p>&ensp;&ensp;&ensp;&ensp;至此，一个direct类型的交换机功能就实现了。工作中的应用场景可以系统中做日志处理，两个队列分别打印debug与error级别的日志，同时打印info级别的日志。</p>
-<h1 id="三、代码下载"><a href="#三、代码下载" class="headerlink" title="三、代码下载"></a>三、代码下载</h1><p><a href="https://pan.baidu.com/s/1kXnCIvd" target="_blank" rel="noopener">下载地址</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2327,7 +2358,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
