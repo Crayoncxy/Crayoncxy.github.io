@@ -252,6 +252,269 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/25/【源码学习】Java集合之ArrayList/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Crayon Cxy">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Ordinary Road">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/25/【源码学习】Java集合之ArrayList/" itemprop="url">【源码学习】Java集合之ArrayList</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-25T21:35:17+08:00">
+                2019-03-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/源码学习/" itemprop="url" rel="index">
+                    <span itemprop="name">源码学习</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2019/03/25/【源码学习】Java集合之ArrayList/" class="leancloud_visitors" data-flag-title="【源码学习】Java集合之ArrayList">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>本文不打算将ArrayList全部代码列出来（也着实没有什么必要和精力），打算就常用常见的几个功能进行分析学习（源码系列文章凡是没有特殊说明的均为jdk1.8版本）。主要内容如下：</p>
+<ol>
+<li>ArrayList的构造器</li>
+<li>向ArrayList中添加元素</li>
+<li>从ArrayList中获取元素</li>
+<li>删除ArrayList中的元素</li>
+<li>ArrayList中用于遍历的迭代器</li>
+<li>判断一个元素是否存在于ArrayList中</li>
+</ol>
+<p>如果懒得一步一步的看的话，那么可以直接点击每一个章节中的小结看结论总结部分。</p>
+<h1 id="二、源码分析"><a href="#二、源码分析" class="headerlink" title="二、源码分析"></a>二、源码分析</h1><h2 id="2-1ArrayList的构造器"><a href="#2-1ArrayList的构造器" class="headerlink" title="2.1ArrayList的构造器"></a>2.1ArrayList的构造器</h2><p>ArrayList有三种构造器，分别如下：</p>
+<h3 id="2-1-1ArrayList-int-initialCapacity"><a href="#2-1-1ArrayList-int-initialCapacity" class="headerlink" title="2.1.1ArrayList(int initialCapacity)"></a>2.1.1ArrayList(int initialCapacity)</h3><p>带有int类型参数的构造器</p>
+<p>形如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;String&gt; s = <span class="keyword">new</span> ArrayList&lt;String&gt;(<span class="number">20</span>);</span><br></pre></td></tr></table></figure>
+<p>源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(<span class="keyword">int</span> initialCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//如果初始化大小&gt;0</span></span><br><span class="line">    <span class="keyword">if</span> (initialCapacity &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//初始化一个指定大小的Object类型数组</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = <span class="keyword">new</span> Object[initialCapacity];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (initialCapacity == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// ==0则初始化一个空的数组</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//不能初始化负数</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Illegal Capacity: "</span>+</span><br><span class="line">                                           initialCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有几个基本的变量概念：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可以理解为ArrayList的基本核心数据类型    </span></span><br><span class="line"><span class="keyword">transient</span> Object[] elementData; <span class="comment">// non-private to simplify nested class access</span></span><br><span class="line"><span class="comment">//空数组</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] EMPTY_ELEMENTDATA = &#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p>没错，既然是ArrayList，那么它的核心基本数据类型一定是一个Array，一个Object类型的Array，修饰成transient表示这个属性在用Java默认的序列化方式传输时，不可被序列化。所谓Java默认的序列化方式就是实现Serializable接口的这种形式。</p>
+<p>介绍完elementData这个基本的参数概念之后，上边构造器的代码就如同注释所说，初始化一个指定了容量的Object类型的数组，如果容量为0则初始化一个空的数组，为负数则抛出异常。</p>
+<h3 id="2-1-2ArrayList"><a href="#2-1-2ArrayList" class="headerlink" title="2.1.2ArrayList()"></a>2.1.2ArrayList()</h3><p>无参数构造器，我一般常用这种形式，因为一般情况下我并不是很确认我需要初始化一个多大容量的构造器。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Constructs an empty list with an initial capacity of ten.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>无参构造器就是初始化一个DEFAULTCAPACITY_EMPTY_ELEMENTDATA默认大小的Object数组，那么我们看一下这个DEFAULTCAPACITY_EMPTY_ELEMENTDATA是多大呢？</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Shared empty array instance used for default sized empty instances. We</span></span><br><span class="line"><span class="comment"> * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when</span></span><br><span class="line"><span class="comment"> * first element is added.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = &#123;&#125;;</span><br></pre></td></tr></table></figure>
+<p>哦豁，仍然是一个空的数组。但是我们观察注释可以发现（上边两段代码的注释），为了与EMPTY_ELEMENTDATA进行区分，这里在添加第一个元素的时候，会扩容为10，也就是初始化了一个大小为10的Object类型数组。具体扩容的事儿后边再说。</p>
+<h3 id="2-1-3ArrayList-Collection-lt-extends-E-gt-c"><a href="#2-1-3ArrayList-Collection-lt-extends-E-gt-c" class="headerlink" title="2.1.3ArrayList(Collection&lt;? extends E&gt; c)"></a>2.1.3ArrayList(Collection&lt;? extends E&gt; c)</h3><p>带有Collection集合元素参数的构造器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ArrayList</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//将集合元素转换成数组</span></span><br><span class="line">    elementData = c.toArray();</span><br><span class="line">    <span class="comment">//如果大小不等于0</span></span><br><span class="line">    <span class="keyword">if</span> ((size = elementData.length) != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br><span class="line">        <span class="comment">//如果elementData的类型不为Object数组类型 则重新拷贝</span></span><br><span class="line">        <span class="keyword">if</span> (elementData.getClass() != Object[].class)</span><br><span class="line">            elementData = Arrays.copyOf(elementData, size, Object[].class);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// replace with empty array.</span></span><br><span class="line">        <span class="comment">//==0返回一个空的数组</span></span><br><span class="line">        <span class="keyword">this</span>.elementData = EMPTY_ELEMENTDATA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有一个size变量，表示的是当前集合中元素的个数，并不是集合的容量。这段带有Collection参数的构造器可以理解为初始化一个拥有一些元素的集合。这里为什么在toArray（）之后又判断了一次elementData是不是Object类型的数组呢？源码中有一行注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// c.toArray might (incorrectly) not return Object[] (see 6260652)</span></span><br></pre></td></tr></table></figure>
+<p>译为c.toArray 有可能不会返回一个Object类型的数组，这是jdk之前版本源码的一个bug，所以这里进行一个判断，如果类型变了的话就采用拷贝的方法复制入参数组。</p>
+<h3 id="2-1-4小结"><a href="#2-1-4小结" class="headerlink" title="2.1.4小结"></a>2.1.4小结</h3><p>ArrayList底层的基本数据类型是数组，它提供了三种构造器，一种是无参的（它在添加第一个元素的时候会进行数组扩容），一种是指定数组初始化长度的，一种是指定了初始化内容的。通常情况下我们建议使用第二种指定数组初始化长度的，这样可以节省空间，也可以避免数组扩容降低效率。</p>
+<h2 id="2-2向ArrayList中添加元素"><a href="#2-2向ArrayList中添加元素" class="headerlink" title="2.2向ArrayList中添加元素"></a>2.2向ArrayList中添加元素</h2><h3 id="2-2-1boolean-add-E-e"><a href="#2-2-1boolean-add-E-e" class="headerlink" title="2.2.1boolean add(E e)"></a>2.2.1boolean add(E e)</h3><p>向集合中添加一个E类型的元素，添加成功之后返回true</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">add</span><span class="params">(E e)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断数组容量是否够存</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">//将元素插入数组下一个空缺位置 然后计数+1 （因为下标从0开始 而计数从1开始）</span></span><br><span class="line">    elementData[size++] = e;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里看上去比较简单了，就是判断容量是否够用，然后添加元素。这里我们需要把ensureCapacityInternal这个方法展开，里边有一些关于ArrayList比较核心的内容。</p>
+<h4 id="2-2-1-1ensureCapacityInternal（int）"><a href="#2-2-1-1ensureCapacityInternal（int）" class="headerlink" title="2.2.1.1ensureCapacityInternal（int）"></a>2.2.1.1ensureCapacityInternal（int）</h4><p>这个方法用来判断数组容量是否够存，即是否需要扩容</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureCapacityInternal</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//判断数组是否是通过无参构造函数进行的初始化并且是第一次添加元素</span></span><br><span class="line">    <span class="keyword">if</span> (elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA) &#123;</span><br><span class="line">        <span class="comment">//取最大值 根据条件 如果进入到这里 最大值必然为 DEFAULT_CAPACITY</span></span><br><span class="line">        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断数组是否需要扩容</span></span><br><span class="line">    ensureExplicitCapacity(minCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有个细节的地方在前文说到，当数组被无参构造函数初始化时，如同DEFAULTCAPACITY_EMPTY_ELEMENTDATA注释所说，在第一次添加元素的时候，数组会被扩容到大小为10的容量。这里的if判断，如果条件成立，则表示当前数组处于刚被无参构造函数初始化完，并没有加入元素。所以方法入参的minCapacity必然等于0+1也就是1，那么Math.max（）方法返回的最大值也就必然是DEFAULT_CAPACITY，那么我们看下这个DEFAULT_CAPACITY值</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Default initial capacity.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_CAPACITY = <span class="number">10</span>;</span><br></pre></td></tr></table></figure>
+<p>好，这回对上了，无参构造函数第一次新增元素的时候被扩容成10个大小。</p>
+<h4 id="2-2-1-2ensureExplicitCapacity（int）"><a href="#2-2-1-2ensureExplicitCapacity（int）" class="headerlink" title="2.2.1.2ensureExplicitCapacity（int）"></a>2.2.1.2ensureExplicitCapacity（int）</h4><p>这个方法用来判断是否需要进行扩容</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">ensureExplicitCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//修改次数+1</span></span><br><span class="line">    modCount++;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="comment">//扩容条件 当添加完新元素之后的大小比数组当前的长度（不是已有元素长度，是初始化长度即包括未填充元素长度，数组已填充长度为size）大，则扩容</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity - elementData.length &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="comment">//扩容</span></span><br><span class="line">        grow(minCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里又出现了一个基本的全局变量，这个变量是ArrayList的基类AbstractList的变量，用来记录修改的次数。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//表示ArrayList修改的次数    </span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">transient</span> <span class="keyword">int</span> modCount = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>方法的逻辑就是先记录一下修改次数，如果入参的数组长度（即添加完新元素之后的最大长度）比数组当前的长度（包括未填充元素的地方，已填充的长度是size）大，那么就进行扩容。</p>
+<h4 id="2-2-1-3grow（int）"><a href="#2-2-1-3grow（int）" class="headerlink" title="2.2.1.3grow（int）"></a>2.2.1.3grow（int）</h4><p>这个方法就是扩容的方法，可见如果我们能确定ArrayList元素的个数，那么直接初始化会省事的多，因为避免了扩容的过程。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">grow</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// overflow-conscious code</span></span><br><span class="line">    <span class="comment">//数组当前的长度（包括未填充的 这里最后注明一次 后边不写了）</span></span><br><span class="line">    <span class="keyword">int</span> oldCapacity = elementData.length;</span><br><span class="line">    <span class="comment">//扩容之后新数组的长度 = 现在数组的长度 + 现在数组长度除以2（这里用了&gt;&gt;运算，理论上要比/运算快的多） 即扩容之后的新数组长度为原来数组长度的1.5倍</span></span><br><span class="line">    <span class="keyword">int</span> newCapacity = oldCapacity + (oldCapacity &gt;&gt; <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//如果扩容1.5倍仍然比不上入参的数组大小 即新增元素之后的数组大小 那么就将扩容之后的长度变更成添加新元素之后的数组大小</span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - minCapacity &lt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = minCapacity;</span><br><span class="line">    <span class="comment">//如果新数组容量比MAX_ARRAY_SIZE还大  那么就看一下添加元素之后的大小是不是比MAX_ARRAY_SIZE大</span></span><br><span class="line">    <span class="comment">//因为我们不可能无限扩容，我们指定了最大的长度为int最大值-8 </span></span><br><span class="line">    <span class="keyword">if</span> (newCapacity - MAX_ARRAY_SIZE &gt; <span class="number">0</span>)</span><br><span class="line">        newCapacity = hugeCapacity(minCapacity);</span><br><span class="line">    <span class="comment">// minCapacity is usually close to size, so this is a win:</span></span><br><span class="line">    <span class="comment">//扩容拷贝</span></span><br><span class="line">    elementData = Arrays.copyOf(elementData, newCapacity);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整个方法的注释已经写在源码中，先获取现在的数组大小，然后扩容至1.5倍现在数组大小为新数组大小，然后判断这个新数组大小和添加完当前元素之后的数组大小哪个大，再判断这个新数组大小与MAX_ARRAY_SIZE比哪个大。可以看下MAX_ARRAY_SIZE的值为int的最大长度-8，emmm已经很大了撒。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> MAX_ARRAY_SIZE = Integer.MAX_VALUE - <span class="number">8</span>;</span><br></pre></td></tr></table></figure>
+<p>如果扩容之后比MAX_ARRAY_SIZE值大，那么我们就看一下添加元素之后的大小是多大。最后调用Arrays类的copyOf方法进行数组拷贝扩容。</p>
+<h4 id="2-2-1-4hugeCapacity（int）"><a href="#2-2-1-4hugeCapacity（int）" class="headerlink" title="2.2.1.4hugeCapacity（int）"></a>2.2.1.4hugeCapacity（int）</h4><p>这里的入参是添加当前元素之后的大小，因为目前情况下，扩容之后的大小已经比指定的数组最大长度MAX_ARRAY_SIZE大了，所以我们有必要看一下添加完当前元素之后的长度是多少。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hugeCapacity</span><span class="params">(<span class="keyword">int</span> minCapacity)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//容量已经超了 内存溢出</span></span><br><span class="line">    <span class="keyword">if</span> (minCapacity &lt; <span class="number">0</span>) <span class="comment">// overflow</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> OutOfMemoryError();</span><br><span class="line">    <span class="comment">//如果添加完当前元素之后的数组比MAX_ARRAY_SIZE大，那么就取Int的最大值 ，否则就取MAX_ARRAY_SIZE，而不是取之前计算之后的比MAX_ARRAY_SIZE还要大的扩容1.5倍之后的那个值</span></span><br><span class="line">    <span class="keyword">return</span> (minCapacity &gt; MAX_ARRAY_SIZE) ?</span><br><span class="line">        Integer.MAX_VALUE :</span><br><span class="line">        MAX_ARRAY_SIZE;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里相关内容已经进行了注释。</p>
+<h4 id="2-2-1-5copyOf（Object-，int）"><a href="#2-2-1-5copyOf（Object-，int）" class="headerlink" title="2.2.1.5copyOf（Object[]，int）"></a>2.2.1.5copyOf（Object[]，int）</h4><p>这个方法是Arrays类的方法，具体内容不阐述了，看源码知道是用了System的arraycopy方法进行的拷贝，把原来的数组拷贝到扩容之后的数组中。arraycopy方法是一个Native方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T,U&gt; T[] copyOf(U[] original, <span class="keyword">int</span> newLength, Class&lt;? extends T[]&gt; newType) &#123;</span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    T[] copy = ((Object)newType == (Object)Object[].class)</span><br><span class="line">        ? (T[]) <span class="keyword">new</span> Object[newLength]</span><br><span class="line">        : (T[]) Array.newInstance(newType.getComponentType(), newLength);</span><br><span class="line">    System.arraycopy(original, <span class="number">0</span>, copy, <span class="number">0</span>,</span><br><span class="line">                     Math.min(original.length, newLength));</span><br><span class="line">    <span class="keyword">return</span> copy;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-2-2add-int-index-E-element"><a href="#2-2-2add-int-index-E-element" class="headerlink" title="2.2.2add(int index, E element)"></a>2.2.2add(int index, E element)</h3><p>这个方法是向集合中指定位置添加元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(<span class="keyword">int</span> index, E element)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//检查插入的位置是否合法</span></span><br><span class="line">    rangeCheckForAdd(index);</span><br><span class="line">    <span class="comment">//判断是否需要扩容</span></span><br><span class="line">    ensureCapacityInternal(size + <span class="number">1</span>);  <span class="comment">// Increments modCount!!</span></span><br><span class="line">    <span class="comment">//因为在指定位置插入元素 所以后边的元素需要顺序后移（可以看出插入效率很低）</span></span><br><span class="line">    System.arraycopy(elementData, index, elementData, index + <span class="number">1</span>,</span><br><span class="line">                     size - index);</span><br><span class="line">    <span class="comment">//空出的位置插入指定元素</span></span><br><span class="line">    elementData[index] = element;</span><br><span class="line">    <span class="comment">//已有元素长度+1</span></span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法在指定位置插入指定元素，所以先要判断指定位置是否存在并合理，然后判断是不是需要扩容，然后将数组顺序向后移动，最后在空出的位置插入新元素之后已元素数组长度+1。</p>
+<h4 id="2-2-2-1rangeCheckForAdd（int）"><a href="#2-2-2-1rangeCheckForAdd（int）" class="headerlink" title="2.2.2.1rangeCheckForAdd（int）"></a>2.2.2.1rangeCheckForAdd（int）</h4><pre><code>private void rangeCheckForAdd(int index) {
+    if (index &gt; size || index &lt; 0)
+        throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+}
+</code></pre><p>这个方法用来检查指定的位置是否合法，这里需要注意一点是，<strong>插入的位置不能比当前数组长度大</strong>。然后就是不能是负数。</p>
+<p>判断扩容的方法这里就不赘述了，与上述相同，同样是修改次数加1然后判断与当前集合大小比较。</p>
+<h4 id="2-2-2-2native-void-arraycopy-Object-src-int-srcPos，Object-dest-int-destPos-int-length"><a href="#2-2-2-2native-void-arraycopy-Object-src-int-srcPos，Object-dest-int-destPos-int-length" class="headerlink" title="2.2.2.2native void arraycopy(Object src,  int  srcPos，Object dest, int destPos,int length)"></a>2.2.2.2native void arraycopy(Object src,  int  srcPos，Object dest, int destPos,int length)</h4><p>这个方法进行数组拷贝的，还是有必要说一下，当然是native方法，所以只说一下参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//src:源数组</span></span><br><span class="line"><span class="comment">//srcPos：源数组下标（从哪里开始拷贝）</span></span><br><span class="line"><span class="comment">//dest：新数组</span></span><br><span class="line"><span class="comment">//destPos：新数组下标（拷贝到新数组的起始位置）</span></span><br><span class="line"><span class="comment">//length：拷贝的数组长度（即指从源数组中拷贝多少到新数组）</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title">arraycopy</span><span class="params">(Object src,  <span class="keyword">int</span>  srcPos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    Object dest, <span class="keyword">int</span> destPos,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">int</span> length)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>五个参数说明注释在上述代码中，这里要做的是从要插入的位置的元素开始顺序向后移动一个位置，因为要给新来的元素腾位置。所以说实际就等同于从当前位置开始到末尾整体向后移动一个位置。</p>
+<h3 id="2-2-3boolean-addAll-Collection-lt-extends-E-gt-c"><a href="#2-2-3boolean-addAll-Collection-lt-extends-E-gt-c" class="headerlink" title="2.2.3boolean addAll(Collection&lt;? extends E&gt; c)"></a>2.2.3boolean addAll(Collection&lt;? extends E&gt; c)</h3><p>这个方法是向集合中添加指定集合中的全部元素。可以理解为两个集合拼接。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//将集合转成Object类型数组</span></span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="comment">//新来了多长的数组</span></span><br><span class="line">    <span class="keyword">int</span> numNew = a.length;</span><br><span class="line">    <span class="comment">//判断新来这么多元素之后需不需要扩容</span></span><br><span class="line">    ensureCapacityInternal(size + numNew);  <span class="comment">// Increments modCount</span></span><br><span class="line">    <span class="comment">//把新来的数组复制到当前集合后边</span></span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, elementData, size, numNew);</span><br><span class="line">    <span class="comment">//长度相应变化</span></span><br><span class="line">    size += numNew;</span><br><span class="line">    <span class="keyword">return</span> numNew != <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 这个方法没有什么特殊的地方，都是一些基本操作，就是把新来的数组拷贝到原来数组后边。</p>
+<h3 id="2-2-4boolean-addAll-int-index-Collection-lt-extends-E-gt-c"><a href="#2-2-4boolean-addAll-int-index-Collection-lt-extends-E-gt-c" class="headerlink" title="2.2.4boolean addAll(int index, Collection&lt;? extends E&gt; c)"></a>2.2.4boolean addAll(int index, Collection&lt;? extends E&gt; c)</h3><p>这个方法是在指定位置添加指定的集合元素。就是前边的整合版，因此也比较简单。核心内容就是一个native方法完成的操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">addAll</span><span class="params">(<span class="keyword">int</span> index, Collection&lt;? extends E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//检查下标</span></span><br><span class="line">    rangeCheckForAdd(index);</span><br><span class="line"></span><br><span class="line">    Object[] a = c.toArray();</span><br><span class="line">    <span class="keyword">int</span> numNew = a.length;</span><br><span class="line">    <span class="comment">//判断是否需要扩容</span></span><br><span class="line">    ensureCapacityInternal(size + numNew);  <span class="comment">// Increments modCount</span></span><br><span class="line">	</span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index;</span><br><span class="line">    <span class="comment">//是否需要移动元素（这里不可能&lt;0 可以=0即变成了上一个方法 在当前集合之后插入新的集合）</span></span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        System.arraycopy(elementData, index, elementData, index + numNew,</span><br><span class="line">                         numMoved);</span><br><span class="line">	<span class="comment">//将新插入的集合插到腾出的位置</span></span><br><span class="line">    System.arraycopy(a, <span class="number">0</span>, elementData, index, numNew);</span><br><span class="line">    size += numNew;</span><br><span class="line">    <span class="keyword">return</span> numNew != <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法没有什么特殊的，主要是多了一个判断是否需要移动元素，可能是因为大量的集合移动比较浪费时间吧。</p>
+<h3 id="2-2-5小结"><a href="#2-2-5小结" class="headerlink" title="2.2.5小结"></a>2.2.5小结</h3><p>ArrayList一共有4种add的方法，分别为添加指定元素，添加指定集合，添加指定元素/集合到指定的位置。添加之前需要判断容量是否够用，否则需要进行扩容，扩容为当前大小的1.5倍。其数组拷贝的核心方法是native方法System.arrayCopy（），每一次新增操作修改次数参数modCount都会自增。</p>
+<h2 id="2-3从ArrayList中获取元素"><a href="#2-3从ArrayList中获取元素" class="headerlink" title="2.3从ArrayList中获取元素"></a>2.3从ArrayList中获取元素</h2><h3 id="2-3-1E-get-int-index"><a href="#2-3-1E-get-int-index" class="headerlink" title="2.3.1E get(int index)"></a>2.3.1E get(int index)</h3><p>这个方法是从集合中获取单个元素，ArrayList也只能获取单个元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">get</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//下标检查</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line">	<span class="comment">//返回指定位置的元素</span></span><br><span class="line">    <span class="keyword">return</span> elementData(index);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里没有什么特别的地方，就是先判断位置是否合法，然后返回指定元素。</p>
+<h4 id="2-3-1-1rangeCheck（int）"><a href="#2-3-1-1rangeCheck（int）" class="headerlink" title="2.3.1.1rangeCheck（int）"></a>2.3.1.1rangeCheck（int）</h4><p>下标合法性校验</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rangeCheck</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (index &gt;= size)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IndexOutOfBoundsException(outOfBoundsMsg(index));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里即便不校验，数组本身也会抛出异常。</p>
+<h4 id="2-3-1-2elementData（index）"><a href="#2-3-1-2elementData（index）" class="headerlink" title="2.3.1.2elementData（index）"></a>2.3.1.2elementData（index）</h4><p>返回数组中指定下标的元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">E <span class="title">elementData</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (E) elementData[index];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-2小结"><a href="#2-3-2小结" class="headerlink" title="2.3.2小结"></a>2.3.2小结</h3><p>ArrayList提供了一个get（int index）方法返回指定下标位置的元素。</p>
+<h2 id="2-4从ArrayList中删除元素"><a href="#2-4从ArrayList中删除元素" class="headerlink" title="2.4从ArrayList中删除元素"></a>2.4从ArrayList中删除元素</h2><h3 id="2-4-1E-remove-int-index"><a href="#2-4-1E-remove-int-index" class="headerlink" title="2.4.1E remove(int index)"></a>2.4.1E remove(int index)</h3><p>该方法删除指定下标上的元素，并返回该元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> E <span class="title">remove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//检查下标合法性</span></span><br><span class="line">    rangeCheck(index);</span><br><span class="line">	<span class="comment">//修改次数+1</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">//记录要删除的元素</span></span><br><span class="line">    E oldValue = elementData(index);</span><br><span class="line">	<span class="comment">//要移动元素个数</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="comment">//如果要移动的个数&gt;0 即不是删除的最后一个元素</span></span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="comment">//将要删除的元素下一个元素起后边的所有元素整体前移一位（整体拷贝）</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    <span class="comment">//把最后一个元素赋值为null并把已有元素容量-1</span></span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line">	<span class="comment">//返回删除的元素</span></span><br><span class="line">    <span class="keyword">return</span> oldValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法也都是一些基本操作，通过这个方法可以看到<strong>删除指定位置的元素实际上是把它后边的元素整体拷贝前移一位，然后将最后的元素赋值为null删除。</strong></p>
+<h3 id="2-4-2-boolean-remove-Object-o"><a href="#2-4-2-boolean-remove-Object-o" class="headerlink" title="2.4.2 boolean remove(Object o)"></a>2.4.2 boolean remove(Object o)</h3><p>这个方法是删除指定元素，并返回成功或者失败。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">remove</span><span class="params">(Object o)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//ArrayList允许一个位置的元素值为null 即==null</span></span><br><span class="line">    <span class="keyword">if</span> (o == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">//遍历数组找到第一个 == null的下标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (elementData[index] == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">//删除该下标的元素</span></span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//遍历数组找到第一个 equals o的下标</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; size; index++)</span><br><span class="line">            <span class="keyword">if</span> (o.equals(elementData[index])) &#123;</span><br><span class="line">                <span class="comment">//删除该下标的元素</span></span><br><span class="line">                fastRemove(index);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//没有遍历到则返回false</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法是拿着给定的元素进行遍历，遍历分为两种，一种是==null，一种是不为null的时候用equals（）方法。然后找到下标之后调用faseRemove（index）方法移除指定位置的元素。如果没有遍历到则返回false。</p>
+<h4 id="2-4-2-1fastRemove（int）"><a href="#2-4-2-1fastRemove（int）" class="headerlink" title="2.4.2.1fastRemove（int）"></a>2.4.2.1fastRemove（int）</h4><p>这个方法实际就是remove（int index）方法中的删除方法，1.7之前remove（int index）方法也是调用的fastRemove（），这里不知道为什么改了，但是方法内容还都是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">fastRemove</span><span class="params">(<span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//修改次数+1</span></span><br><span class="line">    modCount++;</span><br><span class="line">    <span class="comment">//要移动的元素个数</span></span><br><span class="line">    <span class="keyword">int</span> numMoved = size - index - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (numMoved &gt; <span class="number">0</span>)</span><br><span class="line">        <span class="comment">//拷贝要删除的元素之后的元素块向前移动一位</span></span><br><span class="line">        System.arraycopy(elementData, index+<span class="number">1</span>, elementData, index,</span><br><span class="line">                         numMoved);</span><br><span class="line">    <span class="comment">//移除最后一个元素并更改大小</span></span><br><span class="line">    elementData[--size] = <span class="keyword">null</span>; <span class="comment">// clear to let GC do its work</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-3boolean-removeAll-Collection-lt-gt-c"><a href="#2-4-3boolean-removeAll-Collection-lt-gt-c" class="headerlink" title="2.4.3boolean removeAll(Collection&lt;?&gt; c)"></a>2.4.3boolean removeAll(Collection&lt;?&gt; c)</h3><p>这个方法删除ArrayList中指定集合中存在的元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">removeAll</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//确认传入的集合不为空</span></span><br><span class="line">    Objects.requireNonNull(c);</span><br><span class="line">    <span class="comment">//批量删除</span></span><br><span class="line">    <span class="keyword">return</span> batchRemove(c, <span class="keyword">false</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>先调用Objects类的判断方法判断入参是否为null，</p>
+<h4 id="2-4-3-1boolean-batchRemove-Collection-lt-gt-c-boolean-complement"><a href="#2-4-3-1boolean-batchRemove-Collection-lt-gt-c-boolean-complement" class="headerlink" title="2.4.3.1boolean batchRemove(Collection&lt;?&gt; c, boolean complement)"></a>2.4.3.1boolean batchRemove(Collection&lt;?&gt; c, boolean complement)</h4><p>这个方法用来批量移除指定集合中存在的元素</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">batchRemove</span><span class="params">(Collection&lt;?&gt; c, <span class="keyword">boolean</span> complement)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//当前ArrayList集合指向一个新的引用 （修改会改变原ArrayList）个人感觉这个步骤可能是为了写起来方便？不用一直this.elementData？</span></span><br><span class="line">    <span class="keyword">final</span> Object[] elementData = <span class="keyword">this</span>.elementData;</span><br><span class="line">    <span class="keyword">int</span> r = <span class="number">0</span>, w = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//是否修改成功</span></span><br><span class="line">    <span class="keyword">boolean</span> modified = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//遍历ArrayList集合，如果当前元素不在要删除的集合中 则把第r个元素填充到第w个位置 然后w+1 否则只有r+1 可以理解为w为遍历之后去掉删除的元素剩余的元素个数</span></span><br><span class="line">        <span class="keyword">for</span> (; r &lt; size; r++)</span><br><span class="line">            <span class="keyword">if</span> (c.contains(elementData[r]) == complement)</span><br><span class="line">                elementData[w++] = elementData[r];</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// Preserve behavioral compatibility with AbstractCollection,</span></span><br><span class="line">        <span class="comment">// even if c.contains() throws.</span></span><br><span class="line">        <span class="comment">//正常情况下这里r一定==size 当c.contains出现异常时，r将！=size 这里为了保证一致性，将后边没遍历完的数组填充到w后  w为新数组的size 因此需要加上未遍历的个数</span></span><br><span class="line">        <span class="keyword">if</span> (r != size) &#123;</span><br><span class="line">            <span class="comment">//把遍历剩下的数组拷贝w之后的位置</span></span><br><span class="line">            System.arraycopy(elementData, r,</span><br><span class="line">                             elementData, w,</span><br><span class="line">                             size - r);</span><br><span class="line">            w += size - r;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果有元素删除了</span></span><br><span class="line">        <span class="keyword">if</span> (w != size) &#123;</span><br><span class="line">            <span class="comment">// clear to let GC do its work</span></span><br><span class="line">            <span class="comment">//说明删除之后数组长度只到w 而实际长度为size 需要把多余的删除</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = w; i &lt; size; i++)</span><br><span class="line">                <span class="comment">//删除长度为w之后的个数</span></span><br><span class="line">                elementData[i] = <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">//修改次数+删除次数</span></span><br><span class="line">            modCount += size - w;</span><br><span class="line">            <span class="comment">//长度为w</span></span><br><span class="line">            size = w;</span><br><span class="line">            <span class="comment">//修改成功</span></span><br><span class="line">            modified = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//返回修改成功还是失败</span></span><br><span class="line">    <span class="keyword">return</span> modified;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法有点长，相对有一点点绕。首先定义了一个r和w变量，r变量用来遍历原来的数组，w变量用来记录新数组的长度。入参的complement可以译为是否保存。然后看逻辑，首先是try内部的逻辑：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (; r &lt; size; r++)</span><br><span class="line">    <span class="keyword">if</span> (c.contains(elementData[r]) == complement)</span><br><span class="line">        elementData[w++] = elementData[r];</span><br></pre></td></tr></table></figure>
+<p>用变量r遍历原来的数组，如果遍历道的元素在要删除的数组中，则不保留，否则保留。这里做一个示例逻辑演示一下：</p>
+<p>假设我们现在的ArrayList数组1是1,2,3,4,5 共五个元素，我们要删除的集合数组2是3,5,6,7,8五个元素。那么我们遍历一下这段代码会出现什么情况。</p>
+<ol>
+<li>r=0,w=0时，因为元素1不包含在数组2中，所以执行 elementData[w++] = elementData[r]，此时数组1为1,2,3,4,5 r =1,w=1</li>
+<li>r=1,w=1时，因为元素2不包含在数组2中，所以执行 elementData[w++] = elementData[r]，此时数组1为1,2,3,4,5 r =2,w=2</li>
+<li>r=2,w=2时，因为元素3包含在数组2中，所以不执行后边的逻辑，此时数组1为1,2,3,4,5 r=3,w=2</li>
+<li>r=3,w=2时，因为元素4不包含在数组2中，所以执行 elementData[w++] = elementData[r]，此时数组1为1,2,4,4,5 r =4,w=3</li>
+<li>r=4,w=3时，因为元素5包含在数组2中，所以不执行后边的逻辑，此时数组1为1,2,4,4,5 r=5，w=3</li>
+</ol>
+<p>我们可以看到，实际上就是遍历如果不是要删除的元素就保留下来按顺序覆盖原来的数组。此时w=3，即新数组的size=3</p>
+<p>接下来看finally中的方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Preserve behavioral compatibility with AbstractCollection,</span></span><br><span class="line"><span class="comment">// even if c.contains() throws.</span></span><br><span class="line"><span class="keyword">if</span> (r != size) &#123;</span><br><span class="line">    System.arraycopy(elementData, r,</span><br><span class="line">                     elementData, w,</span><br><span class="line">                     size - r);</span><br><span class="line">    w += size - r;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (w != size) &#123;</span><br><span class="line">    <span class="comment">// clear to let GC do its work</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = w; i &lt; size; i++)</span><br><span class="line">        elementData[i] = <span class="keyword">null</span>;</span><br><span class="line">    modCount += size - w;</span><br><span class="line">    size = w;</span><br><span class="line">    modified = <span class="keyword">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里因为是用r遍历的数组size，所以理论上讲r一定是会等于size的。不过在循环中c.contains（）方法可能会出现异常，因此可能会出现r！=size的情况，这时我们为了保持一致性，需要将未遍历的元素拷贝到w之后。然后修改w的长度加上未遍历的元素个数。如果w即新数组的长度不等于size，那么我们就需要把多出来的元素删除。也就是遍历w之后到size的那部分元素删除，然后修改次数加上删除的次数，最后新数组的size就是w了。</p>
+<h3 id="2-4-4小结"><a href="#2-4-4小结" class="headerlink" title="2.4.4小结"></a>2.4.4小结</h3><p>从ArrayList中删除元素有三种方法，一种是删除指定下标上的元素，一种是删除指定元素，最后一种是删除指定集合内存在的元素。删除操作与新增操作基本核心都是用了arraycopy方法移动数组块，因此理论上讲效率很低。而且remove（int）不需要遍历整个集合，而remove（Object）需要遍历集合寻找第一个符合条件的元素。remove支持移除元素==null的情况。removeAll的原理是遍历原数组找到不在要删除的集合中的元素保留下来然后删除多余的那一部分长度的数组，在调用c.contains（）方法时可能出现异常。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/23/【源码学习】Java并发之CountDownLatch/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2126,188 +2389,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/21/【RabbitMQ】五：Exchange-topic/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Crayon Cxy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Ordinary Road">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/21/【RabbitMQ】五：Exchange-topic/" itemprop="url">【RabbitMQ】五：Exchange-topic</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-21T15:48:42+08:00">
-                2018-11-21
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
-                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
-                    <span itemprop="name">学习笔记</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-             <span id="/2018/11/21/【RabbitMQ】五：Exchange-topic/" class="leancloud_visitors" data-flag-title="【RabbitMQ】五：Exchange-topic">
-               <span class="post-meta-divider">|</span>
-               <span class="post-meta-item-icon">
-                 <i class="fa fa-eye"></i>
-               </span>
-               
-                 <span class="post-meta-item-text">阅读次数&#58;</span>
-               
-                 <span class="leancloud-visitors-count"></span>
-             </span>
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><p>&ensp;&ensp;&ensp;&ensp;前两篇文章中讲述了全部匹配和直接匹配两种交换机Exchange的类型，这篇文章讲述第三种模糊匹配Topic类型的交换机。</p>
-<p>&ensp;&ensp;&ensp;&ensp;Topic类型的交换机，支持路由规则routingKey模糊匹配，匹配符号有‘#’全部一个或多个单词，‘*’一个单词。</p>
-<p>&ensp;&ensp;&ensp;&ensp;示例：假设我们有两条队列，队列的绑定规则不确定，只有部分是确定的，也就是我们会接收包含这确定路由规则的信息。</p>
-<p>&ensp;&ensp;&ensp;&ensp;实现方式：使用Topic类型的交换机，定义路由规则带有匹配符号‘#’或者‘<em>’,如图，为了更好的说明‘</em>’和‘#’之间的关系，我们定义如下四个队列分别绑定四种绑定规则com.chen.#  #.com.chen  com.chen.<em>和</em>.com.chen 。预期功能，当传入消息绑定com.chen.me时，能被13消费者收到，当传入消息绑定me.com.chen时，能被24消费者收到，当传入消息绑定com.chen.its.me时，能被消费者1收到，当传入消息绑定its.me.com.chen时，能被2消费者收到。</p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png1.png" alt="png1"></p>
-<h1 id="二、源代码"><a href="#二、源代码" class="headerlink" title="二、源代码"></a>二、源代码</h1><p>&ensp;&ensp;&ensp;&ensp;与前面两篇相同，先写生产者，创建Topic类型的交换机，发送四条消息，带有上述四个routingKey</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqProducer</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机、用户名、密码和客户端端口号</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 factory.setUsername(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPassword(<span class="string">"guest"</span>);</span><br><span class="line">		 factory.setPort(<span class="number">5672</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 String message1 = <span class="string">"我是com.chen.its.me"</span>;</span><br><span class="line">		 String message2 = <span class="string">"我是its.me.com.chen"</span>;</span><br><span class="line">		 String message3 = <span class="string">"我是com.chen.me"</span>;</span><br><span class="line">		 String message4 = <span class="string">"我是me.com.chen"</span>;</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.its.me"</span>,<span class="keyword">null</span>,message1.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"its.me.com.chen"</span>,<span class="keyword">null</span>,message2.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"com.chen.me"</span>,<span class="keyword">null</span>,message3.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">		 channel.basicPublish(EXCHANGE_NAME,<span class="string">"me.com.chen"</span>,<span class="keyword">null</span>,message4.getBytes(<span class="string">"UTF-8"</span>));</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>&ensp;&ensp;&ensp;&ensp;编写消费者1代码，由于我们要先启动消费者，所以消费者里也创建一个交换机，（生产者即可不用创建），新建一个随机队列，绑定com.chen.#路由规则。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer1</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"com.chen.#"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer1 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer1 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>新建消费者2，与消费者1类似，交换机只要创建一次即可，这里不保证哪个先启动，所以都声明了交换机。新建随机队列，绑定路由规则#.com.chen</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer2</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"#.com.chen"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer2 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer2 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>新建消费者3，绑定路由规则com.chen.*</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer3</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"com.chen.*"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer3 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer3 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>新建消费者4，绑定路由规则*.com.chen</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.cn.chenxyt.mq;</span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Connection;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Consumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Envelope;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.AMQP.BasicProperties;</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MqConsumer4</span> </span>&#123;</span><br><span class="line">	 <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">"HelloMq"</span>;</span><br><span class="line">	 <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">		 <span class="comment">//创建连接工厂</span></span><br><span class="line">		 ConnectionFactory factory = <span class="keyword">new</span> ConnectionFactory();</span><br><span class="line">		 <span class="comment">//设置主机</span></span><br><span class="line">		 factory.setHost(<span class="string">"localhost"</span>);</span><br><span class="line">		 <span class="comment">//创建一个新的连接 即TCP连接</span></span><br><span class="line">		 Connection connection = factory.newConnection();</span><br><span class="line">		 <span class="comment">//创建一个通道</span></span><br><span class="line">		 Channel channel = connection.createChannel();</span><br><span class="line">		 <span class="comment">//创建随机队列</span></span><br><span class="line">		 String queueName = channel.queueDeclare().getQueue();</span><br><span class="line">		 <span class="comment">//创建一个交换机</span></span><br><span class="line">		 channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">"topic"</span>);</span><br><span class="line">		 <span class="comment">//绑定队列到交换机</span></span><br><span class="line">		 channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">"*.com.chen"</span>);</span><br><span class="line">	     System.out.println(<span class="string">"Consumer4 Waiting Received messages"</span>);</span><br><span class="line">	     <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个channel，</span></span><br><span class="line">	     <span class="comment">//告诉服务器我们需要哪个channel的消息并监听channel，如果channel中有消息，就会执行回调函数handleDelivery</span></span><br><span class="line">	     Consumer consumer = <span class="keyword">new</span> DefaultConsumer(channel) &#123;</span><br><span class="line">	            <span class="meta">@Override</span></span><br><span class="line">	            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span></span></span><br><span class="line"><span class="function"><span class="params">	                                       BasicProperties properties, <span class="keyword">byte</span>[] body)</span></span></span><br><span class="line"><span class="function">	                    <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	                String message = <span class="keyword">new</span> String(body, <span class="string">"UTF-8"</span>);</span><br><span class="line">	                System.out.println(<span class="string">"Consumer4 Received '"</span> + message + <span class="string">"'"</span>);</span><br><span class="line">	            &#125;</span><br><span class="line">	        &#125;;</span><br><span class="line">	        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span></span><br><span class="line">	        channel.basicConsume(queueName, <span class="keyword">true</span>, consumer);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>&ensp;&ensp;&ensp;&ensp;分别启动消费者1234，使其处于监听状态，可以在RabbitMQ控制台看见声明了一个名为’HelloMq’类型为topic的交换机和四个随机队列</p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png2.png" alt="png2"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png3.png" alt="png3"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png4.png" alt="png4"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png5.png" alt="png5"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png6.png" alt="png6"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png7.png" alt="png7"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png8.png" alt="png8"></p>
-<p>&ensp;&ensp;&ensp;&ensp;启动生产者，可以看见消费者12收到了两条消息，消费者34收到了一条消息，实际结果与开篇的预期结果吻合。</p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png9.png" alt="png9"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png10.png" alt="png10"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png11.png" alt="png11"></p>
-<p><img src="/2018/11/21/【RabbitMQ】五：Exchange-topic/png12.png" alt="png12"></p>
-<p>&ensp;&ensp;&ensp;&ensp;至此，topic类型的交换机功能就实现了。</p>
-<h1 id="三、代码下载"><a href="#三、代码下载" class="headerlink" title="三、代码下载"></a>三、代码下载</h1><p><a href="https://pan.baidu.com/s/1mj2nEly" target="_blank" rel="noopener">下载地址</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2358,7 +2439,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-count">38</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2380,7 +2461,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-count">14</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
