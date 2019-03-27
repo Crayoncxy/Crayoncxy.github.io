@@ -17,8 +17,8 @@ typora-copy-images-to: 【源码学习】Java集合之ArrayList
 2. 向ArrayList中添加元素
 3. 从ArrayList中获取元素
 4. 删除ArrayList中的元素
-5. ArrayList中用于遍历的迭代器
-6. 判断一个元素是否存在于ArrayList中
+5. 判断一个元素是否存在于ArrayList中
+6. ArrayList中用于遍历的迭代器
 
 如果懒得一步一步的看的话，那么可以直接点击每一个章节中的小结看结论总结部分。
 
@@ -591,3 +591,197 @@ private boolean batchRemove(Collection<?> c, boolean complement) {
 ### 2.4.4小结
 
 从ArrayList中删除元素有三种方法，一种是删除指定下标上的元素，一种是删除指定元素，最后一种是删除指定集合内存在的元素。删除操作与新增操作基本核心都是用了arraycopy方法移动数组块，因此理论上讲效率很低。而且remove（int）不需要遍历整个集合，而remove（Object）需要遍历集合寻找第一个符合条件的元素。remove支持移除元素==null的情况。removeAll的原理是遍历原数组找到不在要删除的集合中的元素保留下来然后删除多余的那一部分长度的数组，在调用c.contains（）方法时可能出现异常。
+
+## 2.5判断一个元素在集合中是否存在
+
+### 2.5.1boolean contains(Object o)
+
+该方法用于判断一个对象是否在集合中，存在返回true，否则返回false
+
+```java
+    public boolean contains(Object o) {
+        //返回该元素的下标 存在则>=0 否则返回-1
+        return indexOf(o) >= 0;
+    }
+```
+
+#### 2.5.1.1int indexOf(Object o)
+
+该方法返回元素在数组中的下标，不存在返回-1，支持null==判断
+
+```java
+public int indexOf(Object o) {
+    if (o == null) {
+        for (int i = 0; i < size; i++)
+            if (elementData[i]==null)
+                return i;
+    } else {
+        for (int i = 0; i < size; i++)
+            if (o.equals(elementData[i]))
+                return i;
+    }
+    return -1;
+}
+```
+#### 2.5.1.2int lastIndexOf(Object o) 
+
+ArrayList还提供了获取匹配元素的最后一个下标，即上述方法倒叙for循环
+
+```java
+public int lastIndexOf(Object o) {
+    if (o == null) {
+        for (int i = size-1; i >= 0; i--)
+            if (elementData[i]==null)
+                return i;
+    } else {
+        for (int i = size-1; i >= 0; i--)
+            if (o.equals(elementData[i]))
+                return i;
+    }
+    return -1;
+}
+```
+### 2.5.2小结
+
+ArrayList提供了contains方法判断是否存在指定对象元素，该方法通过indexOf方法返回第一个出现指定元素的下标，同时也提供了返回最后一个出现指定元素的下标。
+
+## 2.6ArrayList中的迭代器
+
+迭代器主要作用是用来遍历集合，基本使用形式如下：
+
+```java
+package com.chenxyt.threadTest;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+public class BugTest {
+	public static void main(String[] args) {
+	    List<String> list = new ArrayList<String>();
+        list.add("chenxyt");
+        list.add("yang");
+        list.add("nina");
+        Iterator<String> it = list.iterator();
+        while (it.hasNext()) {
+            System.out.println(it.next());
+        }
+	}
+}
+
+```
+
+获取一个集合的迭代器对象，然后通过这个迭代器进行对象的遍历。
+
+### 2.6.1iterator（）
+
+这个方法返回一个迭代器对象
+
+```java
+public Iterator<E> iterator() {
+    return new Itr();
+}
+```
+Iterator是一个泛型接口，Itr是它的一个实现类。
+
+### 2.6.2Itr
+
+Itr是ArrayList的一个内部类，实现了迭代器Iterator接口，这里贴出类的具体内容：
+
+```java
+/**
+     * An optimized version of AbstractList.Itr
+     */
+//AbsractList.Itr的最佳版本    Itr原来的版本是AbstractList的内部类 1.8之后放到了ArrayList中
+    private class Itr implements Iterator<E> {
+        //记录该遍历的元素下标
+        int cursor;       // index of next element to return
+        //记录上次返回的下标 如果没有返回默认-1
+        int lastRet = -1; // index of last element returned; -1 if no such
+        //记录修改的次数 --这个很重要 用来判断在迭代器遍历过程中ArrayList是否发生了修改
+        int expectedModCount = modCount;
+        //是否有下一个元素可以遍历 size为元素个数 cursor是下一个要遍历的下标 所以最大的cursor=size-1
+        //如果他俩相等了则表示遍历到最后了
+        public boolean hasNext() {
+            return cursor != size;
+        }
+		//返回下一个元素
+        @SuppressWarnings("unchecked")
+        public E next() {
+            //检查遍历过程是否发生了修改
+            checkForComodification();
+            //拿到当前遍历的元素下标
+            int i = cursor;
+            //下标只能<size才有数据
+            if (i >= size)
+                throw new NoSuchElementException();
+            //拿到ArrayList集合内部的数组对象
+            Object[] elementData = ArrayList.this.elementData;
+            //同理i也不能比length大（length==size）  因为前边判断过一次 所以这里如果比length大则表示
+            //在迭代器遍历的过程 ArrayList发生了list.remove（）操作
+            if (i >= elementData.length)
+                throw new ConcurrentModificationException();
+            //记录下次要遍历的下标
+            cursor = i + 1;
+            //返回当前下标元素 并把返回的下标标记
+            return (E) elementData[lastRet = i];
+        }
+	    //迭代器的移除上次返回的元素 即cursor-1 即 lastRet 移除元素只能移除已经遍历且返回的那个
+        public void remove() {
+            //没有返回过
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            //检查移除过程是否发生了修改
+            checkForComodification();
+			
+            try {
+                //调用集合的remove方法 移除lastRet下标上的元素
+                ArrayList.this.remove(lastRet);
+                //下次要遍历的下标-1（因为移除了遍历返回过的最末元素）
+                cursor = lastRet;
+                //重置返回标记
+                lastRet = -1;
+                //发生了移除操作 重新获取修改次数modCount
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+		
+        @Override
+        @SuppressWarnings("unchecked")
+        //jdk8提供的快速遍历方式 与foreach基本相同
+        public void forEachRemaining(Consumer<? super E> consumer) {
+            //判断传入的Consumer对象是否为空
+            Objects.requireNonNull(consumer);
+            //获取当前集合的size
+            final int size = ArrayList.this.size;
+            //遍历的位置 如果没遍历过则初始化为0
+            int i = cursor;
+            if (i >= size) {
+                return;
+            }
+            //获取集合的数组对象
+            final Object[] elementData = ArrayList.this.elementData;
+            //是否发生过修改
+            if (i >= elementData.length) {
+                throw new ConcurrentModificationException();
+            }
+            //遍历 并且外部未发生修改时 执行accept重写方法的操作 比如print、remove等
+            while (i != size && modCount == expectedModCount) {
+                consumer.accept((E) elementData[i++]);
+            }
+            // update once at end of iteration to reduce heap write traffic
+            //更新下一个要遍历的数组下标
+            cursor = i;
+            //重置lastRest --这里结合重写的accept方法会可能会发生异常 后边单独说
+            lastRet = i - 1;
+            //检查遍历过程中是否发生了修改
+            checkForComodification();
+        }
+		//检查遍历过程中是否发生了移除/插入操作
+        final void checkForComodification() {
+            if (modCount != expectedModCount)
+                throw new ConcurrentModificationException();
+        }
+    }
+```
+
