@@ -785,3 +785,266 @@ Itr是ArrayList的一个内部类，实现了迭代器Iterator接口，这里贴
     }
 ```
 
+相关代码上边都有注释，下面针对具体的方法进行详细的说明。
+
+### 2.6.3boolean hasNext（）
+
+这个方法是判断当前迭代器是否还可以继续遍历下一个元素
+
+```java
+    public boolean hasNext() {
+        //cursor是当前迭代器下一次要遍历到的元素下标 没遍历一个元素 cursor+1  因为数组长度为size  而最         //大下标为size-1 所以当cursor=size时  即不可遍历了
+        return cursor != size;
+    }
+```
+这个方法的核心是返回是否可以遍历“**下一个**”元素。
+
+### 2.6.4E next（）
+
+这个方法用来获取下一个元素
+
+```java
+    @SuppressWarnings("unchecked")
+    public E next() {
+        //判断在遍历的过程中 是否有元素发生过修改
+        checkForComodification();
+        //获取当前要获取的元素下标
+        int i = cursor;
+        if (i >= size)
+            throw new NoSuchElementException();
+        //获取当前数组
+        Object[] elementData = ArrayList.this.elementData;
+        //如果要遍历获取的下标比当前长度大  则说明发生过remove操作
+        if (i >= elementData.length)
+            throw new ConcurrentModificationException();
+        //下一个要遍历的下标
+        cursor = i + 1;
+        //返回数组中指定下标位置的元素  并记录本次返回的下标
+        return (E) elementData[lastRet = i];
+    }
+```
+这个方法用来返回迭代器中遍历的下一个元素。即与hasNext（）配合使用，如果hasNext返回了true，则调用next方法可以返回下个元素。
+
+### 2.6.5checkForComodification（）
+
+这个方法用来检查在遍历的过程中是否发生过修改
+
+```java
+    final void checkForComodification() {
+        //前边可以看到 在外部类中 如果发生了增删操作 modCount会++ 而我们在迭代器内部 初始化的时候会将expectedModCount的值赋值成modCount  只有在调用了迭代器内部的remove操作之后会变更一次这个值
+        if (modCount != expectedModCount)
+            throw new ConcurrentModificationException();
+    }
+```
+如注释所说，expectedModCount这个值在初始化的时候会赋值，在外部被修改的时候，这里是不会做变更，只有在迭代器内部调用了remove方法之后才会进行变更。这个方法抛出的异常ConcurrentModificationException是一个经典异常。后边章节针对这个异常具体说一下。
+
+### 2.6.6remove（）
+
+迭代器自带了一个remove方法，删除对应数组上的元素。
+
+```java
+    public void remove() {
+        //lastRet只有在进行过next（）操作也就是遍历过元素之后才会>0 因此可以猜到这里remove操作remove的是之前遍历过的元素 而不能像外部类那样指定下标和元素
+        if (lastRet < 0)
+            throw new IllegalStateException();
+        //检查是否发生过改变
+        checkForComodification();
+        try {
+            //移除刚才遍历过的元素
+            ArrayList.this.remove(lastRet);
+            //删除操作会把后边的元素向前补一位 因此下一次遍历的仍然是刚才删除的那一位
+            cursor = lastRet;
+            //没有遍历过的元素了 下标改成-1
+            lastRet = -1;
+            //因为调用了remove方法 所以modCount改变了 这里重新赋值
+            expectedModCount = modCount;
+        } catch (IndexOutOfBoundsException ex) {
+            throw new ConcurrentModificationException();
+        }
+    }
+```
+### 2.6.7forEachRemaining(Consumer<? super E> consumer) 
+
+这个方法是jdk1.8之后的一个方法，传入一个Consumer对象用来遍历实现相关逻辑，与for-each功能基本相同
+
+```java
+        public void forEachRemaining(Consumer<? super E> consumer) {
+            //判断传入的对象是否为空
+            Objects.requireNonNull(consumer);
+            //获取当前数组的长度
+            final int size = ArrayList.this.size;
+            //当前遍历的位置（可能在forEachRemaining方法之前调用过其它遍历方法）
+            int i = cursor;
+            //i比size大则不需要进行遍历了
+            if (i >= size) {
+                return;
+            }
+            //获取当前数组
+            final Object[] elementData = ArrayList.this.elementData;
+            //如果i比当前数组长度大 则说明发生过修改
+            if (i >= elementData.length) {
+                throw new ConcurrentModificationException();
+            }
+            //继续遍历当前迭代器 并且保证在外部未发生过修改的情况下 执行Consumer对象重写的accept方法
+            while (i != size && modCount == expectedModCount) {
+                consumer.accept((E) elementData[i++]);
+            }
+            // update once at end of iteration to reduce heap write traffic
+            //假设外部发生过修改 则上述while循环会在遍历完数组之前提前退出 因此需要将下一个要遍历的值赋给cursor
+            cursor = i;
+            //上一个返回的就是i-1 这里如果重写方法中有remove操作 会发生异常
+            lastRet = i - 1;
+            //检查是否发生了修改
+            checkForComodification();
+        }
+```
+
+### 2.6.8forEachRemaining（）引发的异常
+
+上个小节说到使用forEachRemaining（）方法进行遍历时，可能会出现异常。这里通过一个demo分析为何会产生异常，同时也看下forEachRemaining（）方法怎么使用。
+
+```java
+package com.chenxyt.threadTest;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+public class BugTest {
+	public static void main(String[] args) throws InterruptedException {
+		ArrayList<String> list = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            list.add(String.valueOf(i));
+        }
+        Iterator iterator = list.iterator();
+        iterator.forEachRemaining(new Consumer() {
+            @Override
+            public void accept(Object o) {
+                System.out.println(o);
+                  if (o.equals("3") ) {
+                      System.out.println("remove");
+                      iterator.remove();
+                  }
+            }
+        });
+	}
+}
+```
+
+如上，就是遍历然后在accept方法内部，完成迭代器的操作。这里使用迭代器进行remove（）操作。
+
+运行结果：
+
+![1554821208339](【源码学习】Java集合之ArrayList\1554821208339.png)
+
+可以看到在执行remove之前抛出了异常-java.lang.IllegalStateException，根据堆栈信息可以看到是在remove方法抛出的异常。再回头看一下迭代器的remove方法。
+
+```java
+        public void remove() {
+            if (lastRet < 0)
+                throw new IllegalStateException();
+            checkForComodification();
+
+            try {
+                ArrayList.this.remove(lastRet);
+                cursor = lastRet;
+                lastRet = -1;
+                expectedModCount = modCount;
+            } catch (IndexOutOfBoundsException ex) {
+                throw new ConcurrentModificationException();
+            }
+        }
+```
+
+可以看到这个异常是在判断lastRet<0之后返回的。我们知道lastRet是与next（）方法配合使用的，每用next（）方法返回一个遍历元素之后，lastRet赋值为返回的元素下标。而在forEachRemaining（）方法中，遍历元素是通过while循环一个一个遍历的，这期间并没有修改lastRet的值，因此这里如果直接调用了remove（）方法就会抛出java.lang.IllegalStateException.
+
+### 2.6.9经典异常ConcurrentModificationException
+
+这个异常不光在ArrayList中会出现，在其它使用迭代器的集合中也会出现。下面一个示例演示这个异常。
+
+```java
+package com.chenxyt.threadTest;
+import java.util.ArrayList;
+public class BugTest {
+	public static void main(String[] args) throws InterruptedException {
+		ArrayList<String> list = new ArrayList();
+        for (int i = 0; i < 10; i++) {
+            list.add(String.valueOf(i));
+        }
+        for(String s:list){
+        	System.out.println(s);
+        	if("3".equals(s)){
+        		System.out.println("remove");
+        		list.remove("3");
+        	}
+        }
+	}
+}
+
+```
+
+这个demo通过一个for-each增强for循环完成了遍历并使用ArrayList外部类的remove（Object）方法删除指定元素。运行结果如下：
+
+![1554821894511](【源码学习】Java集合之ArrayList\1554821894511.png)
+
+可以看到发生了java.util.ConcurrentModificationException，因为for-each增强for循环的原理实际就是迭代器hasNext（）和next（）方法的循环使用。而迭代器中exceptedModCount只有初始化的时候赋值为modCount和调用迭代器内部的remove（）方法之后赋值为modCount，其它时候并没有改变。因此在遍历的过程中如果调用了ArrayList外部类的remove（）方法会导致modCount发生改变，从而在进行next（）方法checkForComodification（）方法之后抛出这个异常。
+
+通过javap -c 可以看到这个class文件的字节码中使用了迭代器中hasNext（）和next（）等方法
+
+![1554822461669](【源码学习】Java集合之ArrayList\1554822461669.png)
+
+### 2.6.10删除重复字符会出现的陷阱
+
+假设我们有个ArrayList数组，其中有两位连着的元素是一样的，我们想删除这两个元素。有如下示例：
+
+```java
+package com.chenxyt.threadTest;
+import java.util.ArrayList;
+public class BugTest {
+	public static void main(String[] args) throws InterruptedException {
+		ArrayList<String> list = new ArrayList();
+        for (int i = 0; i < 5; i++) {
+            list.add(String.valueOf(i));
+            if(i == 3){
+                list.add(String.valueOf(i));
+            }
+        }
+        System.out.println("删除前集合元素");
+        for(String s : list){
+        	System.out.println(s);
+        }     
+        System.out.println("------");
+        for(int i = 0;i<list.size();i++){
+        	if(list.get(i).equals("3")){
+                 System.out.println("删除下标为：" + i + "的元素"); 
+        		list.remove(i);
+        	}
+        }
+        System.out.println("删除后集合元素");
+        for(String s : list){
+        	System.out.println(s);
+        }     
+	}
+}
+```
+
+这个demo构造了一个带有重复元素“3”的ArrayList集合，然后不适用迭代器遍历删除重复的元素“3”，看一下运行结果：
+
+![1554823008905](【源码学习】Java集合之ArrayList\1554823008905.png)
+
+哦豁，只删除了下标为3的元素，而重复的元素即下标为4的那个“3”没有被删除成功。这里出现这个情况的原因是因为ArrayList的remove操作会把删除位置后边的元素向前移动，原来下标为4的那个“3”在下标为3的那个“3”被删除之后向前移动了一位变成了下标3，这时候的i已经继续循环+1了，因此无法将后边重复的那个“3”删除。
+
+### 2.6.11小结
+
+ArrayList的迭代器还是相对重要些，主要用于遍历和删除操作。要注意exceptModCount的值，避免在使用迭代器遍历时调用外部的增删方法，以免发生ConcurrentModificationException异常。
+
+## 2.7小结
+
+1. ArrayList是通过transient Object数组构造的一个容器，数组的特性就是查询快，可以达到O(1)时间复杂度，而新增删除代价比较大，因为涉及到了元素位置的移动。构造方法可以初始化指定长度的容器，也可以初始化指定元素的容器，默认的无参构造函数初始化空数组，在插入第一个元素之后会扩容为10
+2. 添加元素的时候会判断容量大小，添加完如果长度比当前数组的容量大，则扩容为当前容量的1.5倍，扩容之后使用native arraycopy方法进行数组拷贝，添加操作会修改modCount的值
+3. 获取元素直接调用get方法，返回指定下标的元素
+4. 删除元素调用fastRmove（）进行删除，删除指定位置的元素或者指定元素，可以删除为null的元素，删除的过程是将要删除的元素后边一位到最后一位向前拷贝一位，然后删除最后的一位元素，删除操作会修改modCount的值
+5. contains方法返回一个元素是否在集合中，是通过indeOf（）即遍历查找指定元素返回其下标与0比较，小于0则返回false不存在，否则即存在
+6. ArrayList中的迭代器用于遍历操作，在迭代器初始化的时候会将此时的modCount赋值给exceptCount，因此如果在遍历的过程中发生了外部类remove操作，修改了modCount则会抛出ConcurrentModificationException异常。
+7. jdk1.8中新增的forEachRemaining方法在遍历的过程是一个一个向后移动下标，没有像迭代器的hasNext/next操作返回lastRet值，因为调用迭代器内部的remove方法时会发生异常，因为lastRet可能为-1
+8. 不使用迭代器遍历ArrayList时，删除相邻重复元素不会成功，因为ArrayList.remove方法是把后边的元素前移了，重复元素的下标变了。
+
